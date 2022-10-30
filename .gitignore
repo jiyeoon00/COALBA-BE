@@ -39,3 +39,6 @@ out/
 *.log
 application-auth.properties
 application-db.properties
+
+### querydsl Q파일 ###
+src/main/generated/
