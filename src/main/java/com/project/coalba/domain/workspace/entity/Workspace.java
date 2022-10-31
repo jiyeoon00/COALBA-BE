@@ -7,6 +7,8 @@ import com.project.coalba.global.audit.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Builder
 @AllArgsConstructor
@@ -43,4 +45,8 @@ public class Workspace extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "boss_id")
     private Boss boss;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "workspace")
+    private List<WorkspaceMember> workspaceMemberList = new ArrayList<>();
 }

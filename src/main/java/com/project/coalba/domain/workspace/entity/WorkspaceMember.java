@@ -6,6 +6,8 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Builder
 @AllArgsConstructor
@@ -28,4 +30,8 @@ public class WorkspaceMember extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "workspaceMember")
+    private List<WorkspaceMemberInfo> workspaceMemberInfoList = new ArrayList<>();
 }

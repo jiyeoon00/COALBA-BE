@@ -2,6 +2,8 @@ package com.project.coalba.domain.schedule.entity;
 
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
+import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
+import com.project.coalba.domain.timecardReq.entity.TimecardReq;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.global.audit.BaseTimeEntity;
 import lombok.*;
@@ -9,6 +11,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Builder
 @AllArgsConstructor
@@ -48,4 +52,11 @@ public class Schedule extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "schedule")
+    private List<SubstituteReq> substituteReqList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "schedule")
+    private TimecardReq timecardReq;
 }

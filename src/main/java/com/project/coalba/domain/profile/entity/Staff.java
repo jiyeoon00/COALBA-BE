@@ -1,11 +1,15 @@
 package com.project.coalba.domain.profile.entity;
 
 import com.project.coalba.domain.auth.entity.User;
+import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
+import com.project.coalba.domain.workspace.entity.WorkspaceMember;
 import com.project.coalba.global.audit.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Builder
 @AllArgsConstructor
@@ -31,4 +35,16 @@ public class Staff extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "staff")
+    private List<WorkspaceMember> workspaceMemberList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "receiver")
+    private List<SubstituteReq> receivedSubstituteReqList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "sender")
+    private List<SubstituteReq> sentSubstituteReqList = new ArrayList<>();
 }

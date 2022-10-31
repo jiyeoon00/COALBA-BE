@@ -1,11 +1,16 @@
 package com.project.coalba.domain.profile.entity;
 
 import com.project.coalba.domain.auth.entity.User;
+import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
+import com.project.coalba.domain.timecardReq.entity.TimecardReq;
+import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.global.audit.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Builder
 @AllArgsConstructor
@@ -31,4 +36,16 @@ public class Boss extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "boss")
+    private List<Workspace> workspaceList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "boss")
+    private List<SubstituteReq> substituteReqList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "boss")
+    private List<TimecardReq> timecardReqList = new ArrayList<>();
 }
