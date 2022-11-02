@@ -25,7 +25,7 @@ public class Boss extends BaseTimeEntity {
     @Column(nullable = false, length = 50)
     private String realName;
 
-    @Column(nullable = false, unique = true, length = 11)
+    @Column(nullable = false, length = 11)
     private String phoneNum;
 
     @Column(nullable = false)
