@@ -1,10 +1,17 @@
 package com.project.coalba.domain.auth.service;
 
+import com.project.coalba.domain.auth.repository.UserRefreshTokenRepository;
+import com.project.coalba.domain.auth.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@RequiredArgsConstructor
 @Service
 public class AuthService {
+
+    private final UserRepository userRepository;
+    private final UserRefreshTokenRepository userRefreshTokenRepository;
 
     @Transactional
     public Object login() {
