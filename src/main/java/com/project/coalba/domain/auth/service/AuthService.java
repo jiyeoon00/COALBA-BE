@@ -1,12 +1,15 @@
 package com.project.coalba.domain.auth.service;
 
+import com.project.coalba.domain.auth.dto.response.AuthResponse;
 import com.project.coalba.domain.auth.entity.User;
+import com.project.coalba.domain.auth.entity.UserRefreshToken;
 import com.project.coalba.domain.auth.entity.enums.Provider;
 import com.project.coalba.domain.auth.entity.enums.Role;
 import com.project.coalba.domain.auth.info.UserInfo;
 import com.project.coalba.domain.auth.info.UserInfoFactory;
 import com.project.coalba.domain.auth.repository.UserRefreshTokenRepository;
 import com.project.coalba.domain.auth.repository.UserRepository;
+import com.project.coalba.domain.auth.token.AuthTokenManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,11 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AuthService {
 
+    private final AuthTokenManager tokenManager;
     private final UserRepository userRepository;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
 
     @Transactional
-    public Object login(Provider provider, String token, Role role) {
+    public AuthResponse login(Provider provider, String token, Role role) {
         User socialUser = getSocialUser(provider, token, role), loginUser;
         String providerId = socialUser.getProviderId();
         boolean isNewUser;
@@ -32,8 +36,17 @@ public class AuthService {
              isNewUser = true;
         }
 
-        //TODO: token 발행 후 DTO 생성해서 반환
-        return new Object();
+        Long userId = loginUser.getId();
+        String accessToken = tokenManager.createAccessToken(providerId, userId);
+        String refreshToken = tokenManager.createRefreshToken();
+        if (hasUserRefreshToken(userId)) updateUserRefreshToken(userId, refreshToken);
+        else saveUserRefreshToken(loginUser, refreshToken);
+
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .isNewUser(isNewUser)
+                .build();
     }
 
     @Transactional
@@ -59,5 +72,22 @@ public class AuthService {
 
     private User joinUser(User socialUser) {
         return userRepository.save(socialUser);
+    }
+
+    private boolean hasUserRefreshToken(Long userId) {
+        return userRefreshTokenRepository.findById(userId).isPresent();
+    }
+
+    private void updateUserRefreshToken(Long userId, String token) {
+        UserRefreshToken userRefreshToken = userRefreshTokenRepository.findById(userId).get();
+        userRefreshToken.updateToken(token);
+    }
+
+    private void saveUserRefreshToken(User loginUser, String token) {
+        userRefreshTokenRepository.save(
+                UserRefreshToken.builder()
+                        .user(loginUser)
+                        .token(token)
+                        .build());
     }
 }

@@ -1,5 +1,6 @@
 package com.project.coalba.domain.auth.controller;
 
+import com.project.coalba.domain.auth.dto.response.AuthResponse;
 import com.project.coalba.domain.auth.entity.enums.Provider;
 import com.project.coalba.domain.auth.entity.enums.Role;
 import com.project.coalba.domain.auth.service.AuthService;
@@ -18,9 +19,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestParam Provider provider, @RequestParam String token, @RequestParam Role role) {
-        authService.login(provider, token, role);
-        return ResponseEntity.ok().build();
+    public AuthResponse login(@RequestParam Provider provider, @RequestParam String token, @RequestParam Role role) {
+        return authService.login(provider, token, role);
     }
 
     @PostMapping("/refresh")
