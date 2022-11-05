@@ -1,6 +1,7 @@
 package com.project.coalba.domain.auth.service;
 
 import com.project.coalba.domain.auth.dto.response.AuthResponse;
+import com.project.coalba.domain.auth.dto.response.TokenResponse;
 import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.auth.entity.UserRefreshToken;
 import com.project.coalba.domain.auth.entity.enums.Provider;
@@ -10,6 +11,7 @@ import com.project.coalba.domain.auth.info.UserInfoFactory;
 import com.project.coalba.domain.auth.repository.UserRefreshTokenRepository;
 import com.project.coalba.domain.auth.repository.UserRepository;
 import com.project.coalba.domain.auth.token.AuthTokenManager;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ public class AuthService {
     private final AuthTokenManager tokenManager;
     private final UserRepository userRepository;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
+    private static final String USER_ID_KEY = "userId";
 
     @Transactional
     public AuthResponse login(Provider provider, String token, Role role) {
@@ -50,9 +53,26 @@ public class AuthService {
     }
 
     @Transactional
-    public Object reissue() {
-        //TODO: refresh token 유효성 검사 후 token 재발행
-        return new Object();
+    public TokenResponse reissue(String accessToken, String refreshToken) {
+        Claims claims = tokenManager.getExpiredTokenClaims(accessToken);
+        if (claims == null) return null; //TODO: 일단 null 반환 나중에 throw Exception
+        String providerId = claims.getSubject();
+        Long userId = claims.get(USER_ID_KEY, Long.class);
+
+        if (hasUserRefreshToken(userId)) {
+            UserRefreshToken userRefreshToken = getUserRefreshToken(userId);
+            if (isValidRefreshToken(refreshToken, userRefreshToken.getToken())) {
+                String newAccessToken = tokenManager.createAccessToken(providerId, userId);
+                String newRefreshToken = tokenManager.createRefreshToken();
+                userRefreshToken.updateToken(newRefreshToken);
+
+                return TokenResponse.builder()
+                        .accessToken(newAccessToken)
+                        .refreshToken(newRefreshToken)
+                        .build();
+            }
+        }
+        return null; //TODO: 일단 null 반환 나중에 throw Exception
     }
 
     private User getSocialUser(Provider provider, String token, Role role) {
@@ -89,5 +109,13 @@ public class AuthService {
                         .user(loginUser)
                         .token(token)
                         .build());
+    }
+
+    private UserRefreshToken getUserRefreshToken(Long userId) {
+        return userRefreshTokenRepository.findById(userId).get();
+    }
+
+    private boolean isValidRefreshToken(String refreshToken, String dbRefreshToken) {
+        return tokenManager.validate(refreshToken) && refreshToken.equals(dbRefreshToken);
     }
 }
