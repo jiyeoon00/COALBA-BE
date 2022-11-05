@@ -8,22 +8,22 @@ import javax.persistence.*;
 @Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "refresh_token")
 @Entity
-public class RefreshToken extends BaseTimeEntity {
+public class UserRefreshToken extends BaseTimeEntity {
 
     @Id
-    @Column(name = "token_key")
-    private Long key;
+    @Column(name = "refresh_token_id")
+    private Long id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "token_key")
+    @JoinColumn(name = "refresh_token_id")
     private User user; //FK이면서 PK
 
-    @Column(name = "token_value")
-    private String value;
+    private String token;
 
-    public void updateValue(String value) {
-        this.value = value;
+    public void updateToken(String token) {
+        this.token = token;
     }
 }
