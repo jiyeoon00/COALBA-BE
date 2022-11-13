@@ -46,4 +46,8 @@ public class StaffProfileService {
         return staffProfileRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
     }
+    @Transactional
+    public Staff getStaffByUserEmail(String email){
+        return staffProfileRepository.getStaffByUserEmail(email);
+    }
 }
