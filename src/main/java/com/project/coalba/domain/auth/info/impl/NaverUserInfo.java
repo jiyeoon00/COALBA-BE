@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 
 @Slf4j
 public class NaverUserInfo implements UserInfo {
@@ -31,9 +32,11 @@ public class NaverUserInfo implements UserInfo {
 
     private NaverUserInfoDto getNaverUserInfoDto(String token) {
         try {
-            String reqURL = "https://openapi.naver.com/v1/nid/me?access_token=" + token;
+            String reqURL = "https://openapi.naver.com/v1/nid/me";
             URL url = new URL(reqURL);
-            return mapper.readValue(url, NaverUserInfoDto.class);
+            URLConnection urlConnection = url.openConnection();
+            urlConnection.setRequestProperty("Authorization", "Bearer " + token);
+            return mapper.readValue(urlConnection.getInputStream(), NaverUserInfoDto.class);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
