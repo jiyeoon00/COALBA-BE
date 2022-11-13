@@ -26,7 +26,7 @@ public class Boss extends BaseTimeEntity {
     private String realName;
 
     @Column(nullable = false, length = 11)
-    private String phoneNum;
+    private String phoneNumber;
 
     @Column(nullable = false)
     private LocalDate birthDate;
@@ -48,4 +48,21 @@ public class Boss extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "boss")
     private List<TimecardReq> timecardReqList = new ArrayList<>();
+
+    public static Boss create(String realName, String phoneNumber, LocalDate birthDate, String imageUrl, User user) {
+        return Boss.builder()
+                .realName(realName)
+                .phoneNumber(phoneNumber)
+                .birthDate(birthDate)
+                .imageUrl(imageUrl)
+                .user(user)
+                .build();
+    }
+
+    public void update(String realName, String phoneNumber, LocalDate birthDate, String imageUrl) {
+        this.realName = realName;
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+        this.imageUrl = imageUrl;
+    }
 }
