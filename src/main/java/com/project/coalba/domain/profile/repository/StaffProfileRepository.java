@@ -5,7 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface StaffProfileRepository extends JpaRepository<Staff, Long> {
+
+    @Query("select s from Staff s where s.user.id = :userId")
+    Optional<Staff> findByUserId(@Param("userId") Long userId);
 
     @Query("select s from Staff s JOIN s.user u on u.email = :email")
     Staff getStaffByUserEmail(@Param("email") String email);
