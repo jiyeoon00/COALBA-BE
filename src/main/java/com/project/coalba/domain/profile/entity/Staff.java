@@ -33,7 +33,7 @@ public class Staff extends BaseTimeEntity {
     private String imageUrl;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 
     @Builder.Default
