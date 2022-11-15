@@ -14,13 +14,13 @@ public class ProfileUtil {
     private final StaffProfileRepository staffProfileRepository;
     private final BossProfileRepository bossProfileRepository;
 
-    public Staff getCurrentStaff(Long userId) {
-        return staffProfileRepository.findByUserId(userId)
+    public Staff getCurrentStaff() {
+        return staffProfileRepository.findByUserId(SecurityUtil.getCurrentUserId())
                 .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
     }
 
-    public Boss getCurrentBoss(Long userId) {
-        return bossProfileRepository.findByUserId(userId)
+    public Boss getCurrentBoss() {
+        return bossProfileRepository.findByUserId(SecurityUtil.getCurrentUserId())
                 .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
     }
 }

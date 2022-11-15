@@ -6,7 +6,6 @@ import com.project.coalba.domain.workspace.dto.response.WorkspaceStaffListRespon
 import com.project.coalba.domain.workspace.repository.WorkspaceMemberRepository;
 import com.project.coalba.domain.workspace.repository.WorkspaceRepository;
 import com.project.coalba.global.utils.ProfileUtil;
-import com.project.coalba.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,7 @@ public class StaffWorkspaceService {
     private final ProfileUtil profileUtil;
 
     public WorkspaceListResponse getMyWorkspaceList() {
-        Long staffId = profileUtil.getCurrentStaff(SecurityUtil.getCurrentUserId()).getId();
+        Long staffId = profileUtil.getCurrentStaff().getId();
         List<WorkspaceResponse> workspaceList = workspaceRepository.findAllByStaffId(staffId);
         return new WorkspaceListResponse(workspaceList);
     }

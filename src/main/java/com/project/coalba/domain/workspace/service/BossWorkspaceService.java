@@ -12,7 +12,6 @@ import com.project.coalba.domain.workspace.entity.WorkspaceMember;
 import com.project.coalba.domain.workspace.repository.WorkspaceMemberRepository;
 import com.project.coalba.domain.workspace.repository.WorkspaceRepository;
 import com.project.coalba.global.utils.ProfileUtil;
-import com.project.coalba.global.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +29,7 @@ public class BossWorkspaceService {
     private final ProfileUtil profileUtil;
 
     public WorkspaceListResponse getMyWorkspaceList() {
-        Long bossId = profileUtil.getCurrentBoss(SecurityUtil.getCurrentUserId()).getId();
+        Long bossId = profileUtil.getCurrentBoss().getId();
         List<WorkspaceResponse> workspaceList = workspaceRepository.findAllByBossId(bossId);
         return new WorkspaceListResponse(workspaceList);
     }
@@ -42,7 +41,7 @@ public class BossWorkspaceService {
 
     @Transactional
     public void saveWorkspace(WorkspaceRequest workspaceRequest) {
-        Boss boss = profileUtil.getCurrentBoss(SecurityUtil.getCurrentUserId());
+        Boss boss = profileUtil.getCurrentBoss();
         workspaceRepository.save(Workspace.create(workspaceRequest, boss));
     }
 
