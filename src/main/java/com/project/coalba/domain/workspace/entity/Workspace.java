@@ -1,6 +1,8 @@
 package com.project.coalba.domain.workspace.entity;
 
 import com.project.coalba.domain.profile.entity.Boss;
+import com.project.coalba.domain.workspace.dto.request.WorkspaceRequest;
+import com.project.coalba.domain.workspace.dto.request.WorkspaceUpdateRequest;
 import com.project.coalba.domain.workspace.entity.enums.PayType;
 import com.project.coalba.domain.workspace.entity.enums.WorkType;
 import com.project.coalba.global.audit.BaseTimeEntity;
@@ -24,13 +26,13 @@ public class Workspace extends BaseTimeEntity {
     private String name;
 
     @Column(nullable = false, length = 11)
-    private String phoneNum;
+    private String phoneNumber;
 
     @Column(nullable = false)
     private String address;
 
     @Column(nullable = false, unique = true, length = 10)
-    private String businessNum;
+    private String businessNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -49,4 +51,24 @@ public class Workspace extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "workspace")
     private List<WorkspaceMember> workspaceMemberList = new ArrayList<>();
+
+    public static Workspace create(WorkspaceRequest workspaceRequest, Boss boss) {
+        return Workspace.builder()
+                .name(workspaceRequest.getName())
+                .phoneNumber(workspaceRequest.getPhoneNumber())
+                .address(workspaceRequest.getAddress())
+                .businessNumber(workspaceRequest.getBusinessNumber())
+                .workType(workspaceRequest.getWorkType())
+                .payType(workspaceRequest.getPayType())
+                .imageUrl(workspaceRequest.getImageUrl())
+                .boss(boss)
+                .build();
+    }
+
+    public void update(WorkspaceUpdateRequest workspaceUpdateRequest) {
+        this.name = workspaceUpdateRequest.getName();
+        this.phoneNumber = workspaceUpdateRequest.getPhoneNumber();
+        this.address = workspaceUpdateRequest.getAddress();
+        this.imageUrl = workspaceUpdateRequest.getImageUrl();
+    }
 }

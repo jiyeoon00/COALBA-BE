@@ -1,5 +1,6 @@
 package com.project.coalba.domain.workspace.service;
 
+import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.repository.StaffProfileRepository;
 import com.project.coalba.domain.workspace.dto.request.SearchDateTime;
@@ -35,15 +36,20 @@ public class BossWorkspaceService {
     }
 
     public WorkspaceOneResponse getWorkspace(Long workspaceId) {
-        return null;
+        Workspace workspace = _getWorkspace(workspaceId);
+        return WorkspaceOneResponse.create(workspace);
     }
 
     @Transactional
     public void saveWorkspace(WorkspaceRequest workspaceRequest) {
+        Boss boss = profileUtil.getCurrentBoss(SecurityUtil.getCurrentUserId());
+        workspaceRepository.save(Workspace.create(workspaceRequest, boss));
     }
 
     @Transactional
     public void updateWorkspace(Long workspaceId, WorkspaceUpdateRequest workspaceUpdateRequest) {
+        Workspace workspace = _getWorkspace(workspaceId);
+        workspace.update(workspaceUpdateRequest);
     }
 
     public WorkspaceStaffListResponse getWorkspaceStaffListPossibleForDateTime(Long workspaceId, SearchDateTime searchDateTime) {
@@ -70,5 +76,10 @@ public class BossWorkspaceService {
 
             workspaceMemberRepository.save(workspaceMember);
         }
+    }
+
+    private Workspace _getWorkspace(Long workspaceId) {
+        return workspaceRepository.findById(workspaceId)
+                .orElseThrow(() -> new RuntimeException("해당 워크스페이스가 존재하지 않습니다."));
     }
 }
