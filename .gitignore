@@ -42,3 +42,6 @@ application-db.properties
 
 ### querydsl Q파일 ###
 src/main/generated/
+
+### firebase_service_key
+src/main/resources/firebase/
