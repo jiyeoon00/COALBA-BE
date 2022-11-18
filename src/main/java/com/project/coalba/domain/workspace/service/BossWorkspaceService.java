@@ -2,8 +2,6 @@ package com.project.coalba.domain.workspace.service;
 
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.profile.repository.StaffProfileRepository;
-import com.project.coalba.domain.workspace.dto.request.SearchDateTime;
 import com.project.coalba.domain.workspace.dto.request.WorkspaceRequest;
 import com.project.coalba.domain.workspace.dto.request.WorkspaceUpdateRequest;
 import com.project.coalba.domain.workspace.dto.response.*;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -25,7 +22,6 @@ public class BossWorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
-    private final StaffProfileRepository staffProfileRepository;
     private final ProfileUtil profileUtil;
 
     public WorkspaceListResponse getMyWorkspaceList() {
@@ -51,31 +47,18 @@ public class BossWorkspaceService {
         workspace.update(workspaceUpdateRequest);
     }
 
-    public List<Staff> getWorkspaceStaffListPossibleForDateTime(Long workspaceId, SearchDateTime searchDateTime) {
-        return staffProfileRepository.findAllByWorkspaceIdAndDateTime(workspaceId,
-                searchDateTime.getScheduleDate(), searchDateTime.getScheduleStartTime(), searchDateTime.getScheduleEndTime());
-    }
-
-    public List<Staff> getWorkspaceStaffListForMessage(Long workspaceId) {
-        return staffProfileRepository.findAllByWorkspaceId(workspaceId);
-    }
-
-    public List<WorkspaceMember> getWorkspaceStaffInfoList(Long workspaceId) {
+    public List<WorkspaceMember> getWorkspaceMemberInfoList(Long workspaceId) {
         return workspaceMemberRepository.findAllByWorkspaceIdFetch(workspaceId);
     }
 
     @Transactional
-    public void inviteStaff(Long workSpaceId, String email){
-        Staff staff = staffProfileRepository.getStaffByUserEmail(email);
-        Optional<Workspace> workspace = workspaceRepository.findById(workSpaceId);
-        if(staff != null && workspace.isPresent()){
-            WorkspaceMember workspaceMember = WorkspaceMember.builder()
-                    .staff(staff)
-                    .workspace(workspace.get())
-                    .build();
-
-            workspaceMemberRepository.save(workspaceMember);
-        }
+    public void inviteStaff(Staff staff, Long workSpaceId){
+        Workspace workspace = _getWorkspace(workSpaceId);
+        WorkspaceMember workspaceMember = WorkspaceMember.builder()
+                .staff(staff)
+                .workspace(workspace)
+                .build();
+        workspaceMemberRepository.save(workspaceMember);
     }
 
     private Workspace _getWorkspace(Long workspaceId) {

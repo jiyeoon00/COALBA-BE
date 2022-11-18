@@ -11,6 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class StaffProfileService {
@@ -42,8 +46,16 @@ public class StaffProfileService {
         staff.update(profileRequest.getRealName(), profileRequest.getPhoneNumber(), profileRequest.getBirthDate(), profileRequest.getImageUrl());
     }
 
-    @Transactional
+    public List<Staff> getStaffListInWorkspaceAndPossibleForDateTime(Long workspaceId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+        return staffProfileRepository.findAllByWorkspaceIdAndDateTime(workspaceId, date, startTime, endTime);
+    }
+
+    public List<Staff> getStaffListInWorkspace(Long workspaceId) {
+        return staffProfileRepository.findAllByWorkspaceId(workspaceId);
+    }
+
     public Staff getStaffByUserEmail(String email){
-        return staffProfileRepository.getStaffByUserEmail(email);
+        return staffProfileRepository.findByUserEmail(email)
+                .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
     }
 }
