@@ -51,16 +51,17 @@ public class BossWorkspaceService {
         workspace.update(workspaceUpdateRequest);
     }
 
-    public WorkspaceStaffListResponse getWorkspaceStaffListPossibleForDateTime(Long workspaceId, SearchDateTime searchDateTime) {
-        return null;
+    public List<Staff> getWorkspaceStaffListPossibleForDateTime(Long workspaceId, SearchDateTime searchDateTime) {
+        return staffProfileRepository.findAllByWorkspaceIdAndDateTime(workspaceId,
+                searchDateTime.getScheduleDate(), searchDateTime.getScheduleStartTime(), searchDateTime.getScheduleEndTime());
     }
 
-    public WorkspaceStaffListResponse getWorkspaceStaffListForMessage(Long workspaceId) {
-        return null;
+    public List<Staff> getWorkspaceStaffListForMessage(Long workspaceId) {
+        return staffProfileRepository.findAllByWorkspaceId(workspaceId);
     }
 
-    public WorkspaceStaffInfoListResponse getWorkspaceStaffInfoList(Long workspaceId) {
-        return null;
+    public List<WorkspaceMember> getWorkspaceStaffInfoList(Long workspaceId) {
+        return workspaceMemberRepository.findAllByWorkspaceIdFetch(workspaceId);
     }
 
     @Transactional
