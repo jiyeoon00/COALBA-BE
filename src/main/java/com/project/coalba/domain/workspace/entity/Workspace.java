@@ -1,8 +1,6 @@
 package com.project.coalba.domain.workspace.entity;
 
 import com.project.coalba.domain.profile.entity.Boss;
-import com.project.coalba.domain.workspace.dto.request.WorkspaceRequest;
-import com.project.coalba.domain.workspace.dto.request.WorkspaceUpdateRequest;
 import com.project.coalba.domain.workspace.entity.enums.PayType;
 import com.project.coalba.domain.workspace.entity.enums.WorkType;
 import com.project.coalba.global.audit.BaseTimeEntity;
@@ -52,23 +50,15 @@ public class Workspace extends BaseTimeEntity {
     @OneToMany(mappedBy = "workspace")
     private List<WorkspaceMember> workspaceMemberList = new ArrayList<>();
 
-    public static Workspace create(WorkspaceRequest workspaceRequest, Boss boss) {
-        return Workspace.builder()
-                .name(workspaceRequest.getName())
-                .phoneNumber(workspaceRequest.getPhoneNumber())
-                .address(workspaceRequest.getAddress())
-                .businessNumber(workspaceRequest.getBusinessNumber())
-                .workType(workspaceRequest.getWorkType())
-                .payType(workspaceRequest.getPayType())
-                .imageUrl(workspaceRequest.getImageUrl())
-                .boss(boss)
-                .build();
+    public void mapBoss(Boss boss) {
+        this.boss = boss;
+        boss.getWorkspaceList().add(this);
     }
 
-    public void update(WorkspaceUpdateRequest workspaceUpdateRequest) {
-        this.name = workspaceUpdateRequest.getName();
-        this.phoneNumber = workspaceUpdateRequest.getPhoneNumber();
-        this.address = workspaceUpdateRequest.getAddress();
-        this.imageUrl = workspaceUpdateRequest.getImageUrl();
+    public void update(String name, String phoneNumber, String address, String imageUrl) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.imageUrl = imageUrl;
     }
 }

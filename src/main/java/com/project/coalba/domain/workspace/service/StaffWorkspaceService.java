@@ -1,7 +1,6 @@
 package com.project.coalba.domain.workspace.service;
 
-import com.project.coalba.domain.workspace.dto.response.WorkspaceListResponse;
-import com.project.coalba.domain.workspace.dto.response.WorkspaceResponse;
+import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.domain.workspace.repository.WorkspaceRepository;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +15,8 @@ public class StaffWorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     private final ProfileUtil profileUtil;
 
-    public WorkspaceListResponse getMyWorkspaceList() {
+    public List<Workspace> getMyWorkspaceList() {
         Long staffId = profileUtil.getCurrentStaff().getId();
-        List<WorkspaceResponse> workspaceList = workspaceRepository.findAllByStaffId(staffId);
-        return new WorkspaceListResponse(workspaceList);
+        return workspaceRepository.findAllByStaffId(staffId);
     }
 }
