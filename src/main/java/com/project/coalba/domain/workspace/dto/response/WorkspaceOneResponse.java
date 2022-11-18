@@ -1,6 +1,5 @@
 package com.project.coalba.domain.workspace.dto.response;
 
-import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.domain.workspace.entity.enums.PayType;
 import com.project.coalba.domain.workspace.entity.enums.WorkType;
 import lombok.AllArgsConstructor;
@@ -26,17 +25,4 @@ public class WorkspaceOneResponse {
     private PayType payType;
 
     private String imageUrl;
-
-    public static WorkspaceOneResponse create(Workspace workspace) {
-        return WorkspaceOneResponse.builder()
-                .workspaceId(workspace.getId())
-                .name(workspace.getName())
-                .phoneNumber(workspace.getPhoneNumber())
-                .address(workspace.getAddress())
-                .businessNumber(workspace.getBusinessNumber())
-                .workType(workspace.getWorkType())
-                .payType(workspace.getPayType())
-                .imageUrl(workspace.getImageUrl())
-                .build();
-    }
 }

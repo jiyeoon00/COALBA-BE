@@ -7,7 +7,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class WorkspaceStaffInfoListResponse {
+public class WorkspaceMemberInfoListResponse {
 
-    private List<WorkspaceStaffInfoResponse> staffInfoList;
+    private List<WorkspaceMemberInfoResponse> staffInfoList;
 }

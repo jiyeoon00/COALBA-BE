@@ -2,13 +2,14 @@ package com.project.coalba.domain.workspace.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 
 @AllArgsConstructor
-@Getter
-public class WorkspaceStaffInfoResponse {
+@Getter @Builder
+public class WorkspaceMemberInfoResponse {
 
     private Long staffId;
 
