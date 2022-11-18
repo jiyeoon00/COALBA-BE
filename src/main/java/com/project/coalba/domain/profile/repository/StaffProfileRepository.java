@@ -1,17 +1,22 @@
 package com.project.coalba.domain.profile.repository;
 
 import com.project.coalba.domain.profile.entity.Staff;
+import com.project.coalba.domain.profile.repository.custom.StaffProfileRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
-public interface StaffProfileRepository extends JpaRepository<Staff, Long> {
+public interface StaffProfileRepository extends JpaRepository<Staff, Long>, StaffProfileRepositoryCustom {
 
     @Query("select s from Staff s where s.user.id = :userId")
     Optional<Staff> findByUserId(@Param("userId") Long userId);
 
     @Query("select s from Staff s JOIN s.user u on u.email = :email")
     Staff getStaffByUserEmail(@Param("email") String email);
+
+    @Query("select distinct s from Staff s join s.workspaceMemberList wm where wm.workspace.id = :workspaceId")
+    List<Staff> findAllByWorkspaceId(@Param("workspaceId") Long workspaceId);
 }
