@@ -5,7 +5,7 @@ import com.project.coalba.domain.profile.dto.request.ProfileRequest;
 import com.project.coalba.domain.profile.dto.response.ProfileResponse;
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.repository.BossProfileRepository;
-import com.project.coalba.global.utils.SecurityUtil;
+import com.project.coalba.global.utils.ProfileUtil;
 import com.project.coalba.global.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,9 +17,10 @@ public class BossProfileService {
 
     private final BossProfileRepository bossProfileRepository;
     private final UserUtil userUtil;
+    private final ProfileUtil profileUtil;
 
     public ProfileResponse getMyBossProfile() {
-        Boss boss = getMyProfile();
+        Boss boss = profileUtil.getCurrentBoss();
         return ProfileResponse.builder()
                 .realName(boss.getRealName())
                 .phoneNumber(boss.getPhoneNumber())
@@ -37,13 +38,7 @@ public class BossProfileService {
 
     @Transactional
     public void updateMyBossProfile(ProfileRequest profileRequest) {
-        Boss boss = getMyProfile();
+        Boss boss = profileUtil.getCurrentBoss();
         boss.update(profileRequest.getRealName(), profileRequest.getPhoneNumber(), profileRequest.getBirthDate(), profileRequest.getImageUrl());
-    }
-
-    private Boss getMyProfile() {
-        Long userId = SecurityUtil.getCurrentUserId();
-        return bossProfileRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
     }
 }

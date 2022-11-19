@@ -24,13 +24,13 @@ public class Workspace extends BaseTimeEntity {
     private String name;
 
     @Column(nullable = false, length = 11)
-    private String phoneNum;
+    private String phoneNumber;
 
     @Column(nullable = false)
     private String address;
 
     @Column(nullable = false, unique = true, length = 10)
-    private String businessNum;
+    private String businessNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -49,4 +49,16 @@ public class Workspace extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "workspace")
     private List<WorkspaceMember> workspaceMemberList = new ArrayList<>();
+
+    public void mapBoss(Boss boss) {
+        this.boss = boss;
+        boss.getWorkspaceList().add(this);
+    }
+
+    public void update(String name, String phoneNumber, String address, String imageUrl) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.imageUrl = imageUrl;
+    }
 }

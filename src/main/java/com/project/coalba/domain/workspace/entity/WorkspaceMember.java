@@ -6,8 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter @Builder
 @AllArgsConstructor
@@ -19,9 +17,15 @@ public class WorkspaceMember extends BaseTimeEntity {
     @Column(name = "workspace_member_id")
     private Long id;
 
+    @Builder.Default
+    @ColumnDefault("9160")
+    @Column(nullable = false)
+    private Integer hourlyWage = 9160;
+
+    @Builder.Default
     @ColumnDefault("100")
     @Column(nullable = false, columnDefinition = "int CHECK (work_grade >= 0 AND work_grade <= 100)")
-    private Integer workGrade;
+    private Integer workGrade = 100;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")
@@ -30,8 +34,4 @@ public class WorkspaceMember extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "workspaceMember")
-    private List<WorkspaceMemberInfo> workspaceMemberInfoList = new ArrayList<>();
 }
