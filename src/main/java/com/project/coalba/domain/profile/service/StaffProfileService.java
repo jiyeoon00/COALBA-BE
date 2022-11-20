@@ -5,11 +5,15 @@ import com.project.coalba.domain.profile.dto.request.ProfileRequest;
 import com.project.coalba.domain.profile.dto.response.ProfileResponse;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.repository.StaffProfileRepository;
-import com.project.coalba.global.utils.SecurityUtil;
+import com.project.coalba.global.utils.ProfileUtil;
 import com.project.coalba.global.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -17,9 +21,10 @@ public class StaffProfileService {
 
     private final StaffProfileRepository staffProfileRepository;
     private final UserUtil userUtil;
+    private final ProfileUtil profileUtil;
 
     public ProfileResponse getMyStaffProfile() {
-        Staff staff = getMyProfile();
+        Staff staff = profileUtil.getCurrentStaff();
         return ProfileResponse.builder()
                 .realName(staff.getRealName())
                 .phoneNumber(staff.getPhoneNumber())
@@ -37,17 +42,20 @@ public class StaffProfileService {
 
     @Transactional
     public void updateMyStaffProfile(ProfileRequest profileRequest) {
-        Staff staff = getMyProfile();
+        Staff staff = profileUtil.getCurrentStaff();
         staff.update(profileRequest.getRealName(), profileRequest.getPhoneNumber(), profileRequest.getBirthDate(), profileRequest.getImageUrl());
     }
 
-    private Staff getMyProfile() {
-        Long userId = SecurityUtil.getCurrentUserId();
-        return staffProfileRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
+    public List<Staff> getStaffListInWorkspaceAndPossibleForDateTime(Long workspaceId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+        return staffProfileRepository.findAllByWorkspaceIdAndDateTime(workspaceId, date, startTime, endTime);
     }
-    @Transactional
+
+    public List<Staff> getStaffListInWorkspace(Long workspaceId) {
+        return staffProfileRepository.findAllByWorkspaceId(workspaceId);
+    }
+
     public Staff getStaffByUserEmail(String email){
-        return staffProfileRepository.getStaffByUserEmail(email);
+        return staffProfileRepository.findByUserEmail(email)
+                .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
     }
 }
