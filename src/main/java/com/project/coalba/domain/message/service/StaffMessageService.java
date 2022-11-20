@@ -7,6 +7,7 @@ import com.project.coalba.domain.message.repository.MessageRepository;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.domain.workspace.repository.WorkspaceRepository;
+import com.project.coalba.domain.workspace.service.BossWorkspaceService;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,14 +19,13 @@ import java.util.List;
 @Service
 public class StaffMessageService {
     private final MessageRepository messageRepository;
-    private final WorkspaceRepository workspaceRepository;
+    private final BossWorkspaceService bossWorkspaceService;
     private final ProfileUtil profileUtil;
 
     @Transactional
     public void sendMessageToBoss(Long workspaceId, String content) {
         Staff staff = profileUtil.getCurrentStaff();
-        Workspace workspace = workspaceRepository.findById(workspaceId)
-                .orElseThrow(() -> new RuntimeException("해당 워크스페이스가 존재하지 않습니다."));
+        Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
 
         Message message = Message.builder()
                 .content(content)
@@ -40,8 +40,7 @@ public class StaffMessageService {
     @Transactional
     public MessageResponse.StaffMessageResponse getDetailMessages(Long workspaceId){
         Long staffId = profileUtil.getCurrentStaff().getId();
-        Workspace workspace = workspaceRepository.findById(workspaceId)
-                .orElseThrow(() -> new RuntimeException("해당 워크스페이스가 존재하지 않습니다."));
+        Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
 
         List<Message> messages = messageRepository.getMessages(staffId, workspaceId);
         return new MessageResponse.StaffMessageResponse(workspace, messages);
