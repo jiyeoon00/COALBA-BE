@@ -6,17 +6,18 @@ import com.project.coalba.domain.message.service.StaffMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@RequestMapping("/staff/messages")
 @RequiredArgsConstructor
 @RestController
 public class StaffMessageController {
     private final StaffMessageService staffMessageService;
 
-    @PostMapping("/staff/workspaces/{workspaceId}/messages")
+    @PostMapping("/workspaces/{workspaceId}")
     public void sendMessageToBoss(@PathVariable Long workspaceId, @RequestBody MessageRequest request){
         staffMessageService.sendMessageToBoss(workspaceId, request.getContent());
     }
 
-    @GetMapping("/staff/workspaces/{workspaceId}/messages")
+    @GetMapping("/workspaces/{workspaceId}")
     public MessageResponse.StaffMessageResponse getDetailMessages(@PathVariable Long workspaceId) {
         return staffMessageService.getDetailMessages(workspaceId);
     }
