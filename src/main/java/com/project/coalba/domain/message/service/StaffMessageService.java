@@ -7,6 +7,7 @@ import com.project.coalba.domain.message.repository.MessageRepository;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.domain.workspace.repository.WorkspaceRepository;
+import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

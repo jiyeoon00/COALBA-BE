@@ -7,6 +7,8 @@ import com.project.coalba.domain.profile.repository.StaffProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Component
 public class ProfileUtil {
@@ -22,5 +24,10 @@ public class ProfileUtil {
     public Boss getCurrentBoss() {
         return bossProfileRepository.findByUserId(SecurityUtil.getCurrentUserId())
                 .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
+    }
+
+    public Staff getStaffById(Long staffId){
+         return staffProfileRepository.findById(staffId)
+                 .orElseThrow(() -> new RuntimeException("해당 이용자가 존재하지 않습니다."));
     }
 }

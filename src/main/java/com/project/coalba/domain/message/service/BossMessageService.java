@@ -8,6 +8,7 @@ import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.repository.StaffProfileRepository;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.domain.workspace.repository.WorkspaceRepository;
+import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,15 +21,14 @@ import java.util.List;
 public class BossMessageService {
     private final WorkspaceRepository workspaceRepository;
     private final MessageRepository messageRepository;
-    private final StaffProfileRepository staffProfileRepository;
+    private final ProfileUtil profileUtil;
 
     @Transactional
     public void sendMessageToStaff(Long workspaceId, Long staffId, String content) {
         Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new RuntimeException("해당 워크스페이스가 존재하지 않습니다."));
 
-        Staff staff = staffProfileRepository.findById(staffId).
-                orElseThrow(() -> new RuntimeException("해당 사용자가 존재하지 않습니다."));
+        Staff staff = profileUtil.getStaffById(staffId);
 
         Message message = Message.builder()
                 .content(content)
@@ -45,8 +45,7 @@ public class BossMessageService {
         Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new RuntimeException("해당 워크스페이스가 존재하지 않습니다."));
 
-        Staff staff = staffProfileRepository.findById(staffId)
-                .orElseThrow(() -> new RuntimeException("해당 사용자가 존재하지 않습니다."));
+        Staff staff = profileUtil.getStaffById(staffId);
 
         List<Message> messages = messageRepository.getMessages(staffId, workspaceId);
         return new MessageResponse.BossMessageResponse(workspace, staff, messages);
