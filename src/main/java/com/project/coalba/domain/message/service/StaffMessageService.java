@@ -37,7 +37,7 @@ public class StaffMessageService {
         messageRepository.save(message);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public MessageResponse.StaffMessageResponse getDetailMessages(Long workspaceId){
         Long staffId = profileUtil.getCurrentStaff().getId();
         Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);

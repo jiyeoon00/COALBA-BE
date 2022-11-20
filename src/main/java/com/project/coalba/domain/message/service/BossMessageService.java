@@ -39,7 +39,7 @@ public class BossMessageService {
         messageRepository.save(message);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public MessageResponse.BossMessageResponse getDetailMessages(Long staffId, Long workspaceId){
         Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
         Staff staff = profileUtil.getStaffById(staffId);
