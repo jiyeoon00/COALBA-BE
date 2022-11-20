@@ -3,16 +3,13 @@ package com.project.coalba.domain.message.repository;
 import com.project.coalba.domain.message.entity.Message;
 import static com.project.coalba.domain.message.entity.QMessage.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class MessageRepositoryImpl implements MessageRepositoryCustom {
     private final JPAQueryFactory queryFactory;
-
-    public MessageRepositoryImpl(EntityManager em){
-        this.queryFactory = new JPAQueryFactory(em);
-    }
 
     @Override
     public List<Message> getMessages(Long staffId, Long workspaceId) {
