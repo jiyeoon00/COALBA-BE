@@ -34,7 +34,8 @@ public class BossScheduleController {
     }
 
     @DeleteMapping("{scheduleId}")
-    public ResponseEntity<Void> cancelSchedule(@RequestParam Long scheduleId) {
+    public ResponseEntity<Void> cancelSchedule(@PathVariable Long scheduleId) {
+        bossScheduleService.cancel(scheduleId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

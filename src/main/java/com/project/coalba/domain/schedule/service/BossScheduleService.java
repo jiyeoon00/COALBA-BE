@@ -20,4 +20,9 @@ public class BossScheduleService {
         schedule.mapStaff(staff);
         scheduleRepository.save(schedule);
     }
+
+    @Transactional
+    public void cancel(Long scheduleId) {
+        scheduleRepository.deleteById(scheduleId);
+    }
 }
