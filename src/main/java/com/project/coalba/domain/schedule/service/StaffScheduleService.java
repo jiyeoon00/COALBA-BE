@@ -12,9 +12,15 @@ import java.time.LocalTime;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class StaffScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+
+    public Schedule getScheduleFetch(Long scheduleId) {
+        return scheduleRepository.findByIdFetch(scheduleId)
+                .orElseThrow(() -> new RuntimeException("해당 스케줄이 존재하지 않습니다."));
+    }
 
     @Transactional
     public void startSchedule(Long scheduleId) {

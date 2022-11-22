@@ -1,6 +1,7 @@
 package com.project.coalba.domain.schedule.mapper;
 
 import com.project.coalba.domain.schedule.dto.request.ScheduleRequest;
+import com.project.coalba.domain.schedule.dto.response.ScheduleBriefResponse;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,4 +23,10 @@ public interface ScheduleMapper {
             @Mapping(target = "timecardReq", ignore = true),
     })
     Schedule toEntity(ScheduleRequest scheduleRequest);
+
+    @Mappings({
+            @Mapping(source = "id", target = "scheduleId"),
+            @Mapping(source = "workspace.name", target = "workspaceName")
+    })
+    ScheduleBriefResponse toDto(Schedule schedule);
 }
