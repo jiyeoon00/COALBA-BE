@@ -41,17 +41,18 @@ public class Schedule extends BaseTimeEntity {
 
     private LocalTime physicalEndTime;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ScheduleStatus status;
+    private ScheduleStatus status = ScheduleStatus.BEFORE_WORK;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_id")
-    private Staff staff;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workspace_id")
+    @JoinColumn(name = "workspace_id", nullable = false)
     private Workspace workspace;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id", nullable = false)
+    private Staff staff;
 
     @Builder.Default
     @OneToMany(mappedBy = "schedule")
@@ -59,4 +60,12 @@ public class Schedule extends BaseTimeEntity {
 
     @OneToOne(mappedBy = "schedule")
     private TimecardReq timecardReq;
+
+    public void mapWorkspace(Workspace workspace) {
+        this.workspace = workspace;
+    }
+
+    public void mapStaff(Staff staff) {
+        this.staff = staff;
+    }
 }

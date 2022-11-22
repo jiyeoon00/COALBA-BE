@@ -58,4 +58,9 @@ public class StaffProfileService {
         return staffProfileRepository.findByUserEmail(email)
                 .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
     }
+
+    public Staff getStaff(Long staffId) {
+        return staffProfileRepository.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
+    }
 }
