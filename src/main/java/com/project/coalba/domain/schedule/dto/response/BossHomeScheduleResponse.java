@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @Getter @Builder
 public class BossHomeScheduleResponse {
 
-    private Long scheduledId;
+    private Long scheduleId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
     private LocalTime scheduleStartTime;

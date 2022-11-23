@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @Getter @Builder
 public class BossWorkspaceScheduleResponse {
 
-    private Long scheduledId;
+    private Long scheduleId;
 
     private Long staffId;
 

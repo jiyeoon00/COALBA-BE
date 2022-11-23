@@ -56,7 +56,7 @@ public interface ScheduleMapper {
             @Mapping(source = "schedule.id", target = "scheduleId"),
             @Mapping(source = "schedule.staff.id", target = "staffId"),
             @Mapping(source = "schedule.staff.realName", target = "staffName"),
-            @Mapping(source = "schedule.scheduleStarTime", target = "scheduleStarTime"),
+            @Mapping(source = "schedule.scheduleStartTime", target = "scheduleStartTime"),
             @Mapping(source = "schedule.scheduleEndTime", target = "scheduleEndTime"),
             @Mapping(source = "schedule.status", target = "scheduleStatus"),
     })
