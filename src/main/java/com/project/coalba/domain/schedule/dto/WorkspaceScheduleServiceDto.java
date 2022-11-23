@@ -5,10 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-@Getter
 public class WorkspaceScheduleServiceDto {
 
+    @Getter
     private Schedule schedule;
 
     private boolean isMySchedule;
+
+    public boolean getIsMySchedule() {
+        return isMySchedule;
+    }
 }
