@@ -3,12 +3,14 @@ package com.project.coalba.domain.schedule.service;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
 import com.project.coalba.domain.schedule.repository.ScheduleRepository;
+import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -16,6 +18,12 @@ import java.time.LocalTime;
 public class StaffScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final ProfileUtil profileUtil;
+
+    public List<Schedule> getHomeScheduleList(LocalDate selectedDate) {
+        Long staffId = profileUtil.getCurrentStaff().getId();
+        return scheduleRepository.findAllByStaffIdAndDate(staffId, selectedDate);
+    }
 
     public Schedule getScheduleFetch(Long scheduleId) {
         return scheduleRepository.findByIdFetch(scheduleId)
