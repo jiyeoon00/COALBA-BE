@@ -8,11 +8,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class BossScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+
+    public List<Schedule> getHomeScheduleList(Long workspaceId, LocalDate selectedDate) {
+        return scheduleRepository.findAllByWorkspaceIdAndDate(workspaceId, selectedDate);
+    }
 
     @Transactional
     public void save(Schedule schedule, Workspace workspace, Staff staff) {

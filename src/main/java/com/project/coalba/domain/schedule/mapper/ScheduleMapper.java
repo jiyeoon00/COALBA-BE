@@ -42,12 +42,12 @@ public interface ScheduleMapper {
             @Mapping(source = "workspace.name", target = "workspaceName"),
             @Mapping(source = "status", target = "scheduleStatus"),
     })
-    StaffHomeScheduleResponse toSubDto(Schedule homeSchedule);
+    StaffHomeScheduleResponse toStaffHomeSubDto(Schedule homeSchedule);
 
-    interface HomeScheduleListRef extends Supplier<List<Schedule>> {}
-    default StaffHomeScheduleListResponse toDto(LocalDate selectedDate, HomeScheduleListRef ref) {
+    interface StaffHomeScheduleListRef extends Supplier<List<Schedule>> {}
+    default StaffHomeScheduleListResponse toDto(LocalDate selectedDate, StaffHomeScheduleListRef ref) {
         List<StaffHomeScheduleResponse> selectedScheduleList = ref.get().stream()
-                .map(this::toSubDto)
+                .map(this::toStaffHomeSubDto)
                 .collect(Collectors.toList());
         return new StaffHomeScheduleListResponse(selectedDate.getYear(), selectedDate.getMonthValue(), selectedDate.getDayOfMonth(), selectedScheduleList);
     }
@@ -60,13 +60,32 @@ public interface ScheduleMapper {
             @Mapping(source = "schedule.scheduleEndTime", target = "scheduleEndTime"),
             @Mapping(source = "schedule.status", target = "scheduleStatus"),
     })
-    StaffWorkspaceScheduleResponse toSubDto(WorkspaceScheduleServiceDto workspaceScheduleDto);
+    StaffWorkspaceScheduleResponse toStaffWorkspaceSubDto(WorkspaceScheduleServiceDto workspaceScheduleDto);
 
-    interface WorkspaceScheduleListRef extends Supplier<List<WorkspaceScheduleServiceDto>> {}
-    default StaffWorkspaceScheduleListResponse toDto(int selectedDay, WorkspaceScheduleListRef ref) {
+    interface StaffWorkspaceScheduleListRef extends Supplier<List<WorkspaceScheduleServiceDto>> {}
+    default StaffWorkspaceScheduleListResponse toDto(int selectedDay, StaffWorkspaceScheduleListRef ref) {
         List<StaffWorkspaceScheduleResponse> selectedScheduleList = ref.get().stream()
-                .map(this::toSubDto)
+                .map(this::toStaffWorkspaceSubDto)
                 .collect(Collectors.toList());
         return new StaffWorkspaceScheduleListResponse(selectedDay, selectedScheduleList);
+    }
+
+    @Mappings({
+        @Mapping(source = "id", target = "scheduleId"),
+        @Mapping(source = "staff.id", target = "staffId"),
+        @Mapping(source = "staff.imageUrl", target = "staffImageUrl"),
+        @Mapping(source = "staff.realName", target = "staffName"),
+        @Mapping(source = "status", target = "scheduleStatus"),
+    })
+    BossHomeScheduleResponse toBossHomeSubDto(Schedule homeSchedule);
+
+    interface BossHomeScheduleListRef extends Supplier<List<Schedule>> {}
+    default BossHomeScheduleListResponse toDto(LocalDate selectedDate, Long selectedWorkspaceId,
+                                               BossHomeScheduleListRef ref) {
+        List<BossHomeScheduleResponse> selectedScheduleList = ref.get().stream()
+                .map(this::toBossHomeSubDto)
+                .collect(Collectors.toList());
+        return new BossHomeScheduleListResponse(selectedDate.getYear(), selectedDate.getMonthValue(), selectedDate.getDayOfMonth(),
+                selectedWorkspaceId, selectedScheduleList);
     }
 }
