@@ -8,7 +8,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter @Builder
-public class HomeScheduleListResponse {
+public class StaffHomeScheduleListResponse {
 
     private int selectedYear;
 
@@ -16,5 +16,5 @@ public class HomeScheduleListResponse {
 
     private int selectedDay;
 
-    private List<HomeScheduleResponse> selectedScheduleList;
+    private List<StaffHomeScheduleResponse> selectedScheduleList;
 }

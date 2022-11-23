@@ -1,9 +1,9 @@
 package com.project.coalba.domain.schedule.controler;
 
 import com.project.coalba.domain.schedule.dto.WorkspaceScheduleServiceDto;
-import com.project.coalba.domain.schedule.dto.response.HomeScheduleListResponse;
+import com.project.coalba.domain.schedule.dto.response.StaffHomeScheduleListResponse;
 import com.project.coalba.domain.schedule.dto.response.ScheduleBriefResponse;
-import com.project.coalba.domain.schedule.dto.response.WorkspaceScheduleListResponse;
+import com.project.coalba.domain.schedule.dto.response.StaffWorkspaceScheduleListResponse;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.mapper.ScheduleMapper;
 import com.project.coalba.domain.schedule.service.StaffScheduleService;
@@ -24,15 +24,15 @@ public class StaffScheduleController {
     private final ScheduleMapper mapper;
 
     @GetMapping("/home/selected")
-    public HomeScheduleListResponse getHomeScheduleList(@RequestParam int year, @RequestParam int month, @RequestParam int day) {
+    public StaffHomeScheduleListResponse getHomeScheduleList(@RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
         List<Schedule> homeScheduleList = staffScheduleService.getHomeScheduleList(selectedDate);
         return mapper.toDto(selectedDate, () -> homeScheduleList);
     }
 
     @GetMapping("/workspaces/{workspaceId}/selected")
-    public WorkspaceScheduleListResponse getWorkspaceScheduleList(@PathVariable Long workspaceId,
-                                                                  @RequestParam int year, @RequestParam int month, @RequestParam int day) {
+    public StaffWorkspaceScheduleListResponse getWorkspaceScheduleList(@PathVariable Long workspaceId,
+                                                                       @RequestParam int year, @RequestParam int month, @RequestParam int day) {
         List<WorkspaceScheduleServiceDto> workspaceScheduleDtoList = staffScheduleService
                 .getWorkspaceScheduleDtoList(workspaceId, LocalDate.of(year, month, day));
         return mapper.toDto(day, () -> workspaceScheduleDtoList);

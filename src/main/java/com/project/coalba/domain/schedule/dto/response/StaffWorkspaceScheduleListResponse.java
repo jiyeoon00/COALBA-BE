@@ -8,9 +8,9 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter @Builder
-public class WorkspaceScheduleListResponse {
+public class StaffWorkspaceScheduleListResponse {
 
     private int selectedDay;
 
-    private List<WorkspaceScheduleResponse> selectedScheduleList;
+    private List<StaffWorkspaceScheduleResponse> selectedScheduleList;
 }

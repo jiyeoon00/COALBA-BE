@@ -10,7 +10,7 @@ import java.time.LocalTime;
 
 @AllArgsConstructor
 @Getter @Builder
-public class HomeScheduleResponse {
+public class StaffHomeScheduleResponse {
 
     private Long scheduleId;
 

@@ -42,14 +42,14 @@ public interface ScheduleMapper {
             @Mapping(source = "workspace.name", target = "workspaceName"),
             @Mapping(source = "status", target = "scheduleStatus"),
     })
-    HomeScheduleResponse toSubDto(Schedule homeSchedule);
+    StaffHomeScheduleResponse toSubDto(Schedule homeSchedule);
 
     interface HomeScheduleListRef extends Supplier<List<Schedule>> {}
-    default HomeScheduleListResponse toDto(LocalDate selectedDate, HomeScheduleListRef ref) {
-        List<HomeScheduleResponse> selectedScheduleList = ref.get().stream()
+    default StaffHomeScheduleListResponse toDto(LocalDate selectedDate, HomeScheduleListRef ref) {
+        List<StaffHomeScheduleResponse> selectedScheduleList = ref.get().stream()
                 .map(this::toSubDto)
                 .collect(Collectors.toList());
-        return new HomeScheduleListResponse(selectedDate.getYear(), selectedDate.getMonthValue(), selectedDate.getDayOfMonth(), selectedScheduleList);
+        return new StaffHomeScheduleListResponse(selectedDate.getYear(), selectedDate.getMonthValue(), selectedDate.getDayOfMonth(), selectedScheduleList);
     }
 
     @Mappings({
@@ -60,13 +60,13 @@ public interface ScheduleMapper {
             @Mapping(source = "schedule.scheduleEndTime", target = "scheduleEndTime"),
             @Mapping(source = "schedule.status", target = "scheduleStatus"),
     })
-    WorkspaceScheduleResponse toSubDto(WorkspaceScheduleServiceDto workspaceScheduleDto);
+    StaffWorkspaceScheduleResponse toSubDto(WorkspaceScheduleServiceDto workspaceScheduleDto);
 
     interface WorkspaceScheduleListRef extends Supplier<List<WorkspaceScheduleServiceDto>> {}
-    default WorkspaceScheduleListResponse toDto(int selectedDay, WorkspaceScheduleListRef ref) {
-        List<WorkspaceScheduleResponse> selectedScheduleList = ref.get().stream()
+    default StaffWorkspaceScheduleListResponse toDto(int selectedDay, WorkspaceScheduleListRef ref) {
+        List<StaffWorkspaceScheduleResponse> selectedScheduleList = ref.get().stream()
                 .map(this::toSubDto)
                 .collect(Collectors.toList());
-        return new WorkspaceScheduleListResponse(selectedDay, selectedScheduleList);
+        return new StaffWorkspaceScheduleListResponse(selectedDay, selectedScheduleList);
     }
 }
