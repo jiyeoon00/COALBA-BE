@@ -14,6 +14,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query("select sd from Schedule sd join fetch sd.workspace where sd.id = :scheduleId")
     Optional<Schedule> findByIdFetch(@Param("scheduleId") Long scheduleId);
 
-    @Query("select sd from Schedule sd join fetch sd.workspace where sd.staff.id = :staffId and sd.scheduleDate = :scheduleDate")
-    List<Schedule> findAllByStaffIdAndDate(@Param("staffId") Long staffId, @Param("scheduleDate") LocalDate scheduleDate);
+    @Query("select sd from Schedule sd join fetch sd.workspace where sd.staff.id = :staffId and sd.scheduleDate = :selectedDate")
+    List<Schedule> findAllByStaffIdAndDate(@Param("staffId") Long staffId, @Param("selectedDate") LocalDate selectedDate);
+
+    @Query("select sd from Schedule sd join fetch sd.staff where sd.workspace.id = :workspaceId and sd.scheduleDate = :selectedDate")
+    List<Schedule> findAllByWorkspaceIdAndDate(@Param("workspaceId") Long workspaceId, @Param("selectedDate") LocalDate selectedDate);
 }

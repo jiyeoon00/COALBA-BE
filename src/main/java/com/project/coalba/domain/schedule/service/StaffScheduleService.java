@@ -1,5 +1,6 @@
 package com.project.coalba.domain.schedule.service;
 
+import com.project.coalba.domain.schedule.dto.WorkspaceScheduleServiceDto;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
 import com.project.coalba.domain.schedule.repository.ScheduleRepository;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -23,6 +26,17 @@ public class StaffScheduleService {
     public List<Schedule> getHomeScheduleList(LocalDate selectedDate) {
         Long staffId = profileUtil.getCurrentStaff().getId();
         return scheduleRepository.findAllByStaffIdAndDate(staffId, selectedDate);
+    }
+
+    public List<WorkspaceScheduleServiceDto> getWorkspaceScheduleDtoList(Long workspaceId, LocalDate selectedDate) {
+        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDate(workspaceId, selectedDate);
+        Long staffId = profileUtil.getCurrentStaff().getId();
+        return workspaceScheduleList.stream()
+                .map(schedule -> {
+                    boolean isMySchedule = Objects.equals(schedule.getStaff().getId(), staffId);
+                    return new WorkspaceScheduleServiceDto(schedule, isMySchedule);
+                })
+                .collect(Collectors.toList());
     }
 
     public Schedule getScheduleFetch(Long scheduleId) {

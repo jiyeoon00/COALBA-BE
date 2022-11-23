@@ -1,9 +1,8 @@
 package com.project.coalba.domain.schedule.mapper;
 
+import com.project.coalba.domain.schedule.dto.WorkspaceScheduleServiceDto;
 import com.project.coalba.domain.schedule.dto.request.ScheduleRequest;
-import com.project.coalba.domain.schedule.dto.response.HomeScheduleListResponse;
-import com.project.coalba.domain.schedule.dto.response.HomeScheduleResponse;
-import com.project.coalba.domain.schedule.dto.response.ScheduleBriefResponse;
+import com.project.coalba.domain.schedule.dto.response.*;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -51,5 +50,23 @@ public interface ScheduleMapper {
                 .map(this::toSubDto)
                 .collect(Collectors.toList());
         return new HomeScheduleListResponse(selectedDate.getYear(), selectedDate.getMonthValue(), selectedDate.getDayOfMonth(), selectedScheduleList);
+    }
+
+    @Mappings({
+            @Mapping(source = "schedule.id", target = "scheduleId"),
+            @Mapping(source = "schedule.staff.id", target = "staffId"),
+            @Mapping(source = "schedule.staff.realName", target = "staffName"),
+            @Mapping(source = "schedule.scheduleStarTime", target = "scheduleStarTime"),
+            @Mapping(source = "schedule.scheduleEndTime", target = "scheduleEndTime"),
+            @Mapping(source = "schedule.status", target = "scheduleStatus"),
+    })
+    WorkspaceScheduleResponse toSubDto(WorkspaceScheduleServiceDto workspaceScheduleDto);
+
+    interface WorkspaceScheduleListRef extends Supplier<List<WorkspaceScheduleServiceDto>> {}
+    default WorkspaceScheduleListResponse toDto(int selectedDay, WorkspaceScheduleListRef ref) {
+        List<WorkspaceScheduleResponse> selectedScheduleList = ref.get().stream()
+                .map(this::toSubDto)
+                .collect(Collectors.toList());
+        return new WorkspaceScheduleListResponse(selectedDay, selectedScheduleList);
     }
 }
