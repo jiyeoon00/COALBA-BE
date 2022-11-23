@@ -22,6 +22,10 @@ public class BossScheduleService {
         return scheduleRepository.findAllByWorkspaceIdAndDate(workspaceId, selectedDate);
     }
 
+    public List<Schedule> getWorkspaceScheduleList(Long workspaceId, LocalDate selectedDate) {
+        return scheduleRepository.findAllByWorkspaceIdAndDate(workspaceId, selectedDate);
+    }
+
     @Transactional
     public void save(Schedule schedule, Workspace workspace, Staff staff) {
         schedule.mapWorkspace(workspace);

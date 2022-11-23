@@ -88,4 +88,20 @@ public interface ScheduleMapper {
         return new BossHomeScheduleListResponse(selectedDate.getYear(), selectedDate.getMonthValue(), selectedDate.getDayOfMonth(),
                 selectedWorkspaceId, selectedScheduleList);
     }
+
+    @Mappings({
+            @Mapping(source = "id", target = "scheduleId"),
+            @Mapping(source = "staff.id", target = "staffId"),
+            @Mapping(source = "staff.realName", target = "staffName"),
+            @Mapping(source = "status", target = "scheduleStatus"),
+    })
+    BossWorkspaceScheduleResponse toBossWorkspaceSubDto(Schedule homeSchedule);
+
+    interface BossWorkspaceScheduleListRef extends Supplier<List<Schedule>> {}
+    default BossWorkspaceScheduleListResponse toDto(int selectedDay, BossWorkspaceScheduleListRef ref) {
+        List<BossWorkspaceScheduleResponse> selectedScheduleList = ref.get().stream()
+                .map(this::toBossWorkspaceSubDto)
+                .collect(Collectors.toList());
+        return new BossWorkspaceScheduleListResponse(selectedDay, selectedScheduleList);
+    }
 }

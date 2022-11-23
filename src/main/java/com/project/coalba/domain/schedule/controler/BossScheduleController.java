@@ -4,6 +4,7 @@ import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.service.StaffProfileService;
 import com.project.coalba.domain.schedule.dto.request.ScheduleRequest;
 import com.project.coalba.domain.schedule.dto.response.BossHomeScheduleListResponse;
+import com.project.coalba.domain.schedule.dto.response.BossWorkspaceScheduleListResponse;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.mapper.ScheduleMapper;
 import com.project.coalba.domain.schedule.service.BossScheduleService;
@@ -34,6 +35,14 @@ public class BossScheduleController {
         LocalDate selectedDate = LocalDate.of(year, month, day);
         List<Schedule> homeScheduleList = bossScheduleService.getHomeScheduleList(workspaceId, selectedDate);
         return mapper.toDto(selectedDate, workspaceId, () -> homeScheduleList);
+    }
+
+    @GetMapping("/workspaces/{workspaceId}/selected")
+    public BossWorkspaceScheduleListResponse getWorkspaceScheduleList(@PathVariable Long workspaceId,
+                                                                      @RequestParam int year, @RequestParam int month, @RequestParam int day) {
+        LocalDate selectedDate = LocalDate.of(year, month, day);
+        List<Schedule> workspaceScheduleList = bossScheduleService.getWorkspaceScheduleList(workspaceId, selectedDate);
+        return mapper.toDto(day, () -> workspaceScheduleList);
     }
 
     @PostMapping
