@@ -21,11 +21,11 @@ public class ScheduleRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate scheduleDate;
 
-    @NotNull @Future
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
     private LocalTime scheduleStartTime;
 
-    @NotNull @Future
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
     private LocalTime scheduleEndTime;
 }
