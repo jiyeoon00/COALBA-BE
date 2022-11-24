@@ -69,26 +69,38 @@ public class Schedule extends BaseTimeEntity {
         this.staff = staff;
     }
 
-    public void stampOnDutyTime(LocalTime currentTime) {
+    public void onDuty() {
         status = ScheduleStatus.ON_DUTY;
+    }
+
+    public void late() {
+        status = ScheduleStatus.LATE;
+    }
+
+    public void success() {
+        status = ScheduleStatus.SUCCESS;
+    }
+
+    public void fail() {
+        status = ScheduleStatus.FAIL;
+    }
+
+    public void stampScheduleStartTime(LocalTime currentTime) {
         logicalStartTime = scheduleStartTime;
         physicalStartTime = currentTime;
     }
 
-    public void stampLateTime(LocalTime currentTime) {
-        status = ScheduleStatus.LATE;
+    public void stampLogicalStartTime(LocalTime currentTime) {
         logicalStartTime = convertToLogicalTime(currentTime);
         physicalStartTime = currentTime;
     }
 
-    public void stampSuccessTime(LocalTime currentTime) {
-        status = ScheduleStatus.SUCCESS;
+    public void stampScheduleEndTime(LocalTime currentTime) {
         logicalEndTime = scheduleEndTime;
         physicalEndTime = currentTime;
     }
 
-    public void stampFailTime(LocalTime currentTime) {
-        status = ScheduleStatus.FAIL;
+    public void stampLogicalEndTime(LocalTime currentTime) {
         logicalEndTime = convertToLogicalTime(currentTime);
         physicalEndTime = currentTime;
     }

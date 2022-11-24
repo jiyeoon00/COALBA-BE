@@ -86,10 +86,12 @@ public class StaffScheduleService {
     private void start(LocalTime currentTime, Schedule schedule) {
         LocalTime scheduleLateCriteriaTime = schedule.getScheduleStartTime().plusMinutes(10);
         if (currentTime.isAfter(scheduleLateCriteriaTime)) {
-            schedule.stampLateTime(currentTime);
+            schedule.late();
+            schedule.stampLogicalStartTime(currentTime);
         }
         else {
-            schedule.stampOnDutyTime(currentTime);
+            schedule.onDuty();
+            schedule.stampScheduleStartTime(currentTime);
         }
     }
 
@@ -100,11 +102,18 @@ public class StaffScheduleService {
     }
 
     private void end(LocalTime currentTime, Schedule schedule) {
-        if (currentTime.isBefore(schedule.getScheduleEndTime())) {
-            schedule.stampFailTime(currentTime);
+        if (schedule.getStatus() == ScheduleStatus.LATE || currentTime.isBefore(schedule.getScheduleEndTime())) {
+            schedule.fail();
         }
         else {
-            schedule.stampSuccessTime(currentTime);
+            schedule.success();
+        }
+
+        if (currentTime.isBefore(schedule.getScheduleEndTime())) {
+            schedule.stampLogicalEndTime(currentTime);
+        }
+        else {
+            schedule.stampScheduleEndTime(currentTime);
         }
     }
 }
