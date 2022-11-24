@@ -33,8 +33,8 @@ public class StaffScheduleController {
     @GetMapping("/workspaces/{workspaceId}/selected")
     public StaffWorkspaceScheduleListResponse getWorkspaceScheduleList(@PathVariable Long workspaceId,
                                                                        @RequestParam int year, @RequestParam int month, @RequestParam int day) {
-        List<WorkspaceScheduleServiceDto> workspaceScheduleDtoList = staffScheduleService
-                .getWorkspaceScheduleDtoList(workspaceId, LocalDate.of(year, month, day));
+        LocalDate selectedDate = LocalDate.of(year, month, day);
+        List<WorkspaceScheduleServiceDto> workspaceScheduleDtoList = staffScheduleService.getWorkspaceScheduleDtoList(workspaceId, selectedDate);
         return mapper.toDto(day, () -> workspaceScheduleDtoList);
     }
 
