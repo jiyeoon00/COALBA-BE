@@ -18,11 +18,6 @@ public class WorkspaceMember extends BaseTimeEntity {
     private Long id;
 
     @Builder.Default
-    @ColumnDefault("9160")
-    @Column(nullable = false)
-    private Integer hourlyWage = 9160;
-
-    @Builder.Default
     @ColumnDefault("100")
     @Column(nullable = false, columnDefinition = "int CHECK (work_grade >= 0 AND work_grade <= 100)")
     private Integer workGrade = 100;

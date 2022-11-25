@@ -7,6 +7,7 @@ import com.project.coalba.domain.schedule.validation.ValidScheduleRequest;
 import lombok.Getter;
 
 import javax.validation.constraints.Future;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -32,4 +33,7 @@ public class ScheduleRequest {
     @NotNull @ValidTimeMinUnit
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
     private LocalTime scheduleEndTime;
+
+    @NotNull @Min(9160)
+    private Integer hourlyWage;
 }

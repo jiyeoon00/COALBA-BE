@@ -22,7 +22,5 @@ public class WorkspaceMemberInfoResponse {
 
     private String imageUrl;
 
-    private Integer hourlyWage;
-
     private Integer workGrade;
 }

@@ -7,6 +7,7 @@ import com.project.coalba.domain.timecardReq.entity.TimecardReq;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.global.audit.BaseTimeEntity;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -40,6 +41,11 @@ public class Schedule extends BaseTimeEntity {
     private LocalTime physicalStartTime;
 
     private LocalTime physicalEndTime;
+
+    @Builder.Default
+    @ColumnDefault("9160")
+    @Column(nullable = false)
+    private Integer hourlyWage = 9160;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
