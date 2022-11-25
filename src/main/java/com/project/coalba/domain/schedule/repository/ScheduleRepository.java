@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+public interface ScheduleRepository extends JpaRepository<Schedule, Long>, ScheduleRepositoryCustom {
 
     @Query("select sd from Schedule sd join fetch sd.workspace where sd.id = :scheduleId")
     Optional<Schedule> findByIdFetch(@Param("scheduleId") Long scheduleId);
