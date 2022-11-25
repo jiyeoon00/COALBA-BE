@@ -1,4 +1,4 @@
-package com.project.coalba.domain.schedule.controler;
+package com.project.coalba.domain.schedule.controller;
 
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.service.StaffProfileService;
