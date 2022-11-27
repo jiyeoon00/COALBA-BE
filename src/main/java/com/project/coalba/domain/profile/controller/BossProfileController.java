@@ -2,6 +2,8 @@ package com.project.coalba.domain.profile.controller;
 
 import com.project.coalba.domain.profile.dto.request.ProfileRequest;
 import com.project.coalba.domain.profile.dto.response.ProfileResponse;
+import com.project.coalba.domain.profile.entity.Boss;
+import com.project.coalba.domain.profile.mapper.ProfileMapper;
 import com.project.coalba.domain.profile.service.BossProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,21 +17,25 @@ import org.springframework.web.bind.annotation.*;
 public class BossProfileController {
 
     private final BossProfileService bossProfileService;
+    private final ProfileMapper profileMapper;
 
     @GetMapping
     public ProfileResponse getMyBossProfile() {
-        return bossProfileService.getMyBossProfile();
+        Boss boss = bossProfileService.getMyBossProfile();
+        return profileMapper.toDto(boss);
     }
 
     @PostMapping
     public ResponseEntity<Void> saveMyBossProfile(@Validated @RequestBody ProfileRequest profileRequest) {
-        bossProfileService.saveMyBossProfile(profileRequest);
+        Boss boss = profileMapper.toEntity(profileRequest);
+        bossProfileService.saveMyBossProfile(boss);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping
     public ResponseEntity<Void> updateMyBossProfile(@Validated @RequestBody ProfileRequest profileRequest) {
-        bossProfileService.updateMyBossProfile(profileRequest);
+        bossProfileService.updateMyBossProfile(profileRequest.getRealName(), profileRequest.getPhoneNumber(),
+                profileRequest.getBirthDate(), profileRequest.getImageUrl());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

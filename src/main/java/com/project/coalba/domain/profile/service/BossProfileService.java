@@ -1,8 +1,6 @@
 package com.project.coalba.domain.profile.service;
 
 import com.project.coalba.domain.auth.entity.User;
-import com.project.coalba.domain.profile.dto.request.ProfileRequest;
-import com.project.coalba.domain.profile.dto.response.ProfileResponse;
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.repository.BossProfileRepository;
 import com.project.coalba.global.utils.ProfileUtil;
@@ -11,34 +9,31 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class BossProfileService {
 
     private final BossProfileRepository bossProfileRepository;
     private final UserUtil userUtil;
     private final ProfileUtil profileUtil;
 
-    public ProfileResponse getMyBossProfile() {
-        Boss boss = profileUtil.getCurrentBoss();
-        return ProfileResponse.builder()
-                .realName(boss.getRealName())
-                .phoneNumber(boss.getPhoneNumber())
-                .birthDate(boss.getBirthDate())
-                .imageUrl(boss.getImageUrl())
-                .build();
+    public Boss getMyBossProfile() {
+        return profileUtil.getCurrentBoss();
     }
 
     @Transactional
-    public void saveMyBossProfile(ProfileRequest profileRequest) {
+    public void saveMyBossProfile(Boss boss) {
         User user = userUtil.getCurrentUser();
-        Boss boss = Boss.create(profileRequest.getRealName(), profileRequest.getPhoneNumber(), profileRequest.getBirthDate(), profileRequest.getImageUrl(), user);
+        boss.mapUser(user);
         bossProfileRepository.save(boss);
     }
 
     @Transactional
-    public void updateMyBossProfile(ProfileRequest profileRequest) {
+    public void updateMyBossProfile(String realName, String phoneNumber, LocalDate birthDate, String imageUrl) {
         Boss boss = profileUtil.getCurrentBoss();
-        boss.update(profileRequest.getRealName(), profileRequest.getPhoneNumber(), profileRequest.getBirthDate(), profileRequest.getImageUrl());
+        boss.update(realName, phoneNumber, birthDate, imageUrl);
     }
 }
