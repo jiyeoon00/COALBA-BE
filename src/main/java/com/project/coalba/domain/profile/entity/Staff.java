@@ -48,14 +48,8 @@ public class Staff extends BaseTimeEntity {
     @OneToMany(mappedBy = "sender")
     private List<SubstituteReq> sentSubstituteReqList = new ArrayList<>();
 
-    public static Staff create(String realName, String phoneNumber, LocalDate birthDate, String imageUrl, User user) {
-        return Staff.builder()
-                .realName(realName)
-                .phoneNumber(phoneNumber)
-                .birthDate(birthDate)
-                .imageUrl(imageUrl)
-                .user(user)
-                .build();
+    public void mapUser(User user) {
+        this.user = user;
     }
 
     public void update(String realName, String phoneNumber, LocalDate birthDate, String imageUrl) {

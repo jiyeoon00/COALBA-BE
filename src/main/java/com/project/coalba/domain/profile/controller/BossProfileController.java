@@ -17,17 +17,17 @@ import org.springframework.web.bind.annotation.*;
 public class BossProfileController {
 
     private final BossProfileService bossProfileService;
-    private final ProfileMapper profileMapper;
+    private final ProfileMapper mapper;
 
     @GetMapping
     public ProfileResponse getMyBossProfile() {
         Boss boss = bossProfileService.getMyBossProfile();
-        return profileMapper.toDto(boss);
+        return mapper.toDto(boss);
     }
 
     @PostMapping
     public ResponseEntity<Void> saveMyBossProfile(@Validated @RequestBody ProfileRequest profileRequest) {
-        Boss boss = profileMapper.toEntity(profileRequest);
+        Boss boss = mapper.toBossEntity(profileRequest);
         bossProfileService.saveMyBossProfile(boss);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
