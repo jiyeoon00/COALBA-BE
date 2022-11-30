@@ -27,8 +27,13 @@ public class StaffProfileRepositoryImpl implements StaffProfileRepositoryCustom 
                                 .where(workspaceMember.workspace.id.eq(workspaceId))),
                         JPAExpressions.selectFrom(schedule)
                                 .where(schedule.staff.id.eq(staff.id),
-                                        schedule.scheduleStartDateTime.between(startDateTime, endDateTime).or(
-                                                schedule.scheduleEndDateTime.between(startDateTime, endDateTime)
+                                        schedule.scheduleStartDateTime.goe(startDateTime).and(
+                                                schedule.scheduleStartDateTime.lt(endDateTime)
+                                        )
+                                        .or(
+                                                schedule.scheduleEndDateTime.gt(startDateTime).and(
+                                                        schedule.scheduleEndDateTime.loe(endDateTime)
+                                                )
                                         )
                                 )
                                 .notExists()
