@@ -26,5 +26,5 @@ public class StaffWorkspaceScheduleResponse {
 
     private ScheduleStatus scheduleStatus;
 
-    private boolean isMySchedule;
+    private Boolean isMySchedule;
 }

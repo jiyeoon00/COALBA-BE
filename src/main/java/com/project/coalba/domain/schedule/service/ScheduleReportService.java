@@ -12,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
+import java.time.*;
 import java.util.*;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -62,19 +59,20 @@ public class ScheduleReportService {
 
     private Map<Integer, List<Schedule>> getMyMonthlyScheduleListForYear(int year) {
         Long staffId = profileUtil.getCurrentStaff().getId();
-        LocalDate yearStart = LocalDate.of(year, 1, 1);
-        LocalDate yearEnd = LocalDate.of(year, 12, 31);
+        LocalDateTime yearStart = LocalDateTime.of(year, 1, 1, 0, 0, 0);
+        LocalDateTime yearEnd = LocalDateTime.of(year, 12, 31, 23, 59, 59);
 
-        List<Schedule> MyScheduleList = scheduleRepository.findAllByStaffIdAndDateRangeAndEndStatus(staffId, yearStart, yearEnd);
+        List<Schedule> MyScheduleList = scheduleRepository.findAllByStaffIdAndDateTimeRangeAndEndStatus(staffId, yearStart, yearEnd);
         return MyScheduleList.stream()
-                .collect(groupingBy(schedule -> schedule.getScheduleDate().getMonthValue()));
+                .collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().getMonthValue()));
     }
 
     private Map<Long, List<Schedule>> getWorkspaceScheduleListByStaffForYearAndMonth(Long workspaceId, int year, int month) {
-        LocalDate monthStart = LocalDate.of(year, month, 1);
-        LocalDate monthEnd = monthStart.plusDays(monthStart.lengthOfMonth() - 1);
+        LocalDateTime monthStart = LocalDateTime.of(year, month, 1, 0, 0, 0);
+        LocalDate monthStartDate = monthStart.toLocalDate();
+        LocalDateTime monthEnd = monthStartDate.plusDays(monthStartDate.lengthOfMonth() - 1).atTime(23, 59, 59);
 
-        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateRangeAndEndStatus(workspaceId, monthStart, monthEnd);
+        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateTimeRangeAndEndStatus(workspaceId, monthStart, monthEnd);
         return workspaceScheduleList.stream()
                 .collect(groupingBy(schedule -> schedule.getStaff().getId()));
     }
@@ -98,22 +96,24 @@ public class ScheduleReportService {
 
     private long calculateTotalWorkTimeMin(List<Schedule> scheduleList) {
         return scheduleList.stream()
-                .mapToLong(schedule -> calculateWorkTimeMin(schedule.getLogicalStartTime(), schedule.getLogicalEndTime()))
+                .mapToLong(schedule ->
+                        calculateWorkTimeMin(schedule.getLogicalStartDateTime(), schedule.getLogicalEndDateTime()))
                 .sum();
     }
 
     private long calculateTotalWorkPay(List<Schedule> scheduleList) {
         return scheduleList.stream()
-                .mapToLong(schedule -> calculateWorkPay(schedule.getLogicalStartTime(), schedule.getLogicalEndTime(), schedule.getHourlyWage()))
+                .mapToLong(schedule ->
+                        calculateWorkPay(schedule.getLogicalStartDateTime(), schedule.getLogicalEndDateTime(), schedule.getHourlyWage()))
                 .sum();
     }
 
-    private Long calculateWorkTimeMin(LocalTime startTime, LocalTime endTime) {
-        return Duration.between(startTime, endTime).toMinutes();
+    private Long calculateWorkTimeMin(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return Duration.between(startDateTime, endDateTime).toMinutes();
     }
 
-    private Long calculateWorkPay(LocalTime startTime, LocalTime endTime, Integer hourlyWage) {
-        Long workTimeMin = calculateWorkTimeMin(startTime, endTime);
+    private Long calculateWorkPay(LocalDateTime startDateTime, LocalDateTime endDateTime, Integer hourlyWage) {
+        Long workTimeMin = calculateWorkTimeMin(startDateTime, endDateTime);
         double workTimeHour = workTimeMin / 60.;
         return (long) workTimeHour * hourlyWage;
     }

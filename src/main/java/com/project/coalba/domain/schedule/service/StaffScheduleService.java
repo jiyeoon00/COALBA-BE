@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -47,20 +47,17 @@ public class StaffScheduleService {
     @Transactional
     public void startSchedule(Long scheduleId) {
         Schedule schedule = getSchedule(scheduleId);
-        LocalDate currentDate = LocalDate.now();
-        LocalTime currentTime = LocalTime.now();
-
-        validateCurrentDate(currentDate, schedule.getScheduleDate());
-        validateCurrentTime(currentTime, schedule.getScheduleStartTime().minusMinutes(10), schedule.getScheduleEndTime());
-        start(currentTime, schedule);
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        validateCurrentDateTime(currentDateTime, schedule.getScheduleStartDateTime().minusMinutes(10), schedule.getScheduleEndDateTime());
+        start(currentDateTime, schedule);
     }
 
     @Transactional
     public void endSchedule(Long scheduleId) {
         Schedule schedule = getSchedule(scheduleId);
-        LocalTime currentTime = LocalTime.now();
+        LocalDateTime currentDateTime = LocalDateTime.now();
         validateScheduleStatus(schedule.getStatus());
-        end(currentTime, schedule);
+        end(currentDateTime, schedule);
     }
 
     private Schedule getSchedule(Long scheduleId) {
@@ -68,30 +65,24 @@ public class StaffScheduleService {
                 .orElseThrow(() -> new RuntimeException("해당 스케줄이 존재하지 않습니다."));
     }
 
-    private void validateCurrentDate(LocalDate currentDate, LocalDate scheduleDate) {
-        if (!currentDate.equals(scheduleDate)) {
-            throw new RuntimeException("해당 스케줄 날짜에만 출근 가능합니다.");
-        }
-    }
-
-    private void validateCurrentTime(LocalTime currentTime, LocalTime scheduleStartCriteriaTime, LocalTime scheduleEndTime) {
-        if (currentTime.isBefore(scheduleStartCriteriaTime)) {
+    private void validateCurrentDateTime(LocalDateTime currentDateTime, LocalDateTime scheduleStartCriteriaDateTime, LocalDateTime scheduleEndDateTime) {
+        if (currentDateTime.isBefore(scheduleStartCriteriaDateTime)) {
             throw new RuntimeException("해당 스케줄 시작 10분 전부터 출근 가능합니다.");
         }
-        if (currentTime.isAfter(scheduleEndTime)) {
+        if (currentDateTime.isAfter(scheduleEndDateTime)) {
             throw new RuntimeException("해당 스케줄이 종료되어 출근 불가합니다.");
         }
     }
 
-    private void start(LocalTime currentTime, Schedule schedule) {
-        LocalTime scheduleLateCriteriaTime = schedule.getScheduleStartTime().plusMinutes(10);
-        if (currentTime.isAfter(scheduleLateCriteriaTime)) {
+    private void start(LocalDateTime currentDateTime, Schedule schedule) {
+        LocalDateTime scheduleLateCriteriaDateTime = schedule.getScheduleStartDateTime().plusMinutes(10);
+        if (currentDateTime.isAfter(scheduleLateCriteriaDateTime)) {
             schedule.late();
-            schedule.stampLogicalStartTime(currentTime);
+            schedule.stampLogicalStartDateTime(currentDateTime);
         }
         else {
             schedule.onDuty();
-            schedule.stampScheduleStartTime(currentTime);
+            schedule.stampScheduleStartDateTime(currentDateTime);
         }
     }
 
@@ -101,19 +92,20 @@ public class StaffScheduleService {
         }
     }
 
-    private void end(LocalTime currentTime, Schedule schedule) {
-        if (schedule.getStatus() == ScheduleStatus.LATE || currentTime.isBefore(schedule.getScheduleEndTime())) {
+    private void end(LocalDateTime currentDateTime, Schedule schedule) {
+        if (schedule.getStatus() == ScheduleStatus.LATE ||
+                currentDateTime.isBefore(schedule.getScheduleEndDateTime())) {
             schedule.fail();
         }
         else {
             schedule.success();
         }
 
-        if (currentTime.isBefore(schedule.getScheduleEndTime())) {
-            schedule.stampLogicalEndTime(currentTime);
+        if (currentDateTime.isBefore(schedule.getScheduleEndDateTime())) {
+            schedule.stampLogicalEndDateTime(currentDateTime);
         }
         else {
-            schedule.stampScheduleEndTime(currentTime);
+            schedule.stampScheduleEndDateTime(currentDateTime);
         }
     }
 }

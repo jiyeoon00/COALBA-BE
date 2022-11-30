@@ -6,7 +6,7 @@ import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -22,12 +22,12 @@ public @interface ValidTimeMinUnit {
 
     Class<? extends Payload>[] payload() default { };
 
-    class TimeMinUnitValidator implements ConstraintValidator<ValidTimeMinUnit, LocalTime> {
+    class TimeMinUnitValidator implements ConstraintValidator<ValidTimeMinUnit, LocalDateTime> {
 
         private static final int TIME_MIN_UNIT = 10;
 
         @Override
-        public boolean isValid(LocalTime value, ConstraintValidatorContext context) {
+        public boolean isValid(LocalDateTime value, ConstraintValidatorContext context) {
             return value.getMinute() % TIME_MIN_UNIT == 0;
         }
     }

@@ -10,8 +10,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,21 +25,18 @@ public class Schedule extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate scheduleDate;
+    private LocalDateTime scheduleStartDateTime;
 
     @Column(nullable = false)
-    private LocalTime scheduleStartTime;
+    private LocalDateTime scheduleEndDateTime;
 
-    @Column(nullable = false)
-    private LocalTime scheduleEndTime;
+    private LocalDateTime logicalStartDateTime;
 
-    private LocalTime logicalStartTime;
+    private LocalDateTime logicalEndDateTime;
 
-    private LocalTime logicalEndTime;
+    private LocalDateTime physicalStartDateTime;
 
-    private LocalTime physicalStartTime;
-
-    private LocalTime physicalEndTime;
+    private LocalDateTime physicalEndDateTime;
 
     @Builder.Default
     @ColumnDefault("9160")
@@ -91,29 +87,29 @@ public class Schedule extends BaseTimeEntity {
         status = ScheduleStatus.FAIL;
     }
 
-    public void stampScheduleStartTime(LocalTime currentTime) {
-        logicalStartTime = scheduleStartTime;
-        physicalStartTime = currentTime;
+    public void stampScheduleStartDateTime(LocalDateTime currentDateTime) {
+        logicalStartDateTime = scheduleStartDateTime;
+        physicalStartDateTime = currentDateTime;
     }
 
-    public void stampLogicalStartTime(LocalTime currentTime) {
-        logicalStartTime = convertToLogicalTime(currentTime);
-        physicalStartTime = currentTime;
+    public void stampLogicalStartDateTime(LocalDateTime currentDateTime) {
+        logicalStartDateTime = convertToLogicalDateTime(currentDateTime);
+        physicalStartDateTime = currentDateTime;
     }
 
-    public void stampScheduleEndTime(LocalTime currentTime) {
-        logicalEndTime = scheduleEndTime;
-        physicalEndTime = currentTime;
+    public void stampScheduleEndDateTime(LocalDateTime currentDateTime) {
+        logicalEndDateTime = scheduleEndDateTime;
+        physicalEndDateTime = currentDateTime;
     }
 
-    public void stampLogicalEndTime(LocalTime currentTime) {
-        logicalEndTime = convertToLogicalTime(currentTime);
-        physicalEndTime = currentTime;
+    public void stampLogicalEndDateTime(LocalDateTime currentDateTime) {
+        logicalEndDateTime = convertToLogicalDateTime(currentDateTime);
+        physicalEndDateTime = currentDateTime;
     }
 
-    private LocalTime convertToLogicalTime(LocalTime physicalTime) {
-        int physicalMinute = physicalTime.getMinute();
+    private LocalDateTime convertToLogicalDateTime(LocalDateTime physicalDateTime) {
+        int physicalMinute = physicalDateTime.getMinute();
         int logicalMinute = physicalMinute - (physicalMinute % 10);
-        return LocalTime.of(physicalTime.getHour(), logicalMinute);
+        return physicalDateTime.withMinute(logicalMinute);
     }
 }

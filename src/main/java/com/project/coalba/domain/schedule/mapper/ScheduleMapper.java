@@ -7,8 +7,11 @@ import com.project.coalba.domain.schedule.entity.Schedule;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -18,13 +21,13 @@ public interface ScheduleMapper {
 
     @Mappings({
             @Mapping(target = "id", ignore = true),
-            @Mapping(target = "logicalStartTime", ignore = true),
-            @Mapping(target = "logicalEndTime", ignore = true),
-            @Mapping(target = "physicalStartTime", ignore = true),
-            @Mapping(target = "physicalEndTime", ignore = true),
+            @Mapping(target = "logicalStartDateTime", ignore = true),
+            @Mapping(target = "logicalEndDateTime", ignore = true),
+            @Mapping(target = "physicalStartDateTime", ignore = true),
+            @Mapping(target = "physicalEndDateTime", ignore = true),
             @Mapping(target = "status", ignore = true),
-            @Mapping(target = "staff", ignore = true),
             @Mapping(target = "workspace", ignore = true),
+            @Mapping(target = "staff", ignore = true),
             @Mapping(target = "substituteReqList", ignore = true),
             @Mapping(target = "timecardReq", ignore = true),
     })
@@ -32,7 +35,10 @@ public interface ScheduleMapper {
 
     @Mappings({
             @Mapping(source = "id", target = "scheduleId"),
-            @Mapping(source = "workspace.name", target = "workspaceName")
+            @Mapping(source = "workspace.name", target = "workspaceName"),
+            @Mapping(source = "scheduleStartDateTime", target = "scheduleDate", qualifiedByName = "toLocalDate"),
+            @Mapping(source = "scheduleStartDateTime", target = "scheduleStartTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "scheduleEndDateTime", target = "scheduleEndTime", qualifiedByName = "toLocalTime"),
     })
     ScheduleBriefResponse toDto(Schedule schedule);
 
@@ -40,6 +46,10 @@ public interface ScheduleMapper {
             @Mapping(source = "id", target = "scheduleId"),
             @Mapping(source = "workspace.id", target = "workspaceId"),
             @Mapping(source = "workspace.name", target = "workspaceName"),
+            @Mapping(source = "scheduleStartDateTime", target = "scheduleStartTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "scheduleEndDateTime", target = "scheduleEndTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "logicalStartDateTime", target = "logicalStartTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "logicalEndDateTime", target = "logicalEndTime", qualifiedByName = "toLocalTime"),
             @Mapping(source = "status", target = "scheduleStatus"),
     })
     StaffHomeScheduleResponse toStaffHomeSubDto(Schedule homeSchedule);
@@ -56,9 +66,9 @@ public interface ScheduleMapper {
             @Mapping(source = "schedule.id", target = "scheduleId"),
             @Mapping(source = "schedule.staff.id", target = "staffId"),
             @Mapping(source = "schedule.staff.realName", target = "staffName"),
-            @Mapping(source = "schedule.scheduleStartTime", target = "scheduleStartTime"),
-            @Mapping(source = "schedule.scheduleEndTime", target = "scheduleEndTime"),
-            @Mapping(source = "schedule.status", target = "scheduleStatus"),
+            @Mapping(source = "schedule.scheduleStartDateTime", target = "scheduleStartTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "schedule.scheduleEndDateTime", target = "scheduleEndTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "schedule.status", target = "scheduleStatus")
     })
     StaffWorkspaceScheduleResponse toStaffWorkspaceSubDto(WorkspaceScheduleServiceDto workspaceScheduleDto);
 
@@ -72,6 +82,10 @@ public interface ScheduleMapper {
 
     @Mappings({
         @Mapping(source = "id", target = "scheduleId"),
+        @Mapping(source = "scheduleStartDateTime", target = "scheduleStartTime", qualifiedByName = "toLocalTime"),
+        @Mapping(source = "scheduleEndDateTime", target = "scheduleEndTime", qualifiedByName = "toLocalTime"),
+        @Mapping(source = "logicalStartDateTime", target = "logicalStartTime", qualifiedByName = "toLocalTime"),
+        @Mapping(source = "logicalEndDateTime", target = "logicalEndTime", qualifiedByName = "toLocalTime"),
         @Mapping(source = "staff.id", target = "staffId"),
         @Mapping(source = "staff.imageUrl", target = "staffImageUrl"),
         @Mapping(source = "staff.realName", target = "staffName"),
@@ -93,6 +107,8 @@ public interface ScheduleMapper {
             @Mapping(source = "id", target = "scheduleId"),
             @Mapping(source = "staff.id", target = "staffId"),
             @Mapping(source = "staff.realName", target = "staffName"),
+            @Mapping(source = "scheduleStartDateTime", target = "scheduleStartTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "scheduleEndDateTime", target = "scheduleEndTime", qualifiedByName = "toLocalTime"),
             @Mapping(source = "status", target = "scheduleStatus"),
     })
     BossWorkspaceScheduleResponse toBossWorkspaceSubDto(Schedule homeSchedule);
@@ -103,5 +119,17 @@ public interface ScheduleMapper {
                 .map(this::toBossWorkspaceSubDto)
                 .collect(Collectors.toList());
         return new BossWorkspaceScheduleListResponse(selectedDay, selectedScheduleList);
+    }
+
+    @Named("toLocalDate")
+    default LocalDate localDateTimeToLocalDate(LocalDateTime localDateTime) {
+        if (localDateTime == null) return null;
+        return localDateTime.toLocalDate();
+    }
+
+    @Named("toLocalTime")
+    default LocalTime localDateTimeToLocalTime(LocalDateTime localDateTime) {
+        if (localDateTime == null) return null;
+        return localDateTime.toLocalTime();
     }
 }

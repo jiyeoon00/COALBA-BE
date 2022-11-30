@@ -6,11 +6,9 @@ import com.project.coalba.domain.schedule.validation.ValidTimeMinUnit;
 import com.project.coalba.domain.schedule.validation.ValidScheduleRequest;
 import lombok.Getter;
 
-import javax.validation.constraints.Future;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Getter
 @ValidScheduleRequest
@@ -22,17 +20,14 @@ public class ScheduleRequest {
     @NotNull
     private Long staffId;
 
-    @NotNull @Future @ValidScheduleDate
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDate scheduleDate;
+    @ValidScheduleDate
+    @NotNull @ValidTimeMinUnit
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+    private LocalDateTime scheduleStartDateTime;
 
     @NotNull @ValidTimeMinUnit
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-    private LocalTime scheduleStartTime;
-
-    @NotNull @ValidTimeMinUnit
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-    private LocalTime scheduleEndTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+    private LocalDateTime scheduleEndDateTime;
 
     @NotNull @Min(9160)
     private Integer hourlyWage;

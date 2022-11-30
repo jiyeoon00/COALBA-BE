@@ -11,8 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -46,8 +45,8 @@ public class StaffProfileService {
         staff.update(profileRequest.getRealName(), profileRequest.getPhoneNumber(), profileRequest.getBirthDate(), profileRequest.getImageUrl());
     }
 
-    public List<Staff> getStaffListInWorkspaceAndPossibleForDateTime(Long workspaceId, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        return staffProfileRepository.findAllByWorkspaceIdAndDateTime(workspaceId, date, startTime, endTime);
+    public List<Staff> getStaffListInWorkspaceAndPossibleForDateTime(Long workspaceId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return staffProfileRepository.findAllByWorkspaceIdAndDateTime(workspaceId, startDateTime, endDateTime);
     }
 
     public List<Staff> getStaffListInWorkspace(Long workspaceId) {

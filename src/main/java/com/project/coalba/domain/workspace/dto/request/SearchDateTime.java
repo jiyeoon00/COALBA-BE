@@ -4,19 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
 public class SearchDateTime {
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate scheduleDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime scheduleStartDateTime;
 
-    @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime scheduleStartTime;
-
-    @DateTimeFormat(pattern = "HH:mm")
-    private LocalTime scheduleEndTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime scheduleEndDateTime;
 }

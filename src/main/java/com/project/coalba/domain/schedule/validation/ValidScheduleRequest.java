@@ -8,7 +8,7 @@ import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -18,7 +18,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = ValidScheduleRequest.ScheduleRequestValidator.class)
 public @interface ValidScheduleRequest {
 
-    String message() default "스케줄 시작 시간은 스케줄 종료 시간보다 앞서야 합니다.";
+    String message() default "스케줄 시작 날짜 시간은 스케줄 종료 날짜 시간보다 앞서야 합니다.";
 
     Class<?>[] groups() default { };
 
@@ -28,9 +28,9 @@ public @interface ValidScheduleRequest {
 
         @Override
         public boolean isValid(ScheduleRequest value, ConstraintValidatorContext context) {
-            LocalTime scheduleStartTime = value.getScheduleStartTime();
-            LocalTime scheduleEndTime = value.getScheduleEndTime();
-            return scheduleStartTime.isBefore(scheduleEndTime);
+            LocalDateTime scheduleStartDateTime = value.getScheduleStartDateTime();
+            LocalDateTime scheduleEndDateTime = value.getScheduleEndDateTime();
+            return scheduleStartDateTime.isBefore(scheduleEndDateTime);
         }
     }
 }
