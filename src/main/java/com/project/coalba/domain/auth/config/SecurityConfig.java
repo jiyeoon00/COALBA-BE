@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .and().formLogin().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/error", "/css/**", "/images/**", "/js/**", "/auth/**").permitAll()
+                .antMatchers("/", "/error", "/css/**", "/images/**", "/js/**", "/auth/**", "/test").permitAll()
                 .antMatchers("/boss/**").hasRole("BOSS")
                 .antMatchers("/staff/**").hasRole("STAFF")
                 .anyRequest().authenticated()
