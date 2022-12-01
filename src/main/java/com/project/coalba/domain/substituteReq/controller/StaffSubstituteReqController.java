@@ -28,7 +28,7 @@ public class StaffSubstituteReqController {
         return staffSubstituteReqService.deleteSubstituteReq(substituteReqId);
     }
 
-    @GetMapping("/staff/substituteReqs/{substituteReqId}/from")
+    @GetMapping("/staff/substituteReqs/{substituteReqId}")
     public DetailSubstituteReqResponse getDetailSentSubstituteReqs(@PathVariable Long substituteReqId){
         DetailSubstituteReqDto detailSubstituteReqDto = staffSubstituteReqService.getDetailSentSubstituteReqs(substituteReqId);
         return new DetailSubstituteReqResponse(detailSubstituteReqDto);
