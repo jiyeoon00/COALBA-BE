@@ -3,6 +3,8 @@ package com.project.coalba.domain.substituteReq.controller;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.service.ScheduleService;
 import com.project.coalba.domain.substituteReq.dto.request.CreateSubstituteReqRequest;
+import com.project.coalba.domain.substituteReq.dto.response.DetailSubstituteReqResponse;
+import com.project.coalba.domain.substituteReq.repository.DetailSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.service.StaffSubstituteReqService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,5 +28,9 @@ public class StaffSubstituteReqController {
         return staffSubstituteReqService.deleteSubstituteReq(substituteReqId);
     }
 
-
+    @GetMapping("/staff/substituteReqs/{substituteReqId}/from")
+    public DetailSubstituteReqResponse getDetailSentSubstituteReqs(@PathVariable Long substituteReqId){
+        DetailSubstituteReqDto detailSubstituteReqDto = staffSubstituteReqService.getDetailSentSubstituteReqs(substituteReqId);
+        return new DetailSubstituteReqResponse(detailSubstituteReqDto);
+    }
 }

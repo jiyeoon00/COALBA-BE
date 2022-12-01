@@ -5,6 +5,7 @@ import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
+import com.project.coalba.domain.substituteReq.repository.DetailSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.repository.SubstituteRepository;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,12 @@ public class StaffSubstituteReqService {
             throw new RuntimeException("해당 대타근무 요청건을 찾을 수 없습니다.");
         }
     }
+
+    @Transactional(readOnly = true)
+    public DetailSubstituteReqDto getDetailSentSubstituteReqs(Long substituteReqId) {
+        return substituteRepository.getSubstituteReq(substituteReqId);
+    }
+
 
 
 }
