@@ -37,8 +37,9 @@ out/
 .vscode/
 
 *.log
-application-auth.properties
 application-db.properties
+application-auth.properties
+application-aws.properties
 
 ### querydsl Q파일 ###
 src/main/generated/
