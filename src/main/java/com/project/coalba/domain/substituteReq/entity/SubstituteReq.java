@@ -41,4 +41,12 @@ public class SubstituteReq extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "boss_id")
     private Boss boss;
+
+    public Boolean isWating(){
+        if(this.status.equals(SubstituteReqStatus.WAITING)){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

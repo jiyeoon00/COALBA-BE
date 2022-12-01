@@ -5,6 +5,7 @@ import com.project.coalba.domain.schedule.service.ScheduleService;
 import com.project.coalba.domain.substituteReq.dto.request.CreateSubstituteReqRequest;
 import com.project.coalba.domain.substituteReq.service.StaffSubstituteReqService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -19,4 +20,11 @@ public class StaffSubstituteReqController {
         Schedule schedule = scheduleService.getSchedule(scheduleId);
         staffSubstituteReqService.createSubstituteReq(schedule, request.getReceiverId(), request.getReqMessage());
     }
+
+    @DeleteMapping("/staff/substituteReqs/{substituteReqId}/from")
+    public ResponseEntity deleteSubstituteReq(@PathVariable Long substituteReqId) {
+        return staffSubstituteReqService.deleteSubstituteReq(substituteReqId);
+    }
+
+
 }
