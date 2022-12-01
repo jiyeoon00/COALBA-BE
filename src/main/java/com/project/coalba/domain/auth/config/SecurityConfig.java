@@ -36,9 +36,7 @@ public class SecurityConfig {
                 .antMatchers("/staff/**").hasRole("STAFF")
                 .anyRequest().authenticated()
                 .and()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .and()
-                .oauth2Login().disable();
+                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
