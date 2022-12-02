@@ -64,7 +64,7 @@ public class StaffSubstituteReqService {
     }
 
     @Transactional(readOnly = true)
-    public DetailSubstituteReqDto getDetailSentSubstituteReqs(Long substituteReqId) {
+    public DetailSubstituteReqDto getDetailSubstituteReqs(Long substituteReqId) {
         return substituteRepository.getSubstituteReq(substituteReqId);
     }
 

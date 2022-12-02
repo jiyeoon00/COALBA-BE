@@ -35,7 +35,7 @@ public class StaffSubstituteReqController {
 
     @GetMapping("/staff/substituteReqs/{substituteReqId}")
     public DetailSubstituteReqResponse getDetailSentSubstituteReqs(@PathVariable Long substituteReqId){
-        DetailSubstituteReqDto detailSubstituteReqDto = staffSubstituteReqService.getDetailSentSubstituteReqs(substituteReqId);
+        DetailSubstituteReqDto detailSubstituteReqDto = staffSubstituteReqService.getDetailSubstituteReqs(substituteReqId);
         return new DetailSubstituteReqResponse(detailSubstituteReqDto);
     }
 
