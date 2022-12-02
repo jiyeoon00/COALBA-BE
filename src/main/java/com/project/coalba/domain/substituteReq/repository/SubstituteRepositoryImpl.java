@@ -71,6 +71,7 @@ public class SubstituteRepositoryImpl implements SubstituteReqRepositoryCustom{
                 .join(substituteReq.receiver, staff)
                 .join(substituteReq.schedule, schedule)
                 .join(schedule.workspace, workspace)
+                .orderBy(substituteReq.createdDate.desc())
                 .transform(
                         groupBy(formattedDate).list(
                                 Projections.fields(
@@ -106,6 +107,7 @@ public class SubstituteRepositoryImpl implements SubstituteReqRepositoryCustom{
                 .join(substituteReq.sender, staff)
                 .join(substituteReq.schedule, schedule)
                 .join(schedule.workspace, workspace)
+                .orderBy(substituteReq.createdDate.desc())
                 .transform(
                         groupBy(formattedDate).list(
                                 Projections.fields(
