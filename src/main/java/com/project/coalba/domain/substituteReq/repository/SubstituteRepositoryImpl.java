@@ -1,16 +1,17 @@
 package com.project.coalba.domain.substituteReq.repository;
 
+import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.entity.QStaff;
 import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.substituteReq.dto.response.ReceivedDetailSubstituteReq;
-import com.project.coalba.domain.substituteReq.dto.response.ReceivedSubstituteReq;
-import com.project.coalba.domain.substituteReq.dto.response.SentDetailSubstituteReq;
-import com.project.coalba.domain.substituteReq.dto.response.SentSubstituteReq;
+import com.project.coalba.domain.substituteReq.dto.response.*;
+import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
 import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
 import com.project.coalba.domain.substituteReq.repository.dto.DetailSubstituteReqDto;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -128,6 +129,54 @@ public class SubstituteRepositoryImpl implements SubstituteReqRepositoryCustom{
                 );
 
         return receivedSubstituteReqs;
+    }
+
+    @Override
+    public List<BothSubstituteReq> getSubstituteReqs(Boss currentBoss) {
+        StringTemplate formattedDate = getDateFormatTemplate();
+
+        QStaff receiver = new QStaff("receiver");
+        QStaff sender = new QStaff("sender");
+
+        List<BothSubstituteReq> bothSubstituteReqs = queryFactory.select(substituteReq, workspace, receiver, sender, schedule)
+                .from(substituteReq)
+                .where(substituteReq.boss.eq(currentBoss)
+                        .and(isStatusForBoss()))
+                .join(substituteReq.receiver, receiver)
+                .join(substituteReq.sender, sender)
+                .join(substituteReq.schedule, schedule)
+                .join(schedule.workspace, workspace)
+                .orderBy(substituteReq.createdDate.desc())
+                .transform(
+                        groupBy(formattedDate).list(
+                                Projections.fields(
+                                        BothSubstituteReq.class,
+                                        substituteReq.createdDate.year().as("year"),
+                                        substituteReq.createdDate.month().as("month"),
+                                        list(
+                                                Projections.constructor(
+                                                        BothDetailSubstituteReq.class,
+                                                        Projections.fields(
+                                                                DetailSubstituteReqDto.class,
+                                                                workspace.as("workspace"),
+                                                                substituteReq.as("substituteReq"),
+                                                                receiver.as("receiver"),
+                                                                sender.as("sender"),
+                                                                schedule.as("schedule")
+                                                        )
+                                                )
+                                        ).as("substituteReqList")
+                                )
+                        )
+                );
+
+        return bothSubstituteReqs;
+    }
+
+    private BooleanBuilder isStatusForBoss() {
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(substituteReq.status.in(SubstituteReqStatus.ACCEPTANCE, SubstituteReqStatus.APPROVAL, SubstituteReqStatus.DISAPPROVAL));
+        return builder;
     }
 
 
