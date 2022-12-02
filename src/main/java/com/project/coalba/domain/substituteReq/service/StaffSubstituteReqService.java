@@ -46,7 +46,7 @@ public class StaffSubstituteReqService {
     public ResponseEntity cancelSubstituteReq(Long substituteReqId) {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         if(substituteReq.isWating()) {
-            substituteReq.cancel();
+            substituteReq.cancelReq();
             return ResponseEntity.ok("취소되었습니다.");
         }else {
             return ResponseEntity.badRequest().body("이미 수락 혹은 거절된 요청이므로 취소할 수 없습니다.");
@@ -78,5 +78,24 @@ public class StaffSubstituteReqService {
     public List<ReceivedSubstituteReq> getReceivedSubstituteReqs() {
         Staff currentStaff = profileUtil.getCurrentStaff();
         return substituteRepository.getReceivedSubstituteReqs(currentStaff);
+    }
+
+    @Transactional
+    public ResponseEntity acceptSubstituteReq(Long substituteReqId) {
+        /**
+         * 추후 기능 보완
+         * 요청 성사시 다른 사람한테 보낸 요청 다 취소(?)
+         * 요청 성사시 사장님께 알림 보내기
+         */
+        SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
+        substituteReq.acceptReq();
+        return ResponseEntity.ok("대타근무 요청이 수락되었습니다. 사장님께 최종승인 요청이 갑니다.");
+    }
+
+    @Transactional
+    public ResponseEntity rejectSubstituteReq(Long substituteReqId) {
+        SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
+        substituteReq.refuseReq();
+        return ResponseEntity.ok("대타근무 요청이 거절되었습니다.");
     }
 }

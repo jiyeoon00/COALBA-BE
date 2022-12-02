@@ -50,4 +50,14 @@ public class StaffSubstituteReqController {
         List<ReceivedSubstituteReq> receivedSubstituteReqs = staffSubstituteReqService.getReceivedSubstituteReqs();
         return new SubstituteReqsResponse(receivedSubstituteReqs);
     }
+
+    @PutMapping("/staff/substituteReqs/{substituteReqId}/accept")
+    public ResponseEntity acceptSubstituteReq(@PathVariable Long substituteReqId) {
+        return staffSubstituteReqService.acceptSubstituteReq(substituteReqId);
+    }
+
+    @PutMapping("/staff/substituteReqs/{substituteReqId}/reject")
+    public ResponseEntity rejectSubstituteReq(@PathVariable Long substituteReqId) {
+        return staffSubstituteReqService.rejectSubstituteReq(substituteReqId);
+    }
 }

@@ -50,7 +50,17 @@ public class SubstituteReq extends BaseTimeEntity {
         }
     }
 
-    public void cancel() {
+    public void cancelReq() {
         this.status = SubstituteReqStatus.CANCELLATION;
     }
+
+    public void acceptReq() {
+        this.status = SubstituteReqStatus.ACCEPTANCE;
+    }
+
+    public void refuseReq() {
+        this.status = SubstituteReqStatus.REFUSAL;
+    }
+
+
 }
