@@ -6,8 +6,10 @@ import com.project.coalba.domain.substituteReq.dto.response.SubstituteReqsRespon
 import com.project.coalba.domain.substituteReq.repository.dto.DetailSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.service.BossSubstituteReqService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,5 +29,15 @@ public class BossSubstituteReqController {
     public SubstituteReqsResponse getSubstituteReqs() {
         List<BothSubstituteReq> bothSubstituteReqs = bossSubstituteReqService.getSubstituteReqs();
         return new SubstituteReqsResponse(bothSubstituteReqs);
+    }
+
+    @PutMapping("/boss/substituteReqs/{substituteReqId}/accept")
+    public ResponseEntity approveSubstituteReq(@PathVariable Long substituteReqId) {
+        return bossSubstituteReqService.approveSubstituteReq(substituteReqId);
+    }
+
+    @PutMapping("/boss/substituteReqs/{substituteReqId}/reject")
+    public ResponseEntity disapproveSubstituteReq(@PathVariable Long substituteReqId) {
+        return bossSubstituteReqService.disapproveSubstituteReq(substituteReqId);
     }
 }

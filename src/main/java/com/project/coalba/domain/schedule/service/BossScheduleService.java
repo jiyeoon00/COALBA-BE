@@ -37,4 +37,9 @@ public class BossScheduleService {
     public void cancel(Long scheduleId) {
         scheduleRepository.deleteById(scheduleId);
     }
+
+    @Transactional
+    public void changeScheduleStaff(Schedule schedule, Staff staff) {
+        schedule.changeScheduleStaff(staff);
+    }
 }

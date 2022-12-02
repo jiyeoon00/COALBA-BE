@@ -62,5 +62,13 @@ public class SubstituteReq extends BaseTimeEntity {
         this.status = SubstituteReqStatus.REFUSAL;
     }
 
+    public void approveReq() {
+        this.status = SubstituteReqStatus.APPROVAL;
+    }
+
+    public void disapproveReq() {
+        this.status = SubstituteReqStatus.DISAPPROVAL;
+    }
+
 
 }
