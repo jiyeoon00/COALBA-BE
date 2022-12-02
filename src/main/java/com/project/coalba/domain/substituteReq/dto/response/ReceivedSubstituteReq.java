@@ -8,8 +8,8 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
-public class SentSubstituteReq {
+public class ReceivedSubstituteReq {
     private Integer year;
     private Integer month;
-    private List<SentDetailSubstituteReq> substituteReqList = new ArrayList<>();
+    private List<ReceivedDetailSubstituteReq> substituteReqList = new ArrayList<>();
 }

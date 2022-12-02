@@ -2,13 +2,15 @@ package com.project.coalba.domain.substituteReq.repository;
 
 import com.project.coalba.domain.profile.entity.QStaff;
 import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.substituteReq.dto.response.DetailSentSubstituteReqs;
+import com.project.coalba.domain.substituteReq.dto.response.ReceivedDetailSubstituteReq;
+import com.project.coalba.domain.substituteReq.dto.response.ReceivedSubstituteReq;
+import com.project.coalba.domain.substituteReq.dto.response.SentDetailSubstituteReq;
 import com.project.coalba.domain.substituteReq.dto.response.SentSubstituteReq;
-import com.querydsl.core.ResultTransformer;
+import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
+import com.project.coalba.domain.substituteReq.repository.dto.DetailSubstituteReqDto;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.QBean;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -51,92 +53,82 @@ public class SubstituteRepositoryImpl implements SubstituteReqRepositoryCustom{
                 .build();
     }
 
-
-//    @Override
-//    public List<SentSubstituteReq> getSentSubstituteReqs(Staff currentStaff) {
-//        StringTemplate formattedDate = Expressions.stringTemplate(
-//                "DATE_FORMAT({0}, '{1s}')"
-//                , substituteReq.createdDate
-//                , ConstantImpl.create("%Y-%m"));
-//
-//        List<SentSubstituteReq> sentSubstituteReqs = queryFactory.select(substituteReq, workspace, staff, schedule)
-//                .from(substituteReq)
-//                .where(substituteReq.sender.eq(currentStaff))
-//                .join(substituteReq.receiver, staff)
-//                .join(substituteReq.schedule, schedule)
-//                .join(schedule.workspace, workspace)
-//                .transform(
-//                        groupBy(formattedDate).list(
-//                                Projections.fields(
-//                                        SentSubstituteReq.class,
-//                                        substituteReq.createdDate.year().as("year"),
-//                                        substituteReq.createdDate.month().as("month"),
-//                                        list(
-//                                                Projections.constructor(
-//                                                        DetailSentSubstituteReqs.class,
-//                                                        Projections.fields(
-//                                                                DetailSentSubstituteReqDto.class,
-//                                                                workspace.as("workspace"),
-//                                                                substituteReq.as("substituteReq"),
-//                                                                staff.as("receiver"),
-//                                                                schedule.as("schedule")
-//                                                        )
-//                                                )
-//                                        ).as("substituteReqList")
-//                                )
-//                        )
-//                );
-//
-//        JPAQuery<Tuple> join = queryFactory.select(substituteReq, workspace, staff, schedule)
-//                .from(substituteReq)
-//                .where(substituteReq.sender.eq(currentStaff))
-//                .join(substituteReq.receiver, staff)
-//                .join(substituteReq.schedule, schedule)
-//                .join(schedule.workspace, workspace);
-//
-//        return sentSubstituteReqs;
-//    }
-
-    @Override
-    public List<SentSubstituteReq> getSentSubstituteReqs(Staff currentStaff) {
-        StringTemplate formattedDate = Expressions.stringTemplate(
+    private StringTemplate getDateFormatTemplate(){
+        return Expressions.stringTemplate(
                 "DATE_FORMAT({0}, '{1s}')"
                 , substituteReq.createdDate
                 , ConstantImpl.create("%Y-%m"));
+    }
 
-        JPAQuery<Tuple> join = queryFactory.select(substituteReq, workspace, staff, schedule)
+    @Override
+    public List<SentSubstituteReq> getSentSubstituteReqs(Staff currentStaff) {
+        StringTemplate formattedDate = getDateFormatTemplate();
+
+        List<SentSubstituteReq> sentSubstituteReqs = queryFactory.select(substituteReq, workspace, staff, schedule)
                 .from(substituteReq)
                 .where(substituteReq.sender.eq(currentStaff))
                 .join(substituteReq.receiver, staff)
                 .join(substituteReq.schedule, schedule)
-                .join(schedule.workspace, workspace);
-
-        ResultTransformer<List<SentSubstituteReq>> alist = groupBy(formattedDate).list(
-                Projections.fields(
-                        SentSubstituteReq.class,
-                        substituteReq.createdDate.year().as("year"),
-                        substituteReq.createdDate.month().as("month"),
-                        list(
-                                Projections.constructor(
-                                        DetailSentSubstituteReqs.class,
-                                        Projections.fields(
-                                                DetailSentSubstituteReqDto.class,
-                                                workspace.as("workspace"),
-                                                substituteReq.as("substituteReq"),
-                                                staff.as("receiver"),
-                                                schedule.as("schedule")
-                                        )
+                .join(schedule.workspace, workspace)
+                .transform(
+                        groupBy(formattedDate).list(
+                                Projections.fields(
+                                        SentSubstituteReq.class,
+                                        substituteReq.createdDate.year().as("year"),
+                                        substituteReq.createdDate.month().as("month"),
+                                        list(
+                                                Projections.constructor(
+                                                        SentDetailSubstituteReq.class,
+                                                        Projections.fields(
+                                                                SubstituteReqDto.class,
+                                                                workspace.as("workspace"),
+                                                                substituteReq.as("substituteReq"),
+                                                                staff.as("staff"),
+                                                                schedule.as("schedule")
+                                                        )
+                                                )
+                                        ).as("substituteReqList")
                                 )
-                        ).as("substituteReqList")
-                )
-        );
-
-        List<SentSubstituteReq> sentSubstituteReqs =
-                join.transform(alist);
+                        )
+                );
 
         return sentSubstituteReqs;
     }
-    
-    
+
+    @Override
+    public List<ReceivedSubstituteReq> getReceivedSubstituteReqs(Staff currentStaff) {
+        StringTemplate formattedDate = getDateFormatTemplate();
+
+        List<ReceivedSubstituteReq> receivedSubstituteReqs = queryFactory.select(substituteReq, workspace, staff, schedule)
+                .from(substituteReq)
+                .where(substituteReq.receiver.eq(currentStaff))
+                .join(substituteReq.sender, staff)
+                .join(substituteReq.schedule, schedule)
+                .join(schedule.workspace, workspace)
+                .transform(
+                        groupBy(formattedDate).list(
+                                Projections.fields(
+                                        ReceivedSubstituteReq.class,
+                                        substituteReq.createdDate.year().as("year"),
+                                        substituteReq.createdDate.month().as("month"),
+                                        list(
+                                                Projections.constructor(
+                                                        ReceivedDetailSubstituteReq.class,
+                                                        Projections.fields(
+                                                                SubstituteReqDto.class,
+                                                                workspace.as("workspace"),
+                                                                substituteReq.as("substituteReq"),
+                                                                staff.as("staff"),
+                                                                schedule.as("schedule")
+                                                        )
+                                                )
+                                        ).as("substituteReqList")
+                                )
+                        )
+                );
+
+        return receivedSubstituteReqs;
+    }
+
 
 }

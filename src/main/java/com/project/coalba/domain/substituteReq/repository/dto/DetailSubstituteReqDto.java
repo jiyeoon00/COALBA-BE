@@ -1,4 +1,4 @@
-package com.project.coalba.domain.substituteReq.repository;
+package com.project.coalba.domain.substituteReq.repository.dto;
 
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;

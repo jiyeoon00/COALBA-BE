@@ -3,10 +3,11 @@ package com.project.coalba.domain.substituteReq.service;
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
+import com.project.coalba.domain.substituteReq.dto.response.ReceivedSubstituteReq;
 import com.project.coalba.domain.substituteReq.dto.response.SentSubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
-import com.project.coalba.domain.substituteReq.repository.DetailSubstituteReqDto;
+import com.project.coalba.domain.substituteReq.repository.dto.DetailSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.repository.SubstituteRepository;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
@@ -71,5 +72,11 @@ public class StaffSubstituteReqService {
     public List<SentSubstituteReq> getSentSubstituteReqs() {
         Staff currentStaff = profileUtil.getCurrentStaff();
         return substituteRepository.getSentSubstituteReqs(currentStaff);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReceivedSubstituteReq> getReceivedSubstituteReqs() {
+        Staff currentStaff = profileUtil.getCurrentStaff();
+        return substituteRepository.getReceivedSubstituteReqs(currentStaff);
     }
 }
