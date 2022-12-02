@@ -43,13 +43,13 @@ public class StaffSubstituteReqService {
     }
 
     @Transactional
-    public ResponseEntity deleteSubstituteReq(Long substituteReqId) {
+    public ResponseEntity cancelSubstituteReq(Long substituteReqId) {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         if(substituteReq.isWating()) {
-            substituteRepository.delete(substituteReq);
-            return ResponseEntity.ok("삭제되었습니다.");
+            substituteReq.cancel();
+            return ResponseEntity.ok("취소되었습니다.");
         }else {
-            return ResponseEntity.badRequest().body("이미 수락 혹은 거절된 요청이므로 삭제할 수 없습니다.");
+            return ResponseEntity.badRequest().body("이미 수락 혹은 거절된 요청이므로 취소할 수 없습니다.");
         }
     }
 

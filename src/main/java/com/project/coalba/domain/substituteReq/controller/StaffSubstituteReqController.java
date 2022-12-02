@@ -28,9 +28,9 @@ public class StaffSubstituteReqController {
         staffSubstituteReqService.createSubstituteReq(schedule, request.getReceiverId(), request.getReqMessage());
     }
 
-    @DeleteMapping("/staff/substituteReqs/{substituteReqId}/from")
-    public ResponseEntity deleteSubstituteReq(@PathVariable Long substituteReqId) {
-        return staffSubstituteReqService.deleteSubstituteReq(substituteReqId);
+    @PutMapping("/staff/substituteReqs/{substituteReqId}/from")
+    public ResponseEntity cancelSubstituteReq(@PathVariable Long substituteReqId) {
+        return staffSubstituteReqService.cancelSubstituteReq(substituteReqId);
     }
 
     @GetMapping("/staff/substituteReqs/{substituteReqId}")
