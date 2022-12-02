@@ -33,7 +33,7 @@ public class StaffWorkspaceController {
                                                                                @RequestParam Long scheduleId) {
         Schedule schedule = scheduleService.getSchedule(scheduleId);
         List<Staff> staffList = staffProfileService.getStaffListInWorkspaceAndPossibleForDateTime(workspaceId,
-                schedule.getScheduleDate(), schedule.getScheduleStartTime(), schedule.getScheduleEndTime());
+                schedule.getScheduleStartDateTime(), schedule.getScheduleEndDateTime());
         return mapper.toDto(() -> staffList);
     }
 }

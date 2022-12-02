@@ -5,8 +5,7 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.project.coalba.domain.profile.entity.QStaff.*;
@@ -19,7 +18,7 @@ public class StaffProfileRepositoryImpl implements StaffProfileRepositoryCustom 
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Staff> findAllByWorkspaceIdAndDateTime(Long workspaceId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+    public List<Staff> findAllByWorkspaceIdAndDateTime(Long workspaceId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
         return queryFactory
                 .selectFrom(staff)
                 .where(staff.id.in(
@@ -28,9 +27,13 @@ public class StaffProfileRepositoryImpl implements StaffProfileRepositoryCustom 
                                 .where(workspaceMember.workspace.id.eq(workspaceId))),
                         JPAExpressions.selectFrom(schedule)
                                 .where(schedule.staff.id.eq(staff.id),
-                                        schedule.scheduleDate.eq(date),
-                                        schedule.scheduleStartTime.between(startTime, endTime).or(
-                                                schedule.scheduleEndTime.between(startTime, endTime)
+                                        schedule.scheduleStartDateTime.goe(startDateTime).and(
+                                                schedule.scheduleStartDateTime.lt(endDateTime)
+                                        )
+                                        .or(
+                                                schedule.scheduleEndDateTime.gt(startDateTime).and(
+                                                        schedule.scheduleEndDateTime.loe(endDateTime)
+                                                )
                                         )
                                 )
                                 .notExists()

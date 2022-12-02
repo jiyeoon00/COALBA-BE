@@ -54,7 +54,7 @@ public class BossWorkspaceController {
     public WorkspaceStaffListResponse getWorkspaceStaffListPossibleForDateTime(@PathVariable Long workspaceId,
                                                                                SearchDateTime searchDateTime) {
         List<Staff> staffList = staffProfileService.getStaffListInWorkspaceAndPossibleForDateTime(workspaceId,
-                searchDateTime.getScheduleDate(), searchDateTime.getScheduleStartTime(), searchDateTime.getScheduleEndTime());
+                searchDateTime.getScheduleStartDateTime(), searchDateTime.getScheduleEndDateTime());
         return mapper.toDto(() -> staffList);
     }
 
