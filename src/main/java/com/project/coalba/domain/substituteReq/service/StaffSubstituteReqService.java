@@ -3,6 +3,7 @@ package com.project.coalba.domain.substituteReq.service;
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
+import com.project.coalba.domain.substituteReq.dto.response.SentSubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
 import com.project.coalba.domain.substituteReq.repository.DetailSubstituteReqDto;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -65,6 +67,9 @@ public class StaffSubstituteReqService {
         return substituteRepository.getSubstituteReq(substituteReqId);
     }
 
-
-
+    @Transactional(readOnly = true)
+    public List<SentSubstituteReq> getSentSubstituteReqs() {
+        Staff currentStaff = profileUtil.getCurrentStaff();
+        return substituteRepository.getSentSubstituteReqs(currentStaff);
+    }
 }

@@ -1,5 +1,6 @@
 package com.project.coalba.domain.substituteReq.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
@@ -9,6 +10,7 @@ import com.project.coalba.domain.workspace.entity.Workspace;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
@@ -23,8 +25,10 @@ public class DetailSubstituteReqResponse {
     private String senderName;
     private Long workspaceId;
     private String workspaceName;
-    private LocalTime startDateTime;
-    private LocalTime endDateTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd HH:mm", timezone = "Asia/Seoul")
+    private LocalDateTime startDateTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd HH:mm", timezone = "Asia/Seoul")
+    private LocalDateTime endDateTime;
     private String reqMessage;
     private SubstituteReqStatus status;
 
@@ -44,8 +48,8 @@ public class DetailSubstituteReqResponse {
         this.senderName = sender.getRealName();
         this.workspaceId = workspace.getId();
         this.workspaceName = workspace.getName();
-        this.startDateTime = schedule.getScheduleStartTime();
-        this.endDateTime = schedule.getScheduleEndTime();
+        this.startDateTime = schedule.getScheduleStartDateTime();
+        this.endDateTime = schedule.getScheduleEndDateTime();
         this.reqMessage = substituteReq.getReqMessage();
         this.status = substituteReq.getStatus();
     }
