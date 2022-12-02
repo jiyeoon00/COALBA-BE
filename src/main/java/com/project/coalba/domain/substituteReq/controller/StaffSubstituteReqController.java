@@ -15,48 +15,49 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/staff/substituteReqs")
 @RequiredArgsConstructor
 @RestController
 public class StaffSubstituteReqController {
     private final StaffSubstituteReqService staffSubstituteReqService;
     private final ScheduleService scheduleService;
 
-    @PostMapping("/staff/substituteReqs/{scheduleId}/from")
+    @PostMapping("/{scheduleId}/from")
     public void createSubstituteReq(@PathVariable Long scheduleId,
                                     @RequestBody CreateSubstituteReqRequest request) {
         Schedule schedule = scheduleService.getSchedule(scheduleId);
         staffSubstituteReqService.createSubstituteReq(schedule, request.getReceiverId(), request.getReqMessage());
     }
 
-    @PutMapping("/staff/substituteReqs/{substituteReqId}/from")
+    @PutMapping("/{substituteReqId}/from")
     public ResponseEntity cancelSubstituteReq(@PathVariable Long substituteReqId) {
         return staffSubstituteReqService.cancelSubstituteReq(substituteReqId);
     }
 
-    @GetMapping("/staff/substituteReqs/{substituteReqId}")
+    @GetMapping("/{substituteReqId}")
     public DetailSubstituteReqResponse getDetailSentSubstituteReqs(@PathVariable Long substituteReqId){
         DetailSubstituteReqDto detailSubstituteReqDto = staffSubstituteReqService.getDetailSubstituteReqs(substituteReqId);
         return new DetailSubstituteReqResponse(detailSubstituteReqDto);
     }
 
-    @GetMapping("/staff/substituteReqs/from")
+    @GetMapping("/from")
     public SubstituteReqsResponse getSentSubstituteReqs() {
         List<SentSubstituteReq> sentSubstituteReqs = staffSubstituteReqService.getSentSubstituteReqs();
         return new SubstituteReqsResponse(sentSubstituteReqs);
     }
 
-    @GetMapping("/staff/substituteReqs/to")
+    @GetMapping("/to")
     public SubstituteReqsResponse getReceivedSubstituteReqs() {
         List<ReceivedSubstituteReq> receivedSubstituteReqs = staffSubstituteReqService.getReceivedSubstituteReqs();
         return new SubstituteReqsResponse(receivedSubstituteReqs);
     }
 
-    @PutMapping("/staff/substituteReqs/{substituteReqId}/accept")
+    @PutMapping("/{substituteReqId}/accept")
     public ResponseEntity acceptSubstituteReq(@PathVariable Long substituteReqId) {
         return staffSubstituteReqService.acceptSubstituteReq(substituteReqId);
     }
 
-    @PutMapping("/staff/substituteReqs/{substituteReqId}/reject")
+    @PutMapping("/{substituteReqId}/reject")
     public ResponseEntity rejectSubstituteReq(@PathVariable Long substituteReqId) {
         return staffSubstituteReqService.rejectSubstituteReq(substituteReqId);
     }

@@ -7,36 +7,34 @@ import com.project.coalba.domain.substituteReq.repository.dto.DetailSubstituteRe
 import com.project.coalba.domain.substituteReq.service.BossSubstituteReqService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/boss/substituteReqs")
 @RequiredArgsConstructor
 @RestController
 public class BossSubstituteReqController {
     private final BossSubstituteReqService bossSubstituteReqService;
 
-    @GetMapping("/boss/substituteReqs/{substituteReqId}")
+    @GetMapping("/{substituteReqId}")
     public DetailSubstituteReqResponse getDetailSubstituteReqs(@PathVariable Long substituteReqId){
         DetailSubstituteReqDto detailSubstituteReqDto = bossSubstituteReqService.getDetailSubstituteReq(substituteReqId);
         return new DetailSubstituteReqResponse(detailSubstituteReqDto);
     }
 
-    @GetMapping("/boss/substituteReqs")
+    @GetMapping("/")
     public SubstituteReqsResponse getSubstituteReqs() {
         List<BothSubstituteReq> bothSubstituteReqs = bossSubstituteReqService.getSubstituteReqs();
         return new SubstituteReqsResponse(bothSubstituteReqs);
     }
 
-    @PutMapping("/boss/substituteReqs/{substituteReqId}/accept")
+    @PutMapping("/{substituteReqId}/accept")
     public ResponseEntity approveSubstituteReq(@PathVariable Long substituteReqId) {
         return bossSubstituteReqService.approveSubstituteReq(substituteReqId);
     }
 
-    @PutMapping("/boss/substituteReqs/{substituteReqId}/reject")
+    @PutMapping("/{substituteReqId}/reject")
     public ResponseEntity disapproveSubstituteReq(@PathVariable Long substituteReqId) {
         return bossSubstituteReqService.disapproveSubstituteReq(substituteReqId);
     }
