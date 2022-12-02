@@ -25,11 +25,11 @@ public class SentDetailSubstituteReq {
     private LocalDateTime endDateTime;
     private SubstituteReqStatus status;
 
-    public SentDetailSubstituteReq(SubstituteReqDto detailSentSubstituteReqDto) {
-        SubstituteReq substituteReq = detailSentSubstituteReqDto.getSubstituteReq();
-        Staff receiver = detailSentSubstituteReqDto.getStaff();
-        Schedule schedule = detailSentSubstituteReqDto.getSchedule();
-        Workspace workspace = detailSentSubstituteReqDto.getWorkspace();
+    public SentDetailSubstituteReq(SubstituteReqDto substituteReqDto) {
+        SubstituteReq substituteReq = substituteReqDto.getSubstituteReq();
+        Staff receiver = substituteReqDto.getStaff();
+        Schedule schedule = substituteReqDto.getSchedule();
+        Workspace workspace = substituteReqDto.getWorkspace();
 
         this.substituteReqId = substituteReq.getId();
         this.receiverId = receiver.getId();
