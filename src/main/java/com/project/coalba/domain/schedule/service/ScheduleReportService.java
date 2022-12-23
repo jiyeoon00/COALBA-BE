@@ -1,8 +1,7 @@
 package com.project.coalba.domain.schedule.service;
 
 import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.schedule.dto.response.BossWorkReportResponse;
-import com.project.coalba.domain.schedule.dto.response.StaffWorkReportResponse;
+import com.project.coalba.domain.schedule.dto.WorkReportServiceDto;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.repository.ScheduleRepository;
 import com.project.coalba.domain.workspace.entity.WorkspaceMember;
@@ -14,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import static java.time.Month.*;
 import static java.util.stream.Collectors.groupingBy;
 
 @RequiredArgsConstructor
@@ -26,35 +27,30 @@ public class ScheduleReportService {
     private final WorkspaceMemberRepository workspaceMemberRepository;
     private final ProfileUtil profileUtil;
 
-    public List<StaffWorkReportResponse> getStaffWorkReportList(int year) {
+    public Map<Integer, WorkReportServiceDto> getStaffWorkReportList(int year) {
         Map<Integer, List<Schedule>> monthlyScheduleList = getMyMonthlyScheduleListForYear(year);
-        List<StaffWorkReportResponse> workReportList = initStaffWorkReportList();
+        Map<Integer, WorkReportServiceDto> monthlyWorkReport = new HashMap<>();
 
-        for (StaffWorkReportResponse workReport : workReportList) {
-            List<Schedule> scheduleList = monthlyScheduleList.get(workReport.getMonth());
-            if (scheduleList == null) continue;
-
-            long totalWorkTimeMin = calculateTotalWorkTimeMin(scheduleList);
-            long totalWorkPay = calculateTotalWorkPay(scheduleList);
-            workReport.updateWorkReport(totalWorkTimeMin, totalWorkPay);
+        for (int month = JANUARY.getValue(); month <= DECEMBER.getValue(); month++) {
+            List<Schedule> scheduleList = monthlyScheduleList.get(month);
+            WorkReportServiceDto workReportServiceDto = getWorkReportServiceDto(scheduleList);
+            monthlyWorkReport.put(month, workReportServiceDto);
         }
-        return workReportList;
+        return monthlyWorkReport;
     }
 
-    public List<BossWorkReportResponse> getBossWorkReportList(Long workspaceId, int year, int month) {
+    public Map<Staff, WorkReportServiceDto> getBossWorkReportList(Long workspaceId, int year, int month) {
         Map<Long, List<Schedule>> scheduleListByStaff = getWorkspaceScheduleListByStaffForYearAndMonth(workspaceId, year, month);
-        List<WorkspaceMember> workspaceMemberList = workspaceMemberRepository.findAllByWorkspaceIdFetch(workspaceId);
-        List<BossWorkReportResponse> workReportList = initBossWorkReportList(workspaceMemberList);
+        List<Staff> staffList = workspaceMemberRepository.findAllByWorkspaceIdFetch(workspaceId)
+                .stream().map(WorkspaceMember::getStaff).collect(Collectors.toList());
+        Map<Staff, WorkReportServiceDto> workReportByStaff = new HashMap<>();
 
-        for (BossWorkReportResponse workReport : workReportList) {
-            List<Schedule> scheduleList = scheduleListByStaff.get(workReport.getStaffId());
-            if (scheduleList == null) continue;
-
-            long totalWorkTimeMin = calculateTotalWorkTimeMin(scheduleList);
-            long totalWorkPay = calculateTotalWorkPay(scheduleList);
-            workReport.updateWorkReport(totalWorkTimeMin, totalWorkPay);
+        for (Staff staff : staffList) {
+            List<Schedule> scheduleList = scheduleListByStaff.get(staff.getId());
+            WorkReportServiceDto workReportServiceDto = getWorkReportServiceDto(scheduleList);
+            workReportByStaff.put(staff, workReportServiceDto);
         }
-        return workReportList;
+        return workReportByStaff;
     }
 
     private Map<Integer, List<Schedule>> getMyMonthlyScheduleListForYear(int year) {
@@ -70,28 +66,12 @@ public class ScheduleReportService {
     private Map<Long, List<Schedule>> getWorkspaceScheduleListByStaffForYearAndMonth(Long workspaceId, int year, int month) {
         LocalDateTime monthStart = LocalDateTime.of(year, month, 1, 0, 0, 0);
         LocalDate monthStartDate = monthStart.toLocalDate();
-        LocalDateTime monthEnd = monthStartDate.plusDays(monthStartDate.lengthOfMonth() - 1).atTime(23, 59, 59);
+        LocalDate monthEndDate = monthStartDate.plusDays(monthStartDate.lengthOfMonth() - 1);
+        LocalDateTime monthEnd = monthEndDate.atTime(23, 59, 59);
 
         List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateTimeRangeAndEndStatus(workspaceId, monthStart, monthEnd);
         return workspaceScheduleList.stream()
                 .collect(groupingBy(schedule -> schedule.getStaff().getId()));
-    }
-
-    private List<StaffWorkReportResponse> initStaffWorkReportList() {
-        List<StaffWorkReportResponse> workReportList = new ArrayList<>();
-        for (int month = Month.JANUARY.getValue(); month <= Month.DECEMBER.getValue(); month++) {
-            workReportList.add(new StaffWorkReportResponse(month));
-        }
-        return workReportList;
-    }
-
-    private List<BossWorkReportResponse> initBossWorkReportList(List<WorkspaceMember> workspaceMemberList) {
-        List<BossWorkReportResponse> workReportList = new ArrayList<>();
-        for (WorkspaceMember workspaceMember : workspaceMemberList) {
-            Staff staff = workspaceMember.getStaff();
-            workReportList.add(new BossWorkReportResponse(staff.getId(), staff.getImageUrl(), staff.getRealName()));
-        }
-        return workReportList;
     }
 
     private long calculateTotalWorkTimeMin(List<Schedule> scheduleList) {
@@ -116,5 +96,13 @@ public class ScheduleReportService {
         Long workTimeMin = calculateWorkTimeMin(startDateTime, endDateTime);
         double workTimeHour = workTimeMin / 60.;
         return (long) workTimeHour * hourlyWage;
+    }
+
+    private WorkReportServiceDto getWorkReportServiceDto(List<Schedule> scheduleList) {
+        if (scheduleList == null) return new WorkReportServiceDto();
+
+        long totalWorkTimeMin = calculateTotalWorkTimeMin(scheduleList);
+        long totalWorkPay = calculateTotalWorkPay(scheduleList);
+        return new WorkReportServiceDto(totalWorkTimeMin, totalWorkPay);
     }
 }

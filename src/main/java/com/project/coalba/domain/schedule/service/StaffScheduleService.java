@@ -1,6 +1,6 @@
 package com.project.coalba.domain.schedule.service;
 
-import com.project.coalba.domain.schedule.dto.WorkspaceScheduleServiceDto;
+import com.project.coalba.domain.schedule.dto.ScheduleServiceDto;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
 import com.project.coalba.domain.schedule.repository.ScheduleRepository;
@@ -28,13 +28,13 @@ public class StaffScheduleService {
         return scheduleRepository.findAllByStaffIdAndDate(staffId, selectedDate);
     }
 
-    public List<WorkspaceScheduleServiceDto> getWorkspaceScheduleDtoList(Long workspaceId, LocalDate selectedDate) {
+    public List<ScheduleServiceDto> getWorkspaceScheduleDtoList(Long workspaceId, LocalDate selectedDate) {
         List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDate(workspaceId, selectedDate);
         Long staffId = profileUtil.getCurrentStaff().getId();
         return workspaceScheduleList.stream()
                 .map(schedule -> {
                     boolean isMySchedule = Objects.equals(schedule.getStaff().getId(), staffId);
-                    return new WorkspaceScheduleServiceDto(schedule, isMySchedule);
+                    return new ScheduleServiceDto(schedule, isMySchedule);
                 })
                 .collect(Collectors.toList());
     }

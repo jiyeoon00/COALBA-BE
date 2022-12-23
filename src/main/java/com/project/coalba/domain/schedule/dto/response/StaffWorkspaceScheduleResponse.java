@@ -7,24 +7,34 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter @Builder
 public class StaffWorkspaceScheduleResponse {
 
-    private Long scheduleId;
+    private int selectedDay;
 
-    private Long staffId;
+    private List<SubResponse> selectedScheduleList;
 
-    private String staffName;
+    @AllArgsConstructor
+    @Getter @Builder
+    public static class SubResponse {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-    private LocalTime scheduleStartTime;
+        private Long scheduleId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-    private LocalTime scheduleEndTime;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        private LocalTime scheduleStartTime;
 
-    private ScheduleStatus scheduleStatus;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        private LocalTime scheduleEndTime;
 
-    private Boolean isMySchedule;
+        private ScheduleStatus scheduleStatus;
+
+        private Long staffId;
+
+        private String staffName;
+
+        private Boolean isMySchedule;
+    }
 }

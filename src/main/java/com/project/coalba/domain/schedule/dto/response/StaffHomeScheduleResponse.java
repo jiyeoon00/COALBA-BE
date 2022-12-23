@@ -7,28 +7,42 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter @Builder
 public class StaffHomeScheduleResponse {
 
-    private Long scheduleId;
+    private int selectedYear;
 
-    private Long workspaceId;
+    private int selectedMonth;
 
-    private String workspaceName;
+    private int selectedDay;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-    private LocalTime scheduleStartTime;
+    private List<SubResponse> selectedScheduleList;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-    private LocalTime scheduleEndTime;
+    @AllArgsConstructor
+    @Getter @Builder
+    public static class SubResponse {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-    private LocalTime logicalStartTime;
+        private Long scheduleId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-    private LocalTime logicalEndTime;
+        private Long workspaceId;
 
-    private ScheduleStatus scheduleStatus;
+        private String workspaceName;
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        private LocalTime scheduleStartTime;
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        private LocalTime scheduleEndTime;
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        private LocalTime logicalStartTime;
+
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
+        private LocalTime logicalEndTime;
+
+        private ScheduleStatus scheduleStatus;
+    }
 }

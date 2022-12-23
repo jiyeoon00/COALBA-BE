@@ -1,40 +1,37 @@
 package com.project.coalba.domain.schedule.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
-import java.text.DecimalFormat;
+import java.util.List;
 
-import static org.joda.time.DateTimeConstants.*;
-
-@Getter
+@AllArgsConstructor
+@Getter @Builder
 public class BossWorkReportResponse {
 
-    private static final DecimalFormat formatter = new DecimalFormat("#,###");
+    private int selectedYear;
 
-    private Long staffId;
+    private int selectedMonth;
 
-    private String imageUrl;
+    private Long selectedWorkspaceId;
 
-    private String name;
+    private List<SubResponse> workReportList;
 
-    private long totalWorkTimeHour;
+    @AllArgsConstructor
+    @Getter @Builder
+    public static class SubResponse {
 
-    private long totalWorkTimeMin;
+        private Long staffId;
 
-    private String totalWorkPay;
+        private String staffImageUrl;
 
-    public BossWorkReportResponse(Long staffId, String imageUrl, String name) {
-        this.staffId = staffId;
-        this.imageUrl = imageUrl;
-        this.name = name;
-        this.totalWorkTimeHour = 0;
-        this.totalWorkTimeMin = 0;
-        this.totalWorkPay = formatter.format(0);
-    }
+        private String staffName;
 
-    public void updateWorkReport(long totalWorkTimeMin, long totalWorkPay) {
-        this.totalWorkTimeHour = totalWorkTimeMin / MINUTES_PER_HOUR;
-        this.totalWorkTimeMin = totalWorkTimeMin % MINUTES_PER_HOUR;
-        this.totalWorkPay = formatter.format(totalWorkPay);
+        private long totalWorkTimeHour;
+
+        private long totalWorkTimeMin;
+
+        private String totalWorkPay;
     }
 }

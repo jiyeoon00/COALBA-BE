@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public class WorkspaceScheduleServiceDto {
+public class ScheduleServiceDto {
 
     @Getter
     private Schedule schedule;
