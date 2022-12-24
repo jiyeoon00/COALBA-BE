@@ -1,6 +1,7 @@
 package com.project.coalba.domain.schedule.mapper;
 
 import com.project.coalba.domain.profile.entity.Staff;
+import com.project.coalba.domain.schedule.dto.ScheduleCreateServiceDto;
 import com.project.coalba.domain.schedule.dto.ScheduleServiceDto;
 import com.project.coalba.domain.schedule.dto.WorkReportServiceDto;
 import com.project.coalba.domain.schedule.dto.request.ScheduleRequest;
@@ -22,19 +23,8 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface ScheduleMapper {
 
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "logicalStartDateTime", ignore = true),
-            @Mapping(target = "logicalEndDateTime", ignore = true),
-            @Mapping(target = "physicalStartDateTime", ignore = true),
-            @Mapping(target = "physicalEndDateTime", ignore = true),
-            @Mapping(target = "status", ignore = true),
-            @Mapping(target = "workspace", ignore = true),
-            @Mapping(target = "staff", ignore = true),
-            @Mapping(target = "substituteReqList", ignore = true),
-            @Mapping(target = "timecardReq", ignore = true),
-    })
-    Schedule toEntity(ScheduleRequest scheduleRequest);
+    @Mappings({})
+    ScheduleCreateServiceDto toServiceDto(ScheduleRequest scheduleRequest);
 
     @Mappings({
             @Mapping(source = "id", target = "scheduleId"),

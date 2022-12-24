@@ -1,15 +1,12 @@
 package com.project.coalba.domain.schedule.controller;
 
-import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.profile.service.StaffProfileService;
+import com.project.coalba.domain.schedule.dto.ScheduleCreateServiceDto;
 import com.project.coalba.domain.schedule.dto.request.ScheduleRequest;
 import com.project.coalba.domain.schedule.dto.response.BossHomeScheduleResponse;
 import com.project.coalba.domain.schedule.dto.response.BossWorkspaceScheduleResponse;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.mapper.ScheduleMapper;
 import com.project.coalba.domain.schedule.service.BossScheduleService;
-import com.project.coalba.domain.workspace.entity.Workspace;
-import com.project.coalba.domain.workspace.service.BossWorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +22,6 @@ import java.util.List;
 public class BossScheduleController {
 
     private final BossScheduleService bossScheduleService;
-    private final BossWorkspaceService bossWorkspaceService;
-    private final StaffProfileService staffProfileService;
     private final ScheduleMapper mapper;
 
     @GetMapping("/home/selected")
@@ -47,10 +42,8 @@ public class BossScheduleController {
 
     @PostMapping
     public ResponseEntity<Void> saveSchedule(@Validated @RequestBody ScheduleRequest scheduleRequest) {
-        Schedule schedule = mapper.toEntity(scheduleRequest);
-        Workspace workspace = bossWorkspaceService.getWorkspace(scheduleRequest.getWorkspaceId());
-        Staff staff = staffProfileService.getStaff(scheduleRequest.getStaffId());
-        bossScheduleService.save(schedule, workspace, staff);
+        ScheduleCreateServiceDto serviceDto = mapper.toServiceDto(scheduleRequest);
+        bossScheduleService.save(serviceDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

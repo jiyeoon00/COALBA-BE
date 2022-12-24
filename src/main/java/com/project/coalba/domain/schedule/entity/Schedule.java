@@ -63,14 +63,6 @@ public class Schedule extends BaseTimeEntity {
     @OneToOne(mappedBy = "schedule")
     private TimecardReq timecardReq;
 
-    public void mapWorkspace(Workspace workspace) {
-        this.workspace = workspace;
-    }
-
-    public void mapStaff(Staff staff) {
-        this.staff = staff;
-    }
-
     public void onDuty() {
         status = ScheduleStatus.ON_DUTY;
     }
