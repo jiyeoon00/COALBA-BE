@@ -3,7 +3,8 @@ package com.project.coalba.domain.profile.service;
 import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.repository.BossProfileRepository;
-import com.project.coalba.domain.profile.service.dto.ProfileServiceDto;
+import com.project.coalba.domain.profile.service.dto.ProfileCreateServiceDto;
+import com.project.coalba.domain.profile.service.dto.ProfileUpdateServiceDto;
 import com.project.coalba.global.utils.ProfileUtil;
 import com.project.coalba.global.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,13 @@ public class BossProfileService {
     }
 
     @Transactional
-    public void saveMyBossProfile(ProfileServiceDto serviceDto) {
+    public void saveMyBossProfile(ProfileCreateServiceDto serviceDto) {
         User user = userUtil.getCurrentUser();
         bossProfileRepository.save(serviceDto.toBossEntity(user));
     }
 
     @Transactional
-    public void updateMyBossProfile(ProfileServiceDto serviceDto) {
+    public void updateMyBossProfile(ProfileUpdateServiceDto serviceDto) {
         Boss boss = profileUtil.getCurrentBoss();
         boss.update(serviceDto.getRealName(), serviceDto.getPhoneNumber(), serviceDto.getBirthDate(), serviceDto.getImageUrl());
     }

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 @AllArgsConstructor
 @Getter
-public class ProfileServiceDto {
+public class ProfileCreateServiceDto {
 
     private String realName;
 

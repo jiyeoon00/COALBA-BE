@@ -3,7 +3,8 @@ package com.project.coalba.domain.profile.service;
 import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.repository.StaffProfileRepository;
-import com.project.coalba.domain.profile.service.dto.ProfileServiceDto;
+import com.project.coalba.domain.profile.service.dto.ProfileCreateServiceDto;
+import com.project.coalba.domain.profile.service.dto.ProfileUpdateServiceDto;
 import com.project.coalba.global.utils.ProfileUtil;
 import com.project.coalba.global.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +28,13 @@ public class StaffProfileService {
     }
 
     @Transactional
-    public void saveMyStaffProfile(ProfileServiceDto serviceDto) {
+    public void saveMyStaffProfile(ProfileCreateServiceDto serviceDto) {
         User user = userUtil.getCurrentUser();
         staffProfileRepository.save(serviceDto.toStaffEntity(user));
     }
 
     @Transactional
-    public void updateMyStaffProfile(ProfileServiceDto serviceDto) {
+    public void updateMyStaffProfile(ProfileUpdateServiceDto serviceDto) {
         Staff staff = profileUtil.getCurrentStaff();
         staff.update(serviceDto.getRealName(), serviceDto.getPhoneNumber(), serviceDto.getBirthDate(), serviceDto.getImageUrl());
     }
