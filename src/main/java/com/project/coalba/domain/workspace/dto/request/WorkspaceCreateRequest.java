@@ -7,7 +7,7 @@ import lombok.Getter;
 import javax.validation.constraints.*;
 
 @Getter
-public class WorkspaceRequest {
+public class WorkspaceCreateRequest {
 
     @NotBlank @Size(max = 100)
     private String name;

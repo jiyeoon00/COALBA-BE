@@ -1,6 +1,6 @@
 package com.project.coalba.domain.schedule.validation;
 
-import com.project.coalba.domain.schedule.dto.request.ScheduleRequest;
+import com.project.coalba.domain.schedule.dto.request.ScheduleCreateRequest;
 
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -24,10 +24,10 @@ public @interface ValidScheduleRequest {
 
     Class<? extends Payload>[] payload() default { };
 
-    class ScheduleRequestValidator implements ConstraintValidator<ValidScheduleRequest, ScheduleRequest> {
+    class ScheduleRequestValidator implements ConstraintValidator<ValidScheduleRequest, ScheduleCreateRequest> {
 
         @Override
-        public boolean isValid(ScheduleRequest value, ConstraintValidatorContext context) {
+        public boolean isValid(ScheduleCreateRequest value, ConstraintValidatorContext context) {
             LocalDateTime scheduleStartDateTime = value.getScheduleStartDateTime();
             LocalDateTime scheduleEndDateTime = value.getScheduleEndDateTime();
             return scheduleStartDateTime.isBefore(scheduleEndDateTime);

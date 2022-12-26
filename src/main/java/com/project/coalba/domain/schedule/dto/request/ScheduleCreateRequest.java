@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @ValidScheduleRequest
-public class ScheduleRequest {
+public class ScheduleCreateRequest {
 
     @NotNull
     private Long workspaceId;

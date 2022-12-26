@@ -50,11 +50,6 @@ public class Workspace extends BaseTimeEntity {
     @OneToMany(mappedBy = "workspace")
     private List<WorkspaceMember> workspaceMemberList = new ArrayList<>();
 
-    public void mapBoss(Boss boss) {
-        this.boss = boss;
-        boss.getWorkspaceList().add(this);
-    }
-
     public void update(String name, String phoneNumber, String address, String imageUrl) {
         this.name = name;
         this.phoneNumber = phoneNumber;

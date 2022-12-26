@@ -1,10 +1,10 @@
 package com.project.coalba.domain.profile.service;
 
 import com.project.coalba.domain.auth.entity.User;
-import com.project.coalba.domain.profile.dto.request.ProfileRequest;
-import com.project.coalba.domain.profile.dto.response.ProfileResponse;
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.repository.BossProfileRepository;
+import com.project.coalba.domain.profile.service.dto.ProfileCreateServiceDto;
+import com.project.coalba.domain.profile.service.dto.ProfileUpdateServiceDto;
 import com.project.coalba.global.utils.ProfileUtil;
 import com.project.coalba.global.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -13,32 +13,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class BossProfileService {
 
     private final BossProfileRepository bossProfileRepository;
     private final UserUtil userUtil;
     private final ProfileUtil profileUtil;
 
-    public ProfileResponse getMyBossProfile() {
-        Boss boss = profileUtil.getCurrentBoss();
-        return ProfileResponse.builder()
-                .realName(boss.getRealName())
-                .phoneNumber(boss.getPhoneNumber())
-                .birthDate(boss.getBirthDate())
-                .imageUrl(boss.getImageUrl())
-                .build();
+    public Boss getMyBossProfile() {
+        return profileUtil.getCurrentBoss();
     }
 
     @Transactional
-    public void saveMyBossProfile(ProfileRequest profileRequest) {
+    public void saveMyBossProfile(ProfileCreateServiceDto serviceDto) {
         User user = userUtil.getCurrentUser();
-        Boss boss = Boss.create(profileRequest.getRealName(), profileRequest.getPhoneNumber(), profileRequest.getBirthDate(), profileRequest.getImageUrl(), user);
-        bossProfileRepository.save(boss);
+        bossProfileRepository.save(serviceDto.toBossEntity(user));
     }
 
     @Transactional
-    public void updateMyBossProfile(ProfileRequest profileRequest) {
+    public void updateMyBossProfile(ProfileUpdateServiceDto serviceDto) {
         Boss boss = profileUtil.getCurrentBoss();
-        boss.update(profileRequest.getRealName(), profileRequest.getPhoneNumber(), profileRequest.getBirthDate(), profileRequest.getImageUrl());
+        boss.update(serviceDto.getRealName(), serviceDto.getPhoneNumber(), serviceDto.getBirthDate(), serviceDto.getImageUrl());
     }
 }

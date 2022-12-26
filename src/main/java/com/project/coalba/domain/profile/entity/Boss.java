@@ -49,14 +49,8 @@ public class Boss extends BaseTimeEntity {
     @OneToMany(mappedBy = "boss")
     private List<TimecardReq> timecardReqList = new ArrayList<>();
 
-    public static Boss create(String realName, String phoneNumber, LocalDate birthDate, String imageUrl, User user) {
-        return Boss.builder()
-                .realName(realName)
-                .phoneNumber(phoneNumber)
-                .birthDate(birthDate)
-                .imageUrl(imageUrl)
-                .user(user)
-                .build();
+    public void mapUser(User user) {
+        this.user = user;
     }
 
     public void update(String realName, String phoneNumber, LocalDate birthDate, String imageUrl) {

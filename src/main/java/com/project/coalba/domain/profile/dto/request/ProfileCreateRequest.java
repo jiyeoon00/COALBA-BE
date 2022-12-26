@@ -7,7 +7,7 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Getter
-public class ProfileRequest {
+public class ProfileCreateRequest {
 
     @NotBlank @Size(max = 50)
     private String realName;
