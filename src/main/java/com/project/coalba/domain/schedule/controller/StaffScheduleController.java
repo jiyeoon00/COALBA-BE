@@ -1,6 +1,6 @@
 package com.project.coalba.domain.schedule.controller;
 
-import com.project.coalba.domain.schedule.dto.ScheduleServiceDto;
+import com.project.coalba.domain.schedule.service.dto.ScheduleServiceDto;
 import com.project.coalba.domain.schedule.dto.response.StaffHomeScheduleResponse;
 import com.project.coalba.domain.schedule.dto.response.ScheduleBriefResponse;
 import com.project.coalba.domain.schedule.dto.response.StaffWorkspaceScheduleResponse;

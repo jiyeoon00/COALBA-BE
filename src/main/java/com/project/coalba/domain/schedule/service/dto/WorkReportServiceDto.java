@@ -1,4 +1,4 @@
-package com.project.coalba.domain.schedule.dto;
+package com.project.coalba.domain.schedule.service.dto;
 
 import lombok.Getter;
 

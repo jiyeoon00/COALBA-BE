@@ -1,7 +1,7 @@
 package com.project.coalba.domain.schedule.controller;
 
 import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.schedule.dto.WorkReportServiceDto;
+import com.project.coalba.domain.schedule.service.dto.WorkReportServiceDto;
 import com.project.coalba.domain.schedule.dto.response.BossWorkReportResponse;
 import com.project.coalba.domain.schedule.mapper.ScheduleMapper;
 import com.project.coalba.domain.schedule.service.ScheduleReportService;

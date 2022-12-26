@@ -1,6 +1,6 @@
 package com.project.coalba.domain.schedule.service;
 
-import com.project.coalba.domain.schedule.dto.ScheduleServiceDto;
+import com.project.coalba.domain.schedule.service.dto.ScheduleServiceDto;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
 import com.project.coalba.domain.schedule.repository.ScheduleRepository;

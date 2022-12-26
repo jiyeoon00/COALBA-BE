@@ -1,9 +1,9 @@
 package com.project.coalba.domain.schedule.mapper;
 
 import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.schedule.dto.ScheduleCreateServiceDto;
-import com.project.coalba.domain.schedule.dto.ScheduleServiceDto;
-import com.project.coalba.domain.schedule.dto.WorkReportServiceDto;
+import com.project.coalba.domain.schedule.service.dto.ScheduleCreateServiceDto;
+import com.project.coalba.domain.schedule.service.dto.ScheduleServiceDto;
+import com.project.coalba.domain.schedule.service.dto.WorkReportServiceDto;
 import com.project.coalba.domain.schedule.dto.request.ScheduleRequest;
 import com.project.coalba.domain.schedule.dto.response.*;
 import com.project.coalba.domain.schedule.entity.Schedule;

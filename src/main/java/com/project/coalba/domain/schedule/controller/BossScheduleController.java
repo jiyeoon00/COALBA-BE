@@ -1,6 +1,6 @@
 package com.project.coalba.domain.schedule.controller;
 
-import com.project.coalba.domain.schedule.dto.ScheduleCreateServiceDto;
+import com.project.coalba.domain.schedule.service.dto.ScheduleCreateServiceDto;
 import com.project.coalba.domain.schedule.dto.request.ScheduleRequest;
 import com.project.coalba.domain.schedule.dto.response.BossHomeScheduleResponse;
 import com.project.coalba.domain.schedule.dto.response.BossWorkspaceScheduleResponse;
