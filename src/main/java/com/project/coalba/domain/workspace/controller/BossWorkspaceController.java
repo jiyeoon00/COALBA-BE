@@ -3,7 +3,7 @@ package com.project.coalba.domain.workspace.controller;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.service.StaffProfileService;
 import com.project.coalba.domain.workspace.dto.request.SearchDateTime;
-import com.project.coalba.domain.workspace.dto.request.WorkspaceRequest;
+import com.project.coalba.domain.workspace.dto.request.WorkspaceCreateRequest;
 import com.project.coalba.domain.workspace.dto.request.WorkspaceUpdateRequest;
 import com.project.coalba.domain.workspace.dto.response.*;
 import com.project.coalba.domain.workspace.entity.WorkspaceMember;
@@ -37,16 +37,15 @@ public class BossWorkspaceController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> saveWorkspace(@Validated @RequestBody WorkspaceRequest workspaceRequest) {
-        bossWorkspaceService.saveWorkspace(mapper.toEntity(workspaceRequest));
+    public ResponseEntity<Void> saveWorkspace(@Validated @RequestBody WorkspaceCreateRequest workspaceCreateRequest) {
+        bossWorkspaceService.saveWorkspace(mapper.toServiceDto(workspaceCreateRequest));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{workspaceId}")
     public ResponseEntity<Void> updateWorkspace(@PathVariable Long workspaceId,
                                                 @Validated @RequestBody WorkspaceUpdateRequest workspaceUpdateRequest) {
-        bossWorkspaceService.updateWorkspace(workspaceId, workspaceUpdateRequest.getName(), workspaceUpdateRequest.getPhoneNumber(),
-                workspaceUpdateRequest.getAddress(), workspaceUpdateRequest.getImageUrl());
+        bossWorkspaceService.updateWorkspace(workspaceId, mapper.toServiceDto(workspaceUpdateRequest));
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

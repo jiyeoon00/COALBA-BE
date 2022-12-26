@@ -1,10 +1,13 @@
 package com.project.coalba.domain.workspace.mapper;
 
 import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.workspace.dto.request.WorkspaceRequest;
+import com.project.coalba.domain.workspace.dto.request.WorkspaceCreateRequest;
+import com.project.coalba.domain.workspace.dto.request.WorkspaceUpdateRequest;
 import com.project.coalba.domain.workspace.dto.response.*;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.domain.workspace.entity.WorkspaceMember;
+import com.project.coalba.domain.workspace.service.dto.WorkspaceCreateServiceDto;
+import com.project.coalba.domain.workspace.service.dto.WorkspaceUpdateServiceDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -16,12 +19,11 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface WorkspaceMapper {
 
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "boss", ignore = true),
-            @Mapping(target = "workspaceMemberList", ignore = true),
-    })
-    Workspace toEntity(WorkspaceRequest workspaceRequest);
+    @Mappings({})
+    WorkspaceCreateServiceDto toServiceDto(WorkspaceCreateRequest workspaceCreateRequest);
+
+    @Mappings({})
+    WorkspaceUpdateServiceDto toServiceDto(WorkspaceUpdateRequest workspaceUpdateRequest);
 
     @Mappings(@Mapping(source = "id", target = "workspaceId"))
     WorkspaceOneResponse toDto(Workspace workspace);
