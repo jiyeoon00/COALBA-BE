@@ -3,13 +3,13 @@ package com.project.coalba.domain.profile.service;
 import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.repository.StaffProfileRepository;
+import com.project.coalba.domain.profile.service.dto.ProfileServiceDto;
 import com.project.coalba.global.utils.ProfileUtil;
 import com.project.coalba.global.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,16 +27,15 @@ public class StaffProfileService {
     }
 
     @Transactional
-    public void saveMyStaffProfile(Staff staff) {
+    public void saveMyStaffProfile(ProfileServiceDto serviceDto) {
         User user = userUtil.getCurrentUser();
-        staff.mapUser(user);
-        staffProfileRepository.save(staff);
+        staffProfileRepository.save(serviceDto.toStaffEntity(user));
     }
 
     @Transactional
-    public void updateMyStaffProfile(String realName, String phoneNumber, LocalDate birthDate, String imageUrl) {
+    public void updateMyStaffProfile(ProfileServiceDto serviceDto) {
         Staff staff = profileUtil.getCurrentStaff();
-        staff.update(realName, phoneNumber, birthDate, imageUrl);
+        staff.update(serviceDto.getRealName(), serviceDto.getPhoneNumber(), serviceDto.getBirthDate(), serviceDto.getImageUrl());
     }
 
     public List<Staff> getStaffListInWorkspaceAndPossibleForDateTime(Long workspaceId, LocalDateTime startDateTime, LocalDateTime endDateTime) {

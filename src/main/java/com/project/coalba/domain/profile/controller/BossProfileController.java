@@ -5,6 +5,7 @@ import com.project.coalba.domain.profile.dto.response.ProfileResponse;
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.mapper.ProfileMapper;
 import com.project.coalba.domain.profile.service.BossProfileService;
+import com.project.coalba.domain.profile.service.dto.ProfileServiceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,15 +28,15 @@ public class BossProfileController {
 
     @PostMapping
     public ResponseEntity<Void> saveMyBossProfile(@Validated @RequestBody ProfileRequest profileRequest) {
-        Boss boss = mapper.toBossEntity(profileRequest);
-        bossProfileService.saveMyBossProfile(boss);
+        ProfileServiceDto serviceDto = mapper.toServiceDto(profileRequest);
+        bossProfileService.saveMyBossProfile(serviceDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping
     public ResponseEntity<Void> updateMyBossProfile(@Validated @RequestBody ProfileRequest profileRequest) {
-        bossProfileService.updateMyBossProfile(profileRequest.getRealName(), profileRequest.getPhoneNumber(),
-                profileRequest.getBirthDate(), profileRequest.getImageUrl());
+        ProfileServiceDto serviceDto = mapper.toServiceDto(profileRequest);
+        bossProfileService.updateMyBossProfile(serviceDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

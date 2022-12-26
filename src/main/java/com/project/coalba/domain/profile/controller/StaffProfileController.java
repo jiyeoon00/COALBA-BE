@@ -5,6 +5,7 @@ import com.project.coalba.domain.profile.dto.response.ProfileResponse;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.mapper.ProfileMapper;
 import com.project.coalba.domain.profile.service.StaffProfileService;
+import com.project.coalba.domain.profile.service.dto.ProfileServiceDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,15 +28,15 @@ public class StaffProfileController {
 
     @PostMapping
     public ResponseEntity<Void> saveMyStaffProfile(@Validated @RequestBody ProfileRequest profileRequest) {
-        Staff staff = mapper.toStaffEntity(profileRequest);
-        staffProfileService.saveMyStaffProfile(staff);
+        ProfileServiceDto serviceDto = mapper.toServiceDto(profileRequest);
+        staffProfileService.saveMyStaffProfile(serviceDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping
     public ResponseEntity<Void> updateMyStaffProfile(@Validated @RequestBody ProfileRequest profileRequest) {
-        staffProfileService.updateMyStaffProfile(profileRequest.getRealName(), profileRequest.getPhoneNumber(),
-                profileRequest.getBirthDate(), profileRequest.getImageUrl());
+        ProfileServiceDto serviceDto = mapper.toServiceDto(profileRequest);
+        staffProfileService.updateMyStaffProfile(serviceDto);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
