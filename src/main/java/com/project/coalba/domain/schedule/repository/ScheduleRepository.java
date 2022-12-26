@@ -18,20 +18,28 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
     @Query("select sd from Schedule sd join fetch sd.workspace " +
             "where sd.staff.id = :staffId and sd.scheduleStartDateTime between :fromDateTime and :toDateTime " +
             "order by sd.scheduleStartDateTime asc, sd.scheduleEndDateTime asc")
-    List<Schedule> findAllByStaffIdAndDateTime(@Param("staffId") Long staffId,
-                                               @Param("fromDateTime") LocalDateTime fromDateTime, @Param("toDateTime") LocalDateTime toDateTime);
+    List<Schedule> findAllByStaffIdAndDateTimeFetch(@Param("staffId") Long staffId,
+                                                    @Param("fromDateTime") LocalDateTime fromDateTime, @Param("toDateTime") LocalDateTime toDateTime);
 
-    default List<Schedule> findAllByStaffIdAndDate(Long staffId, LocalDate selectedDate) {
-        return findAllByStaffIdAndDateTime(staffId, selectedDate.atTime(0, 0, 0), selectedDate.atTime(23, 59, 59));
+    default List<Schedule> findAllByStaffIdAndDateFetch(Long staffId, LocalDate selectedDate) {
+        return findAllByStaffIdAndDateTimeFetch(staffId, selectedDate.atTime(0, 0, 0), selectedDate.atTime(23, 59, 59));
     }
 
     @Query("select sd from Schedule sd join fetch sd.staff " +
             "where sd.workspace.id = :workspaceId and sd.scheduleStartDateTime between :fromDateTime and :toDateTime " +
             "order by sd.scheduleStartDateTime asc, sd.scheduleEndDateTime asc")
-    List<Schedule> findAllByWorkspaceIdAndDateTime(@Param("workspaceId") Long workspaceId,
-                                                   @Param("fromDateTime") LocalDateTime fromDateTime, @Param("toDateTime") LocalDateTime toDateTime);
+    List<Schedule> findAllByWorkspaceIdAndDateTimeFetch(@Param("workspaceId") Long workspaceId,
+                                                        @Param("fromDateTime") LocalDateTime fromDateTime, @Param("toDateTime") LocalDateTime toDateTime);
 
-    default List<Schedule> findAllByWorkspaceIdAndDate(Long workspaceId, LocalDate selectedDate) {
-        return findAllByWorkspaceIdAndDateTime(workspaceId, selectedDate.atTime(0, 0, 0), selectedDate.atTime(23, 59, 59));
+    default List<Schedule> findAllByWorkspaceIdAndDateFetch(Long workspaceId, LocalDate selectedDate) {
+        return findAllByWorkspaceIdAndDateTimeFetch(workspaceId, selectedDate.atTime(0, 0, 0), selectedDate.atTime(23, 59, 59));
+    }
+
+    @Query("select sd from Schedule sd where sd.staff.id = :staffId and sd.scheduleStartDateTime between :fromDateTime and :toDateTime")
+    List<Schedule> findAllByStaffIdAndDateTimeRange(@Param("staffId") Long staffId,
+                                                    @Param("fromDateTime") LocalDateTime fromDateTime, @Param("toDateTime") LocalDateTime toDateTime);
+
+    default List<Schedule> findAllByStaffIdAndDateRange(Long staffId, LocalDate fromDate, LocalDate toDate) {
+        return findAllByStaffIdAndDateTimeRange(staffId, fromDate.atTime(0, 0, 0), toDate.atTime(23, 59, 59));
     }
 }

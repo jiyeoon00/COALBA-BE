@@ -24,11 +24,11 @@ public class BossScheduleService {
     private final ScheduleRepository scheduleRepository;
 
     public List<Schedule> getHomeScheduleList(Long workspaceId, LocalDate selectedDate) {
-        return scheduleRepository.findAllByWorkspaceIdAndDate(workspaceId, selectedDate);
+        return scheduleRepository.findAllByWorkspaceIdAndDateFetch(workspaceId, selectedDate);
     }
 
     public List<Schedule> getWorkspaceScheduleList(Long workspaceId, LocalDate selectedDate) {
-        return scheduleRepository.findAllByWorkspaceIdAndDate(workspaceId, selectedDate);
+        return scheduleRepository.findAllByWorkspaceIdAndDateFetch(workspaceId, selectedDate);
     }
 
     @Transactional

@@ -1,5 +1,7 @@
 package com.project.coalba.domain.schedule.service;
 
+import com.project.coalba.domain.schedule.service.dto.HomePageServiceDto;
+import com.project.coalba.domain.schedule.service.dto.HomeDateServiceDto;
 import com.project.coalba.domain.schedule.service.dto.ScheduleServiceDto;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
@@ -11,9 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 @RequiredArgsConstructor
 @Service
@@ -23,20 +28,54 @@ public class StaffScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final ProfileUtil profileUtil;
 
+    public HomePageServiceDto getHomePage() {
+        Long staffId = profileUtil.getCurrentStaff().getId();
+        LocalDate now = LocalDate.now();
+        final int offset = 3;
+
+        List<Schedule> homeScheduleList = scheduleRepository.findAllByStaffIdAndDateRange(staffId, now.minusDays(offset), now.plusDays(offset));
+        Map<LocalDate, List<Schedule>> homeScheduleMap = homeScheduleList.stream()
+                .collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
+
+        List<HomeDateServiceDto> dateList = getHomeDateList(homeScheduleMap);
+        List<Schedule> selectedScheduleList = getHomeScheduleList(now);
+        return new HomePageServiceDto(dateList, now, selectedScheduleList);
+    }
+
+    private List<HomeDateServiceDto> getHomeDateList(Map<LocalDate, List<Schedule>> homeScheduleMap) {
+        List<HomeDateServiceDto> dateList = new ArrayList<>();
+        for (LocalDate date : homeScheduleMap.keySet()) {
+            List<Schedule> scheduleList = homeScheduleMap.get(date);
+            dateList.add(getHomeDate(date, scheduleList));
+        }
+        return dateList;
+    }
+
+    private HomeDateServiceDto getHomeDate(LocalDate date, List<Schedule> scheduleList) {
+        if (scheduleList == null) return new HomeDateServiceDto(date, false, false, false);
+        if (date.isAfter(LocalDate.now())) return new HomeDateServiceDto(date, true, true, false);
+        if (isAllSuccess(scheduleList)) return new HomeDateServiceDto(date, true, false, true);
+        return new HomeDateServiceDto(date, true, false, false);
+    }
+
+    private boolean isAllSuccess(List<Schedule> scheduleList) {
+        return scheduleList.stream().allMatch(schedule -> schedule.getStatus() == ScheduleStatus.SUCCESS);
+    }
+
     public List<Schedule> getHomeScheduleList(LocalDate selectedDate) {
         Long staffId = profileUtil.getCurrentStaff().getId();
-        return scheduleRepository.findAllByStaffIdAndDate(staffId, selectedDate);
+        return scheduleRepository.findAllByStaffIdAndDateFetch(staffId, selectedDate);
     }
 
     public List<ScheduleServiceDto> getWorkspaceScheduleDtoList(Long workspaceId, LocalDate selectedDate) {
-        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDate(workspaceId, selectedDate);
+        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateFetch(workspaceId, selectedDate);
         Long staffId = profileUtil.getCurrentStaff().getId();
         return workspaceScheduleList.stream()
                 .map(schedule -> {
                     boolean isMySchedule = Objects.equals(schedule.getStaff().getId(), staffId);
                     return new ScheduleServiceDto(schedule, isMySchedule);
                 })
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public Schedule getScheduleFetch(Long scheduleId) {

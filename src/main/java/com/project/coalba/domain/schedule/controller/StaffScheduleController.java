@@ -1,5 +1,6 @@
 package com.project.coalba.domain.schedule.controller;
 
+import com.project.coalba.domain.schedule.dto.response.StaffHomePageResponse;
 import com.project.coalba.domain.schedule.service.dto.ScheduleServiceDto;
 import com.project.coalba.domain.schedule.dto.response.StaffHomeScheduleResponse;
 import com.project.coalba.domain.schedule.dto.response.ScheduleBriefResponse;
@@ -23,11 +24,21 @@ public class StaffScheduleController {
     private final StaffScheduleService staffScheduleService;
     private final ScheduleMapper mapper;
 
+    @GetMapping("/home")
+    public StaffHomePageResponse getHomePage() {
+        return mapper.toDto(staffScheduleService.getHomePage());
+    }
+
     @GetMapping("/home/selected")
     public StaffHomeScheduleResponse getHomeScheduleList(@RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
         List<Schedule> homeScheduleList = staffScheduleService.getHomeScheduleList(selectedDate);
         return mapper.toDto(selectedDate, () -> homeScheduleList);
+    }
+
+    @GetMapping("/workspaces/{workspaceId}")
+    public void getWorkspacePage(@PathVariable Long workspaceId) {
+
     }
 
     @GetMapping("/workspaces/{workspaceId}/selected")

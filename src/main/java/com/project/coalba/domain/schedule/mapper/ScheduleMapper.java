@@ -1,9 +1,8 @@
 package com.project.coalba.domain.schedule.mapper;
 
 import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.schedule.service.dto.ScheduleCreateServiceDto;
-import com.project.coalba.domain.schedule.service.dto.ScheduleServiceDto;
-import com.project.coalba.domain.schedule.service.dto.WorkReportServiceDto;
+import com.project.coalba.domain.schedule.dto.response.enums.TotalScheduleStatus;
+import com.project.coalba.domain.schedule.service.dto.*;
 import com.project.coalba.domain.schedule.dto.request.ScheduleCreateRequest;
 import com.project.coalba.domain.schedule.dto.response.*;
 import com.project.coalba.domain.schedule.entity.Schedule;
@@ -91,6 +90,25 @@ public interface ScheduleMapper {
                 .map(entry -> this.toBossWorkReportSubDto(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
         return new BossWorkReportResponse(selectedYear, selectedMonth, selectedWorkspaceId, workReportList);
+    }
+
+    default HomeDateResponse toDto(HomeDateServiceDto serviceDto) {
+        LocalDate date = serviceDto.getDate();
+        TotalScheduleStatus totalScheduleStatus = getTotalScheduleStatus(serviceDto.getIsSchedule(), serviceDto.getIsAfterToday(), serviceDto.getIsAllSuccess());
+        return new HomeDateResponse(date, totalScheduleStatus);
+    }
+
+    default TotalScheduleStatus getTotalScheduleStatus(Boolean isSchedule, Boolean isAfterToday, Boolean isAllSuccess) {
+        if (!isSchedule) return TotalScheduleStatus.NONE;
+        if (isAfterToday) return TotalScheduleStatus.BEFORE;
+        if (isAllSuccess) return TotalScheduleStatus.COMPLETE;
+        return TotalScheduleStatus.INCOMPLETE;
+    }
+
+    default StaffHomePageResponse toDto(HomePageServiceDto serviceDto) {
+        List<HomeDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
+        StaffHomeScheduleResponse selectedScheduleListOfDate = toDto(serviceDto.getSelectedDate(), serviceDto::getSelectedScheduleList);
+        return new StaffHomePageResponse(dateList, selectedScheduleListOfDate);
     }
 
     @Mappings({
