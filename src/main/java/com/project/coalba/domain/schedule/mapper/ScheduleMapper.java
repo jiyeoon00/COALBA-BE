@@ -4,7 +4,7 @@ import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.service.dto.ScheduleCreateServiceDto;
 import com.project.coalba.domain.schedule.service.dto.ScheduleServiceDto;
 import com.project.coalba.domain.schedule.service.dto.WorkReportServiceDto;
-import com.project.coalba.domain.schedule.dto.request.ScheduleRequest;
+import com.project.coalba.domain.schedule.dto.request.ScheduleCreateRequest;
 import com.project.coalba.domain.schedule.dto.response.*;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import org.mapstruct.Mapper;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public interface ScheduleMapper {
 
     @Mappings({})
-    ScheduleCreateServiceDto toServiceDto(ScheduleRequest scheduleRequest);
+    ScheduleCreateServiceDto toServiceDto(ScheduleCreateRequest scheduleCreateRequest);
 
     @Mappings({
             @Mapping(source = "id", target = "scheduleId"),

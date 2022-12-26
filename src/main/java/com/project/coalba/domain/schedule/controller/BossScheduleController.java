@@ -1,7 +1,6 @@
 package com.project.coalba.domain.schedule.controller;
 
-import com.project.coalba.domain.schedule.service.dto.ScheduleCreateServiceDto;
-import com.project.coalba.domain.schedule.dto.request.ScheduleRequest;
+import com.project.coalba.domain.schedule.dto.request.ScheduleCreateRequest;
 import com.project.coalba.domain.schedule.dto.response.BossHomeScheduleResponse;
 import com.project.coalba.domain.schedule.dto.response.BossWorkspaceScheduleResponse;
 import com.project.coalba.domain.schedule.entity.Schedule;
@@ -41,9 +40,8 @@ public class BossScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> saveSchedule(@Validated @RequestBody ScheduleRequest scheduleRequest) {
-        ScheduleCreateServiceDto serviceDto = mapper.toServiceDto(scheduleRequest);
-        bossScheduleService.save(serviceDto);
+    public ResponseEntity<Void> saveSchedule(@Validated @RequestBody ScheduleCreateRequest scheduleCreateRequest) {
+        bossScheduleService.save(mapper.toServiceDto(scheduleCreateRequest));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
