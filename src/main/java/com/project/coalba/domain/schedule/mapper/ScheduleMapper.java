@@ -36,6 +36,18 @@ public interface ScheduleMapper {
     ScheduleBriefResponse toDto(Schedule schedule);
 
     @Mappings({
+            @Mapping(source = "id", target = "workspaceId")
+    })
+    BossHomePageResponse.WorkspaceResponse toSubDto(Workspace workspace);
+
+    default BossHomePageResponse toDto(BossHomePageServiceDto serviceDto) {
+        List<HomeDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
+        LocalDate selectedDate = serviceDto.getSelectedDate();
+        List<BossHomePageResponse.WorkspaceResponse> workspaceList = serviceDto.getWorkspaceList().stream().map(this::toSubDto).collect(Collectors.toList());
+        return new BossHomePageResponse(dateList, selectedDate, workspaceList);
+    }
+
+    @Mappings({
             @Mapping(source = "id", target = "scheduleId"),
             @Mapping(source = "scheduleStartDateTime", target = "scheduleStartTime", qualifiedByName = "toLocalTime"),
             @Mapping(source = "scheduleEndDateTime", target = "scheduleEndTime", qualifiedByName = "toLocalTime"),
@@ -106,7 +118,7 @@ public interface ScheduleMapper {
         return TotalScheduleStatus.INCOMPLETE;
     }
 
-    default StaffHomePageResponse toDto(HomePageServiceDto serviceDto) {
+    default StaffHomePageResponse toDto(StaffHomePageServiceDto serviceDto) {
         List<HomeDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
         StaffHomeScheduleResponse selectedScheduleListOfDate = toDto(serviceDto.getSelectedDate(), serviceDto::getSelectedScheduleList);
         return new StaffHomePageResponse(dateList, selectedScheduleListOfDate);

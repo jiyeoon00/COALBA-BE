@@ -9,7 +9,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class HomePageServiceDto {
+public class StaffHomePageServiceDto {
 
     private List<HomeDateServiceDto> dateList;
 

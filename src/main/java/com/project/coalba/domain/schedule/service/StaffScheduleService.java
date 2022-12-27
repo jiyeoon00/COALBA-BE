@@ -30,18 +30,17 @@ public class StaffScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final ProfileUtil profileUtil;
 
-    public HomePageServiceDto getHomePage() {
+    public StaffHomePageServiceDto getHomePage() {
         Long staffId = profileUtil.getCurrentStaff().getId();
         LocalDate now = LocalDate.now();
         final int offset = 3;
 
         List<Schedule> homeScheduleList = scheduleRepository.findAllByStaffIdAndDateRange(staffId, now.minusDays(offset), now.plusDays(offset));
-        Map<LocalDate, List<Schedule>> homeScheduleMap = homeScheduleList.stream()
-                .collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
+        Map<LocalDate, List<Schedule>> homeScheduleMap = homeScheduleList.stream().collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
 
         List<HomeDateServiceDto> dateList = getHomeDateList(homeScheduleMap);
         List<Schedule> selectedScheduleList = getHomeScheduleList(now);
-        return new HomePageServiceDto(dateList, now, selectedScheduleList);
+        return new StaffHomePageServiceDto(dateList, now, selectedScheduleList);
     }
 
     private List<HomeDateServiceDto> getHomeDateList(Map<LocalDate, List<Schedule>> homeScheduleMap) {
