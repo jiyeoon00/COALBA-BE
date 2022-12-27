@@ -38,7 +38,7 @@ public class BossScheduleController {
         return mapper.toDto(selectedDate, workspaceId, () -> homeScheduleList);
     }
 
-    @GetMapping("/workspace/{workspaceId}")
+    @GetMapping("/workspaces/{workspaceId}")
     public BossWorkspacePageResponse getWorkspacePage(@PathVariable Long workspaceId) {
         return mapper.toDto(bossScheduleService.getWorkspacePage(workspaceId));
     }
