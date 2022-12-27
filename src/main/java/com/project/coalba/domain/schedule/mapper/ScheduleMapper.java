@@ -6,6 +6,7 @@ import com.project.coalba.domain.schedule.service.dto.*;
 import com.project.coalba.domain.schedule.dto.request.ScheduleCreateRequest;
 import com.project.coalba.domain.schedule.dto.response.*;
 import com.project.coalba.domain.schedule.entity.Schedule;
+import com.project.coalba.domain.workspace.entity.Workspace;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -129,6 +130,25 @@ public interface ScheduleMapper {
                 .map(this::toStaffHomeSubDto)
                 .collect(Collectors.toList());
         return new StaffHomeScheduleResponse(selectedDate.getYear(), selectedDate.getMonthValue(), selectedDate.getDayOfMonth(), selectedScheduleList);
+    }
+
+    @Mappings({})
+    WorkspaceDateResponse toDto(WorkspaceDateServiceDto serviceDto);
+
+    default StaffWorkspacePageResponse toDto(WorkspacePageServiceDto serviceDto) {
+        Workspace workspace = serviceDto.getWorkspace();
+        List<WorkspaceDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
+        LocalDate selectedDate = serviceDto.getSelectedDate();
+        StaffWorkspaceScheduleResponse selectedScheduleListOfDay = toDto(selectedDate.getDayOfMonth(), serviceDto::getSelectedScheduleList);
+        return StaffWorkspacePageResponse.builder()
+                .workspaceId(workspace.getId())
+                .workspaceImageUrl(workspace.getImageUrl())
+                .workspaceName(workspace.getName())
+                .year(selectedDate.getYear())
+                .month(selectedDate.getMonthValue())
+                .dateList(dateList)
+                .selectedScheduleListOfDay(selectedScheduleListOfDay)
+                .build();
     }
 
     @Mappings({

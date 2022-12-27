@@ -1,11 +1,11 @@
 package com.project.coalba.domain.schedule.service;
 
-import com.project.coalba.domain.schedule.service.dto.HomePageServiceDto;
-import com.project.coalba.domain.schedule.service.dto.HomeDateServiceDto;
-import com.project.coalba.domain.schedule.service.dto.ScheduleServiceDto;
+import com.project.coalba.domain.schedule.service.dto.*;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
 import com.project.coalba.domain.schedule.repository.ScheduleRepository;
+import com.project.coalba.domain.workspace.entity.Workspace;
+import com.project.coalba.domain.workspace.service.BossWorkspaceService;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static java.time.temporal.TemporalAdjusters.*;
 import static java.util.stream.Collectors.*;
 
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ import static java.util.stream.Collectors.*;
 @Transactional(readOnly = true)
 public class StaffScheduleService {
 
+    private final BossWorkspaceService workspaceService;
     private final ScheduleRepository scheduleRepository;
     private final ProfileUtil profileUtil;
 
@@ -67,7 +69,37 @@ public class StaffScheduleService {
         return scheduleRepository.findAllByStaffIdAndDateFetch(staffId, selectedDate);
     }
 
-    public List<ScheduleServiceDto> getWorkspaceScheduleDtoList(Long workspaceId, LocalDate selectedDate) {
+    public WorkspacePageServiceDto getWorkspacePage(Long workspaceId) {
+        LocalDate now = LocalDate.now();
+        LocalDate firstDayOfMonth = now.with(firstDayOfMonth());
+        LocalDate lastDayOfMonth = now.with(lastDayOfMonth());
+
+        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateRange(workspaceId, firstDayOfMonth, lastDayOfMonth);
+        Map<LocalDate, List<Schedule>> workspaceScheduleMap = workspaceScheduleList.stream()
+                .collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
+
+        Workspace workspace = workspaceService.getWorkspace(workspaceId);
+        List<WorkspaceDateServiceDto> dateList = getWorkspaceDateList(workspaceScheduleMap);
+        List<ScheduleServiceDto> selectedScheduleList = getWorkspaceScheduleList(workspaceId, now);
+        return new WorkspacePageServiceDto(workspace, dateList, now, selectedScheduleList);
+    }
+
+    private List<WorkspaceDateServiceDto> getWorkspaceDateList(Map<LocalDate, List<Schedule>> workspaceScheduleMap) {
+        List<WorkspaceDateServiceDto> dateList = new ArrayList<>();
+        for (LocalDate date : workspaceScheduleMap.keySet()) {
+            List<Schedule> scheduleList = workspaceScheduleMap.get(date);
+            boolean isMySchedule = isMySchedule(scheduleList);
+            dateList.add(new WorkspaceDateServiceDto(date.getDayOfMonth(), isMySchedule));
+        }
+        return dateList;
+    }
+
+    private boolean isMySchedule(List<Schedule> scheduleList) {
+        Long staffId = profileUtil.getCurrentStaff().getId();
+        return scheduleList.stream().anyMatch(schedule -> Objects.equals(schedule.getStaff().getId(), staffId));
+    }
+
+    public List<ScheduleServiceDto> getWorkspaceScheduleList(Long workspaceId, LocalDate selectedDate) {
         List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateFetch(workspaceId, selectedDate);
         Long staffId = profileUtil.getCurrentStaff().getId();
         return workspaceScheduleList.stream()

@@ -42,4 +42,12 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, Sched
     default List<Schedule> findAllByStaffIdAndDateRange(Long staffId, LocalDate fromDate, LocalDate toDate) {
         return findAllByStaffIdAndDateTimeRange(staffId, fromDate.atTime(0, 0, 0), toDate.atTime(23, 59, 59));
     }
+
+    @Query("select sd from Schedule sd where sd.workspace.id = :workspaceId and sd.scheduleStartDateTime between :fromDateTime and :toDateTime")
+    List<Schedule> findAllByWorkspaceIdAndDateTimeRange(@Param("workspaceId") Long workspaceId,
+                                                        @Param("fromDateTime") LocalDateTime fromDateTime, @Param("toDateTime") LocalDateTime toDateTime);
+
+    default List<Schedule> findAllByWorkspaceIdAndDateRange(Long workspaceId, LocalDate fromDate, LocalDate toDate) {
+        return findAllByWorkspaceIdAndDateTimeRange(workspaceId, fromDate.atTime(0, 0, 0), toDate.atTime(23, 59, 59));
+    }
 }
