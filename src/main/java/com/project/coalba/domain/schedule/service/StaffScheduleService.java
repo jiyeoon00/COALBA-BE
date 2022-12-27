@@ -31,21 +31,21 @@ public class StaffScheduleService {
     private final ProfileUtil profileUtil;
 
     public StaffHomePageServiceDto getHomePage() {
-        Long staffId = profileUtil.getCurrentStaff().getId();
-        LocalDate now = LocalDate.now();
         final int offset = 3;
+        Long staffId = profileUtil.getCurrentStaff().getId();
+        LocalDate now = LocalDate.now(), fromDate = now.minusDays(offset), toDate = now.plusDays(offset);
 
-        List<Schedule> homeScheduleList = scheduleRepository.findAllByStaffIdAndDateRange(staffId, now.minusDays(offset), now.plusDays(offset));
+        List<Schedule> homeScheduleList = scheduleRepository.findAllByStaffIdAndDateRange(staffId, fromDate, toDate);
         Map<LocalDate, List<Schedule>> homeScheduleMap = homeScheduleList.stream().collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
 
-        List<HomeDateServiceDto> dateList = getHomeDateList(homeScheduleMap);
+        List<HomeDateServiceDto> dateList = getHomeDateList(fromDate, toDate, homeScheduleMap);
         List<Schedule> selectedScheduleList = getHomeScheduleList(now);
         return new StaffHomePageServiceDto(dateList, now, selectedScheduleList);
     }
 
-    private List<HomeDateServiceDto> getHomeDateList(Map<LocalDate, List<Schedule>> homeScheduleMap) {
+    private List<HomeDateServiceDto> getHomeDateList(LocalDate fromDate, LocalDate toDate, Map<LocalDate, List<Schedule>> homeScheduleMap) {
         List<HomeDateServiceDto> dateList = new ArrayList<>();
-        for (LocalDate date : homeScheduleMap.keySet()) {
+        for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
             List<Schedule> scheduleList = homeScheduleMap.get(date);
             dateList.add(getHomeDate(date, scheduleList));
         }
@@ -69,22 +69,19 @@ public class StaffScheduleService {
     }
 
     public StaffWorkspacePageServiceDto getWorkspacePage(Long workspaceId) {
-        LocalDate now = LocalDate.now();
-        LocalDate firstDayOfMonth = now.with(firstDayOfMonth());
-        LocalDate lastDayOfMonth = now.with(lastDayOfMonth());
-
-        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateRange(workspaceId, firstDayOfMonth, lastDayOfMonth);
+        LocalDate now = LocalDate.now(), fromDate = now.with(firstDayOfMonth()), toDate = now.with(lastDayOfMonth());
+        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateRange(workspaceId, fromDate, toDate);
         Map<LocalDate, List<Schedule>> workspaceScheduleMap = workspaceScheduleList.stream().collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
 
         Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
-        List<StaffWorkspaceDateServiceDto> dateList = getWorkspaceDateList(workspaceScheduleMap);
+        List<StaffWorkspaceDateServiceDto> dateList = getWorkspaceDateList(fromDate, toDate, workspaceScheduleMap);
         List<ScheduleServiceDto> selectedScheduleList = getWorkspaceScheduleList(workspaceId, now);
         return new StaffWorkspacePageServiceDto(workspace, dateList, now, selectedScheduleList);
     }
 
-    private List<StaffWorkspaceDateServiceDto> getWorkspaceDateList(Map<LocalDate, List<Schedule>> workspaceScheduleMap) {
+    private List<StaffWorkspaceDateServiceDto> getWorkspaceDateList(LocalDate fromDate, LocalDate toDate, Map<LocalDate, List<Schedule>> workspaceScheduleMap) {
         List<StaffWorkspaceDateServiceDto> dateList = new ArrayList<>();
-        for (LocalDate date : workspaceScheduleMap.keySet()) {
+        for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
             List<Schedule> scheduleList = workspaceScheduleMap.get(date);
             boolean isMySchedule = isMySchedule(scheduleList);
             dateList.add(new StaffWorkspaceDateServiceDto(date.getDayOfMonth(), isMySchedule));
@@ -93,6 +90,7 @@ public class StaffScheduleService {
     }
 
     private boolean isMySchedule(List<Schedule> scheduleList) {
+        if (scheduleList == null) return false;
         Long staffId = profileUtil.getCurrentStaff().getId();
         return scheduleList.stream().anyMatch(schedule -> Objects.equals(schedule.getStaff().getId(), staffId));
     }

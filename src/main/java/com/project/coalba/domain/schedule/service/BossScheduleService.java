@@ -30,21 +30,21 @@ public class BossScheduleService {
     private final ScheduleRepository scheduleRepository;
 
     public BossHomePageServiceDto getHomePage() {
-        LocalDate now = LocalDate.now();
         final int offset = 3;
+        LocalDate now = LocalDate.now(), fromDate = now.minusDays(offset), toDate = now.plusDays(offset);
         List<Workspace> workspaceList = bossWorkspaceService.getMyWorkspaceList();
         List<Long> workspaceIds = workspaceList.stream().map(Workspace::getId).collect(toList());
 
-        List<Schedule> homeScheduleList = scheduleRepository.findAllByWorkspaceIdsAndDateRange(workspaceIds, now.minusDays(offset), now.plusDays(offset));
+        List<Schedule> homeScheduleList = scheduleRepository.findAllByWorkspaceIdsAndDateRange(workspaceIds, fromDate, toDate);
         Map<LocalDate, List<Schedule>> homeScheduleMap = homeScheduleList.stream().collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
 
-        List<HomeDateServiceDto> dateList = getHomeDateList(homeScheduleMap);
+        List<HomeDateServiceDto> dateList = getHomeDateList(fromDate, toDate, homeScheduleMap);
         return new BossHomePageServiceDto(dateList, now, workspaceList);
     }
 
-    private List<HomeDateServiceDto> getHomeDateList(Map<LocalDate, List<Schedule>> homeScheduleMap) {
+    private List<HomeDateServiceDto> getHomeDateList(LocalDate fromDate, LocalDate toDate, Map<LocalDate, List<Schedule>> homeScheduleMap) {
         List<HomeDateServiceDto> dateList = new ArrayList<>();
-        for (LocalDate date : homeScheduleMap.keySet()) {
+        for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
             List<Schedule> scheduleList = homeScheduleMap.get(date);
             dateList.add(getHomeDate(date, scheduleList));
         }
@@ -67,22 +67,19 @@ public class BossScheduleService {
     }
 
     public BossWorkspacePageServiceDto getWorkspacePage(Long workspaceId) {
-        LocalDate now = LocalDate.now();
-        LocalDate firstDayOfMonth = now.with(firstDayOfMonth());
-        LocalDate lastDayOfMonth = now.with(lastDayOfMonth());
-
-        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateRange(workspaceId, firstDayOfMonth, lastDayOfMonth);
+        LocalDate now = LocalDate.now(), fromDate = now.with(firstDayOfMonth()), toDate = now.with(lastDayOfMonth());
+        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateRange(workspaceId, fromDate, toDate);
         Map<LocalDate, List<Schedule>> workspaceScheduleMap = workspaceScheduleList.stream().collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
 
         Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
-        List<BossWorkspaceDateServiceDto> dateList = getWorkspaceDateList(workspaceScheduleMap);
+        List<BossWorkspaceDateServiceDto> dateList = getWorkspaceDateList(fromDate, toDate, workspaceScheduleMap);
         List<Schedule> selectedScheduleList = getWorkspaceScheduleList(workspaceId, now);
         return new BossWorkspacePageServiceDto(workspace, dateList, now, selectedScheduleList);
     }
 
-    private List<BossWorkspaceDateServiceDto> getWorkspaceDateList(Map<LocalDate, List<Schedule>> workspaceScheduleMap) {
+    private List<BossWorkspaceDateServiceDto> getWorkspaceDateList(LocalDate fromDate, LocalDate toDate, Map<LocalDate, List<Schedule>> workspaceScheduleMap) {
         List<BossWorkspaceDateServiceDto> dateList = new ArrayList<>();
-        for (LocalDate date : workspaceScheduleMap.keySet()) {
+        for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
             List<Schedule> scheduleList = workspaceScheduleMap.get(date);
             dateList.add(getWorkspaceDate(date, scheduleList));
         }
