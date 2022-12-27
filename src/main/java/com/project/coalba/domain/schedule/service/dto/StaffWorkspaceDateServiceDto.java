@@ -1,11 +1,11 @@
-package com.project.coalba.domain.schedule.dto.response;
+package com.project.coalba.domain.schedule.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class WorkspaceDateResponse {
+public class StaffWorkspaceDateServiceDto {
 
     private int day;
 

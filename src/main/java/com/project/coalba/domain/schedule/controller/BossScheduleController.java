@@ -3,6 +3,7 @@ package com.project.coalba.domain.schedule.controller;
 import com.project.coalba.domain.schedule.dto.request.ScheduleCreateRequest;
 import com.project.coalba.domain.schedule.dto.response.BossHomePageResponse;
 import com.project.coalba.domain.schedule.dto.response.BossHomeScheduleResponse;
+import com.project.coalba.domain.schedule.dto.response.BossWorkspacePageResponse;
 import com.project.coalba.domain.schedule.dto.response.BossWorkspaceScheduleResponse;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.mapper.ScheduleMapper;
@@ -38,8 +39,8 @@ public class BossScheduleController {
     }
 
     @GetMapping("/workspace/{workspaceId}")
-    public void getWorkspacePage(@PathVariable Long workspaceId) {
-
+    public BossWorkspacePageResponse getWorkspacePage(@PathVariable Long workspaceId) {
+        return mapper.toDto(bossScheduleService.getWorkspacePage(workspaceId));
     }
 
     @GetMapping("/workspaces/{workspaceId}/selected")

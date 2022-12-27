@@ -8,7 +8,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter @Builder
-public class StaffWorkspacePageResponse {
+public class BossWorkspacePageResponse {
 
     private Long workspaceId;
 
@@ -20,7 +20,7 @@ public class StaffWorkspacePageResponse {
 
     private int month;
 
-    private List<StaffWorkspaceDateResponse> dateList;
+    private List<BossWorkspaceDateResponse> dateList;
 
-    private StaffWorkspaceScheduleResponse selectedScheduleListOfDay;
+    private BossWorkspaceScheduleResponse selectedScheduleListOfDay;
 }

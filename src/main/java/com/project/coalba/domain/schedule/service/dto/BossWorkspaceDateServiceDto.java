@@ -5,9 +5,13 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class WorkspaceDateServiceDto {
+public class BossWorkspaceDateServiceDto {
 
     private int day;
 
-    private Boolean isMySchedule;
+    private Boolean isSchedule;
+
+    private Boolean isAfterToday;
+
+    private Boolean isAllSuccess;
 }

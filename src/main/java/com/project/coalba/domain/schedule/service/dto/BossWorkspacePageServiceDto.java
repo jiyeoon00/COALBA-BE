@@ -1,5 +1,6 @@
 package com.project.coalba.domain.schedule.service.dto;
 
+import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,13 +10,13 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class WorkspacePageServiceDto {
+public class BossWorkspacePageServiceDto {
 
     private Workspace workspace;
 
-    private List<WorkspaceDateServiceDto> dateList;
+    private List<BossWorkspaceDateServiceDto> dateList;
 
     private LocalDate selectedDate;
 
-    private List<ScheduleServiceDto> selectedScheduleList;
+    private List<Schedule> selectedScheduleList;
 }

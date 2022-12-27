@@ -26,7 +26,7 @@ import static java.util.stream.Collectors.*;
 @Transactional(readOnly = true)
 public class StaffScheduleService {
 
-    private final BossWorkspaceService workspaceService;
+    private final BossWorkspaceService bossWorkspaceService;
     private final ScheduleRepository scheduleRepository;
     private final ProfileUtil profileUtil;
 
@@ -68,27 +68,26 @@ public class StaffScheduleService {
         return scheduleRepository.findAllByStaffIdAndDateFetch(staffId, selectedDate);
     }
 
-    public WorkspacePageServiceDto getWorkspacePage(Long workspaceId) {
+    public StaffWorkspacePageServiceDto getWorkspacePage(Long workspaceId) {
         LocalDate now = LocalDate.now();
         LocalDate firstDayOfMonth = now.with(firstDayOfMonth());
         LocalDate lastDayOfMonth = now.with(lastDayOfMonth());
 
         List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateRange(workspaceId, firstDayOfMonth, lastDayOfMonth);
-        Map<LocalDate, List<Schedule>> workspaceScheduleMap = workspaceScheduleList.stream()
-                .collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
+        Map<LocalDate, List<Schedule>> workspaceScheduleMap = workspaceScheduleList.stream().collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
 
-        Workspace workspace = workspaceService.getWorkspace(workspaceId);
-        List<WorkspaceDateServiceDto> dateList = getWorkspaceDateList(workspaceScheduleMap);
+        Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
+        List<StaffWorkspaceDateServiceDto> dateList = getWorkspaceDateList(workspaceScheduleMap);
         List<ScheduleServiceDto> selectedScheduleList = getWorkspaceScheduleList(workspaceId, now);
-        return new WorkspacePageServiceDto(workspace, dateList, now, selectedScheduleList);
+        return new StaffWorkspacePageServiceDto(workspace, dateList, now, selectedScheduleList);
     }
 
-    private List<WorkspaceDateServiceDto> getWorkspaceDateList(Map<LocalDate, List<Schedule>> workspaceScheduleMap) {
-        List<WorkspaceDateServiceDto> dateList = new ArrayList<>();
+    private List<StaffWorkspaceDateServiceDto> getWorkspaceDateList(Map<LocalDate, List<Schedule>> workspaceScheduleMap) {
+        List<StaffWorkspaceDateServiceDto> dateList = new ArrayList<>();
         for (LocalDate date : workspaceScheduleMap.keySet()) {
             List<Schedule> scheduleList = workspaceScheduleMap.get(date);
             boolean isMySchedule = isMySchedule(scheduleList);
-            dateList.add(new WorkspaceDateServiceDto(date.getDayOfMonth(), isMySchedule));
+            dateList.add(new StaffWorkspaceDateServiceDto(date.getDayOfMonth(), isMySchedule));
         }
         return dateList;
     }

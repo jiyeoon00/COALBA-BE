@@ -69,6 +69,28 @@ public interface ScheduleMapper {
                 selectedWorkspaceId, selectedScheduleList);
     }
 
+    default BossWorkspaceDateResponse toDto(BossWorkspaceDateServiceDto serviceDto) {
+        int day = serviceDto.getDay();
+        TotalScheduleStatus totalScheduleStatus = getTotalScheduleStatus(serviceDto.getIsSchedule(), serviceDto.getIsAfterToday(), serviceDto.getIsAllSuccess());
+        return new BossWorkspaceDateResponse(day, totalScheduleStatus);
+    }
+
+    default BossWorkspacePageResponse toDto(BossWorkspacePageServiceDto serviceDto) {
+        Workspace workspace = serviceDto.getWorkspace();
+        List<BossWorkspaceDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
+        LocalDate selectedDate = serviceDto.getSelectedDate();
+        BossWorkspaceScheduleResponse selectedScheduleListOfDay = toDto(selectedDate.getDayOfMonth(), serviceDto::getSelectedScheduleList);
+        return BossWorkspacePageResponse.builder()
+                .workspaceId(workspace.getId())
+                .workspaceImageUrl(workspace.getImageUrl())
+                .workspaceName(workspace.getName())
+                .year(selectedDate.getYear())
+                .month(selectedDate.getMonthValue())
+                .dateList(dateList)
+                .selectedScheduleListOfDay(selectedScheduleListOfDay)
+                .build();
+    }
+
     @Mappings({
             @Mapping(source = "id", target = "scheduleId"),
             @Mapping(source = "staff.id", target = "staffId"),
@@ -145,11 +167,11 @@ public interface ScheduleMapper {
     }
 
     @Mappings({})
-    WorkspaceDateResponse toDto(WorkspaceDateServiceDto serviceDto);
+    StaffWorkspaceDateResponse toDto(StaffWorkspaceDateServiceDto serviceDto);
 
-    default StaffWorkspacePageResponse toDto(WorkspacePageServiceDto serviceDto) {
+    default StaffWorkspacePageResponse toDto(StaffWorkspacePageServiceDto serviceDto) {
         Workspace workspace = serviceDto.getWorkspace();
-        List<WorkspaceDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
+        List<StaffWorkspaceDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
         LocalDate selectedDate = serviceDto.getSelectedDate();
         StaffWorkspaceScheduleResponse selectedScheduleListOfDay = toDto(selectedDate.getDayOfMonth(), serviceDto::getSelectedScheduleList);
         return StaffWorkspacePageResponse.builder()
