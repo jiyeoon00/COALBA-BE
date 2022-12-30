@@ -2,9 +2,9 @@ package com.project.coalba.domain.schedule.controller;
 
 import com.project.coalba.domain.schedule.dto.request.ScheduleCreateRequest;
 import com.project.coalba.domain.schedule.dto.response.BossHomePageResponse;
-import com.project.coalba.domain.schedule.dto.response.BossHomeScheduleResponse;
+import com.project.coalba.domain.schedule.dto.response.BossHomeScheduleListResponse;
 import com.project.coalba.domain.schedule.dto.response.BossWorkspacePageResponse;
-import com.project.coalba.domain.schedule.dto.response.BossWorkspaceScheduleResponse;
+import com.project.coalba.domain.schedule.dto.response.BossWorkspaceScheduleListResponse;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.mapper.ScheduleMapper;
 import com.project.coalba.domain.schedule.service.BossScheduleService;
@@ -31,8 +31,8 @@ public class BossScheduleController {
     }
 
     @GetMapping("/home/selected")
-    public BossHomeScheduleResponse getHomeScheduleList(@RequestParam Long workspaceId,
-                                                        @RequestParam int year, @RequestParam int month, @RequestParam int day) {
+    public BossHomeScheduleListResponse getHomeScheduleList(@RequestParam Long workspaceId,
+                                                            @RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
         List<Schedule> homeScheduleList = bossScheduleService.getHomeScheduleList(workspaceId, selectedDate);
         return mapper.toDto(selectedDate, workspaceId, () -> homeScheduleList);
@@ -44,8 +44,8 @@ public class BossScheduleController {
     }
 
     @GetMapping("/workspaces/{workspaceId}/selected")
-    public BossWorkspaceScheduleResponse getWorkspaceScheduleList(@PathVariable Long workspaceId,
-                                                                  @RequestParam int year, @RequestParam int month, @RequestParam int day) {
+    public BossWorkspaceScheduleListResponse getWorkspaceScheduleList(@PathVariable Long workspaceId,
+                                                                      @RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
         List<Schedule> workspaceScheduleList = bossScheduleService.getWorkspaceScheduleList(workspaceId, selectedDate);
         return mapper.toDto(day, () -> workspaceScheduleList);

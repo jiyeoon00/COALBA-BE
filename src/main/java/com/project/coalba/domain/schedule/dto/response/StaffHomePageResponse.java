@@ -11,5 +11,5 @@ public class StaffHomePageResponse {
 
     private List<HomeDateResponse> dateList;
 
-    private StaffHomeScheduleResponse selectedScheduleListOfDate;
+    private StaffHomeScheduleListResponse selectedScheduleListOfDate;
 }

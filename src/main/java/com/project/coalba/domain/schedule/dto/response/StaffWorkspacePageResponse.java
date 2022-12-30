@@ -10,17 +10,24 @@ import java.util.List;
 @Getter @Builder
 public class StaffWorkspacePageResponse {
 
-    private Long workspaceId;
+    private WorkspaceResponse selectedWorkspace;
 
-    private String workspaceImageUrl;
+    private Integer year;
 
-    private String workspaceName;
-
-    private int year;
-
-    private int month;
+    private Integer month;
 
     private List<StaffWorkspaceDateResponse> dateList;
 
-    private StaffWorkspaceScheduleResponse selectedScheduleListOfDay;
+    private StaffWorkspaceScheduleListResponse selectedScheduleListOfDay;
+
+    @AllArgsConstructor
+    @Getter
+    public static class WorkspaceResponse {
+
+        private Long workspaceId;
+
+        private String imageUrl;
+
+        private String name;
+    }
 }

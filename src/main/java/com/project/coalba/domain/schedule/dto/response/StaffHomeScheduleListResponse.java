@@ -3,29 +3,27 @@ package com.project.coalba.domain.schedule.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@AllArgsConstructor
-@Getter @Builder
-public class BossHomeScheduleResponse {
+@Getter
+public class StaffHomeScheduleListResponse {
 
-    private int selectedYear;
+    private DateResponse selectedDate;
 
-    private int selectedMonth;
+    private List<ScheduleResponse> selectedScheduleList;
 
-    private int selectedDay;
-
-    private Long selectedWorkspaceId;
-
-    private List<SubResponse> selectedScheduleList;
+    public StaffHomeScheduleListResponse(LocalDate date, List<ScheduleResponse> selectedScheduleList) {
+        this.selectedDate = new DateResponse(date);
+        this.selectedScheduleList = selectedScheduleList;
+    }
 
     @AllArgsConstructor
-    @Getter @Builder
-    public static class SubResponse {
+    @Getter
+    public static class ScheduleResponse {
 
         private Long scheduleId;
 
@@ -41,12 +39,17 @@ public class BossHomeScheduleResponse {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
         private LocalTime logicalEndTime;
 
-        private ScheduleStatus scheduleStatus;
+        private ScheduleStatus status;
 
-        private Long staffId;
+        private WorkspaceResponse workspace;
 
-        private String staffImageUrl;
+        @AllArgsConstructor
+        @Getter
+        public static class WorkspaceResponse {
 
-        private String staffName;
+            private Long workspaceId;
+
+            private String name;
+        }
     }
 }

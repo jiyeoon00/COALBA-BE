@@ -3,33 +3,32 @@ package com.project.coalba.domain.schedule.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@AllArgsConstructor
-@Getter @Builder
-public class StaffHomeScheduleResponse {
+@Getter
+public class BossHomeScheduleListResponse {
 
-    private int selectedYear;
+    private DateResponse selectedDate;
 
-    private int selectedMonth;
+    private Long selectedWorkspaceId;
 
-    private int selectedDay;
+    private List<ScheduleResponse> selectedScheduleList;
 
-    private List<SubResponse> selectedScheduleList;
+    public BossHomeScheduleListResponse(LocalDate date, Long selectedWorkspaceId, List<ScheduleResponse> selectedScheduleList) {
+        this.selectedDate = new DateResponse(date);
+        this.selectedWorkspaceId = selectedWorkspaceId;
+        this.selectedScheduleList = selectedScheduleList;
+    }
 
     @AllArgsConstructor
-    @Getter @Builder
-    public static class SubResponse {
+    @Getter
+    public static class ScheduleResponse {
 
         private Long scheduleId;
-
-        private Long workspaceId;
-
-        private String workspaceName;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
         private LocalTime scheduleStartTime;
@@ -43,6 +42,19 @@ public class StaffHomeScheduleResponse {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
         private LocalTime logicalEndTime;
 
-        private ScheduleStatus scheduleStatus;
+        private ScheduleStatus status;
+
+        private WorkerResponse worker;
+
+        @AllArgsConstructor
+        @Getter
+        public static class WorkerResponse {
+
+            private Long workerId;
+
+            private String imageUrl;
+
+            private String name;
+        }
     }
 }

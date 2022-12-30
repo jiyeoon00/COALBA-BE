@@ -1,37 +1,43 @@
 package com.project.coalba.domain.schedule.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
 @AllArgsConstructor
-@Getter @Builder
+@Getter
 public class BossWorkReportResponse {
+
+    private Long selectedWorkspaceId;
 
     private int selectedYear;
 
     private int selectedMonth;
 
-    private Long selectedWorkspaceId;
-
-    private List<SubResponse> workReportList;
+    private List<WorkReport> workReportList;
 
     @AllArgsConstructor
-    @Getter @Builder
-    public static class SubResponse {
+    @Getter
+    public static class WorkReport {
 
-        private Long staffId;
-
-        private String staffImageUrl;
-
-        private String staffName;
+        private WorkerResponse worker;
 
         private long totalWorkTimeHour;
 
         private long totalWorkTimeMin;
 
         private String totalWorkPay;
+
+        @AllArgsConstructor
+        @Getter
+        public static class WorkerResponse {
+
+            private Long workerId;
+
+            private String imageUrl;
+
+            private String name;
+        }
     }
 }

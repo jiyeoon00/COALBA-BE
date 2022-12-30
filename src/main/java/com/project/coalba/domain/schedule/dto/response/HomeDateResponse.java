@@ -8,18 +8,12 @@ import java.time.LocalDate;
 @Getter
 public class HomeDateResponse {
 
-    private Integer year;
-
-    private Integer month;
-
-    private Integer day;
+    private DateResponse date;
 
     private TotalScheduleStatus totalScheduleStatus;
 
     public HomeDateResponse(LocalDate date, TotalScheduleStatus totalScheduleStatus) {
-        year = date.getYear();
-        month = date.getMonthValue();
-        day = date.getDayOfMonth();
+        this.date = new DateResponse(date);
         this.totalScheduleStatus = totalScheduleStatus;
     }
 }

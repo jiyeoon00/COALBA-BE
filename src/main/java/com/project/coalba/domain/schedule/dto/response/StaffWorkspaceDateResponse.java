@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class StaffWorkspaceDateResponse {
 
-    private int day;
+    private Integer day;
 
     private Boolean isMySchedule;
 }

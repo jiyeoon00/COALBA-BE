@@ -11,19 +11,13 @@ public class BossHomePageResponse {
 
     private List<HomeDateResponse> dateList;
 
-    private int selectedYear;
-
-    private int selectedMonth;
-
-    private int selectedDay;
+    private DateResponse selectedDate;
 
     private List<WorkspaceResponse> workspaceList;
 
-    public BossHomePageResponse(List<HomeDateResponse> dateList, LocalDate selectedDate, List<WorkspaceResponse> workspaceList) {
+    public BossHomePageResponse(List<HomeDateResponse> dateList, LocalDate date, List<WorkspaceResponse> workspaceList) {
         this.dateList = dateList;
-        selectedYear = selectedDate.getYear();
-        selectedMonth = selectedDate.getMonthValue();
-        selectedDay = selectedDate.getDayOfMonth();
+        this.selectedDate = new DateResponse(date);
         this.workspaceList = workspaceList;
     }
 
