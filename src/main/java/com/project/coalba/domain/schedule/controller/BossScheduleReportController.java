@@ -1,8 +1,8 @@
 package com.project.coalba.domain.schedule.controller;
 
 import com.project.coalba.domain.profile.entity.Staff;
+import com.project.coalba.domain.schedule.dto.response.BossWorkReportListResponse;
 import com.project.coalba.domain.schedule.service.dto.WorkReportServiceDto;
-import com.project.coalba.domain.schedule.dto.response.BossWorkReportResponse;
 import com.project.coalba.domain.schedule.mapper.ScheduleMapper;
 import com.project.coalba.domain.schedule.service.ScheduleReportService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ public class BossScheduleReportController {
     private final ScheduleMapper mapper;
 
     @GetMapping
-    public BossWorkReportResponse getWorkReportList(@RequestParam Long workspaceId, @RequestParam int year, @RequestParam int month) {
+    public BossWorkReportListResponse getWorkReportList(@RequestParam Long workspaceId, @RequestParam int year, @RequestParam int month) {
         Map<Staff, WorkReportServiceDto> workReportByStaff = scheduleReportService.getBossWorkReportList(workspaceId, year, month);
-        return mapper.toDto(year, month, workspaceId, () -> workReportByStaff);
+        return mapper.toDto(workspaceId, year, month, () -> workReportByStaff);
     }
 }

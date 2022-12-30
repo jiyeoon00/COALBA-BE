@@ -7,7 +7,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class BossWorkReportResponse {
+public class BossWorkReportListResponse {
 
     private Long selectedWorkspaceId;
 
@@ -15,11 +15,11 @@ public class BossWorkReportResponse {
 
     private int selectedMonth;
 
-    private List<WorkReport> workReportList;
+    private List<WorkReportResponse> workReportList;
 
     @AllArgsConstructor
     @Getter
-    public static class WorkReport {
+    public static class WorkReportResponse {
 
         private WorkerResponse worker;
 
@@ -35,9 +35,9 @@ public class BossWorkReportResponse {
 
             private Long workerId;
 
-            private String imageUrl;
-
             private String name;
+
+            private String imageUrl;
         }
     }
 }

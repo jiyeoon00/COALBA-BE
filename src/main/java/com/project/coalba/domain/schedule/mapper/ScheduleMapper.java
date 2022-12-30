@@ -35,93 +35,6 @@ public interface ScheduleMapper {
     })
     ScheduleBriefResponse toDto(Schedule schedule);
 
-    @Mappings({
-            @Mapping(source = "id", target = "workspaceId")
-    })
-    BossHomePageResponse.WorkspaceResponse toSubDto(Workspace workspace);
-
-    default BossHomePageResponse toDto(BossHomePageServiceDto serviceDto) {
-        List<HomeDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
-        LocalDate selectedDate = serviceDto.getSelectedDate();
-        List<BossHomePageResponse.WorkspaceResponse> workspaceList = serviceDto.getWorkspaceList().stream().map(this::toSubDto).collect(Collectors.toList());
-        return new BossHomePageResponse(dateList, selectedDate, workspaceList);
-    }
-
-    @Mappings({
-            @Mapping(source = "id", target = "scheduleId"),
-            @Mapping(source = "scheduleStartDateTime", target = "scheduleStartTime", qualifiedByName = "toLocalTime"),
-            @Mapping(source = "scheduleEndDateTime", target = "scheduleEndTime", qualifiedByName = "toLocalTime"),
-            @Mapping(source = "logicalStartDateTime", target = "logicalStartTime", qualifiedByName = "toLocalTime"),
-            @Mapping(source = "logicalEndDateTime", target = "logicalEndTime", qualifiedByName = "toLocalTime"),
-            @Mapping(source = "staff.id", target = "worker.workerId"),
-            @Mapping(source = "staff.imageUrl", target = "worker.imageUrl"),
-            @Mapping(source = "staff.realName", target = "worker.name"),
-    })
-    BossHomeScheduleListResponse.ScheduleResponse toBossHomeSubDto(Schedule homeSchedule);
-
-    interface BossHomeScheduleListRef extends Supplier<List<Schedule>> {}
-    default BossHomeScheduleListResponse toDto(LocalDate selectedDate, Long selectedWorkspaceId, BossHomeScheduleListRef ref) {
-        List<BossHomeScheduleListResponse.ScheduleResponse> selectedScheduleList = ref.get().stream()
-                .map(this::toBossHomeSubDto)
-                .collect(Collectors.toList());
-        return new BossHomeScheduleListResponse(selectedDate, selectedWorkspaceId, selectedScheduleList);
-    }
-
-    default BossWorkspaceDateResponse toDto(BossWorkspaceDateServiceDto serviceDto) {
-        int day = serviceDto.getDay();
-        TotalScheduleStatus totalScheduleStatus = getTotalScheduleStatus(serviceDto.getIsSchedule(), serviceDto.getIsAfterToday(), serviceDto.getIsAllSuccess());
-        return new BossWorkspaceDateResponse(day, totalScheduleStatus);
-    }
-
-    default BossWorkspacePageResponse toDto(BossWorkspacePageServiceDto serviceDto) {
-        Workspace workspace = serviceDto.getWorkspace();
-        List<BossWorkspaceDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
-        LocalDate selectedDate = serviceDto.getSelectedDate();
-        BossWorkspaceScheduleListResponse selectedScheduleListOfDay = toDto(selectedDate.getDayOfMonth(), serviceDto::getSelectedScheduleList);
-        return BossWorkspacePageResponse.builder()
-                .selectedWorkspace(new BossWorkspacePageResponse.WorkspaceResponse(workspace.getId(), workspace.getImageUrl(), workspace.getName()))
-                .year(selectedDate.getYear())
-                .month(selectedDate.getMonthValue())
-                .dateList(dateList)
-                .selectedScheduleListOfDay(selectedScheduleListOfDay)
-                .build();
-    }
-
-    @Mappings({
-            @Mapping(source = "id", target = "scheduleId"),
-            @Mapping(source = "scheduleStartDateTime", target = "scheduleStartTime", qualifiedByName = "toLocalTime"),
-            @Mapping(source = "scheduleEndDateTime", target = "scheduleEndTime", qualifiedByName = "toLocalTime"),
-            @Mapping(source = "staff.id", target = "worker.workerId"),
-            @Mapping(source = "staff.realName", target = "worker.name")
-    })
-    BossWorkspaceScheduleListResponse.ScheduleResponse toBossWorkspaceSubDto(Schedule homeSchedule);
-
-    interface BossWorkspaceScheduleListRef extends Supplier<List<Schedule>> {}
-    default BossWorkspaceScheduleListResponse toDto(int selectedDay, BossWorkspaceScheduleListRef ref) {
-        List<BossWorkspaceScheduleListResponse.ScheduleResponse> selectedScheduleList = ref.get().stream()
-                .map(this::toBossWorkspaceSubDto)
-                .collect(Collectors.toList());
-        return new BossWorkspaceScheduleListResponse(selectedDay, selectedScheduleList);
-    }
-
-    @Mappings({
-            @Mapping(source = "staff.id", target = "worker.workerId"),
-            @Mapping(source = "staff.imageUrl", target = "worker.imageUrl"),
-            @Mapping(source = "staff.realName", target = "worker.name"),
-            @Mapping(source = "workReport.totalWorkTimeHour", target="totalWorkTimeHour"),
-            @Mapping(source = "workReport.totalWorkTimeMin", target="totalWorkTimeMin"),
-            @Mapping(source = "workReport.totalWorkPay", target="totalWorkPay")
-    })
-    BossWorkReportResponse.WorkReport toBossWorkReportSubDto(Staff staff, WorkReportServiceDto workReport);
-
-    interface BossWorkReportMapRef extends Supplier<Map<Staff, WorkReportServiceDto>> {}
-    default BossWorkReportResponse toDto(int selectedYear, int selectedMonth, Long selectedWorkspaceId, BossWorkReportMapRef ref) {
-        List<BossWorkReportResponse.WorkReport> workReportList = ref.get().entrySet().stream()
-                .map(entry -> this.toBossWorkReportSubDto(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
-        return new BossWorkReportResponse(selectedWorkspaceId, selectedYear, selectedMonth, workReportList);
-    }
-
     default HomeDateResponse toDto(HomeDateServiceDto serviceDto) {
         LocalDate date = serviceDto.getDate();
         TotalScheduleStatus totalScheduleStatus = getTotalScheduleStatus(serviceDto.getIsSchedule(), serviceDto.getIsAfterToday(), serviceDto.getIsAllSuccess());
@@ -135,10 +48,26 @@ public interface ScheduleMapper {
         return TotalScheduleStatus.INCOMPLETE;
     }
 
-    default StaffHomePageResponse toDto(StaffHomePageServiceDto serviceDto) {
+    default BossHomePageResponse toDto(BossHomePageServiceDto serviceDto) {
         List<HomeDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
-        StaffHomeScheduleListResponse selectedScheduleListOfDate = toDto(serviceDto.getSelectedDate(), serviceDto::getSelectedScheduleList);
-        return new StaffHomePageResponse(dateList, selectedScheduleListOfDate);
+        LocalDate selectedDate = serviceDto.getSelectedDate();
+        List<BossHomePageResponse.WorkspaceResponse> workspaceList = serviceDto.getWorkspaceList().stream().map(this::toWorkspaceDtoOfBossHome).collect(Collectors.toList());
+        return new BossHomePageResponse(dateList, selectedDate, workspaceList);
+    }
+
+    @Mappings({
+            @Mapping(source = "id", target = "workspaceId"),
+            @Mapping(source = "name", target = "name"),
+            @Mapping(source = "imageUrl", target = "imageUrl"),
+    })
+    BossHomePageResponse.WorkspaceResponse toWorkspaceDtoOfBossHome(Workspace workspace);
+
+    interface BossHomeScheduleListRef extends Supplier<List<Schedule>> {}
+    default BossHomeScheduleListResponse toDto(LocalDate selectedDate, Long selectedWorkspaceId, BossHomeScheduleListRef ref) {
+        List<BossHomeScheduleListResponse.ScheduleResponse> selectedScheduleList = ref.get().stream()
+                .map(this::toScheduleDtoOfBossHome)
+                .collect(Collectors.toList());
+        return new BossHomeScheduleListResponse(selectedDate, selectedWorkspaceId, selectedScheduleList);
     }
 
     @Mappings({
@@ -147,34 +76,132 @@ public interface ScheduleMapper {
             @Mapping(source = "scheduleEndDateTime", target = "scheduleEndTime", qualifiedByName = "toLocalTime"),
             @Mapping(source = "logicalStartDateTime", target = "logicalStartTime", qualifiedByName = "toLocalTime"),
             @Mapping(source = "logicalEndDateTime", target = "logicalEndTime", qualifiedByName = "toLocalTime"),
-            @Mapping(source = "workspace.id", target = "workspace.workspaceId"),
-            @Mapping(source = "workspace.name", target = "workspace.name")
+            @Mapping(source = "status", target = "status"),
+            @Mapping(source = "staff.id", target = "worker.workerId"),
+            @Mapping(source = "staff.realName", target = "worker.name"),
+            @Mapping(source = "staff.imageUrl", target = "worker.imageUrl")
     })
-    StaffHomeScheduleListResponse.ScheduleResponse toStaffHomeSubDto(Schedule homeSchedule);
+    BossHomeScheduleListResponse.ScheduleResponse toScheduleDtoOfBossHome(Schedule homeSchedule);
 
-    interface StaffHomeScheduleListRef extends Supplier<List<Schedule>> {}
-    default StaffHomeScheduleListResponse toDto(LocalDate selectedDate, StaffHomeScheduleListRef ref) {
-        List<StaffHomeScheduleListResponse.ScheduleResponse> selectedScheduleList = ref.get().stream()
-                .map(this::toStaffHomeSubDto)
-                .collect(Collectors.toList());
-        return new StaffHomeScheduleListResponse(selectedDate, selectedScheduleList);
-    }
-
-    @Mappings({})
-    StaffWorkspaceDateResponse toDto(StaffWorkspaceDateServiceDto serviceDto);
-
-    default StaffWorkspacePageResponse toDto(StaffWorkspacePageServiceDto serviceDto) {
-        Workspace workspace = serviceDto.getWorkspace();
-        List<StaffWorkspaceDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
+    default BossWorkspacePageResponse toDto(BossWorkspacePageServiceDto serviceDto) {
+        BossWorkspacePageResponse.WorkspaceResponse selectedWorkspace = toWorkspaceDtoOfBossWorkspace(serviceDto.getWorkspace());
         LocalDate selectedDate = serviceDto.getSelectedDate();
-        StaffWorkspaceScheduleListResponse selectedScheduleListOfDay = toDto(selectedDate.getDayOfMonth(), serviceDto::getSelectedScheduleList);
-        return StaffWorkspacePageResponse.builder()
-                .selectedWorkspace(new StaffWorkspacePageResponse.WorkspaceResponse(workspace.getId(), workspace.getImageUrl(), workspace.getName()))
+        List<BossWorkspaceDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
+        BossWorkspaceScheduleListResponse selectedScheduleListOfDay = toDto(selectedDate.getDayOfMonth(), serviceDto::getSelectedScheduleList);
+        return BossWorkspacePageResponse.builder()
+                .selectedWorkspace(selectedWorkspace)
                 .year(selectedDate.getYear())
                 .month(selectedDate.getMonthValue())
                 .dateList(dateList)
                 .selectedScheduleListOfDay(selectedScheduleListOfDay)
                 .build();
+    }
+
+    @Mappings({
+            @Mapping(source = "id", target = "workspaceId"),
+            @Mapping(source = "name", target = "name"),
+            @Mapping(source = "imageUrl", target = "imageUrl")
+    })
+    BossWorkspacePageResponse.WorkspaceResponse toWorkspaceDtoOfBossWorkspace(Workspace workspace);
+
+    default BossWorkspaceDateResponse toDto(BossWorkspaceDateServiceDto serviceDto) {
+        int day = serviceDto.getDay();
+        TotalScheduleStatus totalScheduleStatus = getTotalScheduleStatus(serviceDto.getIsSchedule(), serviceDto.getIsAfterToday(), serviceDto.getIsAllSuccess());
+        return new BossWorkspaceDateResponse(day, totalScheduleStatus);
+    }
+
+    interface BossWorkspaceScheduleListRef extends Supplier<List<Schedule>> {}
+    default BossWorkspaceScheduleListResponse toDto(int selectedDay, BossWorkspaceScheduleListRef ref) {
+        List<BossWorkspaceScheduleListResponse.ScheduleResponse> selectedScheduleList = ref.get().stream()
+                .map(this::toScheduleDtoOfBossWorkspace)
+                .collect(Collectors.toList());
+        return new BossWorkspaceScheduleListResponse(selectedDay, selectedScheduleList);
+    }
+
+    @Mappings({
+            @Mapping(source = "id", target = "scheduleId"),
+            @Mapping(source = "scheduleStartDateTime", target = "scheduleStartTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "scheduleEndDateTime", target = "scheduleEndTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "status", target = "status"),
+            @Mapping(source = "staff.id", target = "worker.workerId"),
+            @Mapping(source = "staff.realName", target = "worker.name")
+    })
+    BossWorkspaceScheduleListResponse.ScheduleResponse toScheduleDtoOfBossWorkspace(Schedule homeSchedule);
+
+    interface BossWorkReportMapRef extends Supplier<Map<Staff, WorkReportServiceDto>> {}
+    default BossWorkReportListResponse toDto(Long selectedWorkspaceId, int selectedYear, int selectedMonth, BossWorkReportMapRef ref) {
+        List<BossWorkReportListResponse.WorkReportResponse> workReportList = ref.get().entrySet().stream()
+                .map(entry -> toWorkReportDtoOfBoss(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+        return new BossWorkReportListResponse(selectedWorkspaceId, selectedYear, selectedMonth, workReportList);
+    }
+
+    @Mappings({
+            @Mapping(source = "staff.id", target = "worker.workerId"),
+            @Mapping(source = "staff.realName", target = "worker.name"),
+            @Mapping(source = "staff.imageUrl", target = "worker.imageUrl"),
+            @Mapping(source = "workReport.totalWorkTimeHour", target="totalWorkTimeHour"),
+            @Mapping(source = "workReport.totalWorkTimeMin", target="totalWorkTimeMin"),
+            @Mapping(source = "workReport.totalWorkPay", target="totalWorkPay")
+    })
+    BossWorkReportListResponse.WorkReportResponse toWorkReportDtoOfBoss(Staff staff, WorkReportServiceDto workReport);
+
+    default StaffHomePageResponse toDto(StaffHomePageServiceDto serviceDto) {
+        List<HomeDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
+        StaffHomeScheduleListResponse selectedScheduleListOfDate = toDto(serviceDto.getSelectedDate(), serviceDto::getSelectedScheduleList);
+        return new StaffHomePageResponse(dateList, selectedScheduleListOfDate);
+    }
+
+    interface StaffHomeScheduleListRef extends Supplier<List<Schedule>> {}
+    default StaffHomeScheduleListResponse toDto(LocalDate selectedDate, StaffHomeScheduleListRef ref) {
+        List<StaffHomeScheduleListResponse.ScheduleResponse> selectedScheduleList = ref.get().stream()
+                .map(this::toScheduleDtoOfStaffHome)
+                .collect(Collectors.toList());
+        return new StaffHomeScheduleListResponse(selectedDate, selectedScheduleList);
+    }
+
+    @Mappings({
+            @Mapping(source = "id", target = "scheduleId"),
+            @Mapping(source = "scheduleStartDateTime", target = "scheduleStartTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "scheduleEndDateTime", target = "scheduleEndTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "logicalStartDateTime", target = "logicalStartTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "logicalEndDateTime", target = "logicalEndTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "status", target = "status"),
+            @Mapping(source = "workspace.id", target = "workspace.workspaceId"),
+            @Mapping(source = "workspace.name", target = "workspace.name")
+    })
+    StaffHomeScheduleListResponse.ScheduleResponse toScheduleDtoOfStaffHome(Schedule homeSchedule);
+
+    default StaffWorkspacePageResponse toDto(StaffWorkspacePageServiceDto serviceDto) {
+        StaffWorkspacePageResponse.WorkspaceResponse selectedWorkspace = toWorkspaceDtoOfStaffWorkspace(serviceDto.getWorkspace());
+        LocalDate selectedDate = serviceDto.getSelectedDate();
+        List<StaffWorkspaceDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
+        StaffWorkspaceScheduleListResponse selectedScheduleListOfDay = toDto(selectedDate.getDayOfMonth(), serviceDto::getSelectedScheduleList);
+        return StaffWorkspacePageResponse.builder()
+                .selectedWorkspace(selectedWorkspace)
+                .year(selectedDate.getYear())
+                .month(selectedDate.getMonthValue())
+                .dateList(dateList)
+                .selectedScheduleListOfDay(selectedScheduleListOfDay)
+                .build();
+    }
+
+    @Mappings({
+            @Mapping(source = "id", target = "workspaceId"),
+            @Mapping(source = "name", target = "name"),
+            @Mapping(source = "imageUrl", target = "imageUrl")
+    })
+    StaffWorkspacePageResponse.WorkspaceResponse toWorkspaceDtoOfStaffWorkspace(Workspace workspace);
+
+    @Mappings({})
+    StaffWorkspaceDateResponse toDto(StaffWorkspaceDateServiceDto serviceDto);
+
+    interface StaffWorkspaceScheduleListRef extends Supplier<List<ScheduleServiceDto>> {}
+    default StaffWorkspaceScheduleListResponse toDto(int selectedDay, StaffWorkspaceScheduleListRef ref) {
+        List<StaffWorkspaceScheduleListResponse.ScheduleResponse> selectedScheduleList = ref.get().stream()
+                .map(this::toScheduleDtoOfStaffWorkspace)
+                .collect(Collectors.toList());
+        return new StaffWorkspaceScheduleListResponse(selectedDay, selectedScheduleList);
     }
 
     @Mappings({
@@ -186,31 +213,23 @@ public interface ScheduleMapper {
             @Mapping(source = "schedule.staff.realName", target = "worker.name"),
             @Mapping(source = "isMySchedule", target = "isMySchedule")
     })
-    StaffWorkspaceScheduleListResponse.ScheduleResponse toStaffWorkspaceSubDto(ScheduleServiceDto workspaceScheduleDto);
+    StaffWorkspaceScheduleListResponse.ScheduleResponse toScheduleDtoOfStaffWorkspace(ScheduleServiceDto workspaceScheduleDto);
 
-    interface StaffWorkspaceScheduleListRef extends Supplier<List<ScheduleServiceDto>> {}
-    default StaffWorkspaceScheduleListResponse toDto(int selectedDay, StaffWorkspaceScheduleListRef ref) {
-        List<StaffWorkspaceScheduleListResponse.ScheduleResponse> selectedScheduleList = ref.get().stream()
-                .map(this::toStaffWorkspaceSubDto)
+    interface StaffWorkReportMapRef extends Supplier<Map<Integer, WorkReportServiceDto>> {}
+    default StaffWorkReportListResponse toDto(int selectedYear, StaffWorkReportMapRef ref) {
+        List<StaffWorkReportListResponse.WorkReportResponse> workReportList = ref.get().entrySet().stream()
+                .map(entry -> toWorkReportDtoOfStaff(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
-        return new StaffWorkspaceScheduleListResponse(selectedDay, selectedScheduleList);
+        return new StaffWorkReportListResponse(selectedYear, workReportList);
     }
 
     @Mappings({
-        @Mapping(source = "month", target="month"),
-        @Mapping(source = "workReport.totalWorkTimeHour", target = "totalWorkTimeHour"),
-        @Mapping(source = "workReport.totalWorkTimeMin", target = "totalWorkTimeMin"),
-        @Mapping(source = "workReport.totalWorkPay", target = "totalWorkPay"),
+            @Mapping(source = "month", target = "month"),
+            @Mapping(source = "workReport.totalWorkTimeHour", target = "totalWorkTimeHour"),
+            @Mapping(source = "workReport.totalWorkTimeMin", target = "totalWorkTimeMin"),
+            @Mapping(source = "workReport.totalWorkPay", target = "totalWorkPay"),
     })
-    StaffWorkReportResponse.WorkReport toStaffWorkReportSubDto(int month, WorkReportServiceDto workReport);
-
-    interface StaffWorkReportMapRef extends Supplier<Map<Integer, WorkReportServiceDto>> {}
-    default StaffWorkReportResponse toDto(int selectedYear, StaffWorkReportMapRef ref) {
-        List<StaffWorkReportResponse.WorkReport> workReportList = ref.get().entrySet().stream()
-                .map(entry -> this.toStaffWorkReportSubDto(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
-        return new StaffWorkReportResponse(selectedYear, workReportList);
-    }
+    StaffWorkReportListResponse.WorkReportResponse toWorkReportDtoOfStaff(int month, WorkReportServiceDto workReport);
 
     @Named("toLocalDate")
     default LocalDate localDateTimeToLocalDate(LocalDateTime localDateTime) {

@@ -52,9 +52,9 @@ public class BossHomeScheduleListResponse {
 
             private Long workerId;
 
-            private String imageUrl;
-
             private String name;
+
+            private String imageUrl;
         }
     }
 }

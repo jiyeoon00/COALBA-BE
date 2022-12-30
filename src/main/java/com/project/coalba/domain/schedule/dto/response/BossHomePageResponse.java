@@ -27,8 +27,8 @@ public class BossHomePageResponse {
 
         private Long workspaceId;
 
-        private String imageUrl;
-
         private String name;
+
+        private String imageUrl;
     }
 }

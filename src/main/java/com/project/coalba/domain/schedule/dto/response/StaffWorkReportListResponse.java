@@ -7,15 +7,15 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class StaffWorkReportResponse {
+public class StaffWorkReportListResponse {
 
     private int selectedYear;
 
-    private List<WorkReport> workReportList;
+    private List<WorkReportResponse> workReportList;
 
     @AllArgsConstructor
     @Getter
-    public static class WorkReport {
+    public static class WorkReportResponse {
 
         private int month;
 

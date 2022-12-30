@@ -26,8 +26,8 @@ public class BossWorkspacePageResponse {
 
         private Long workspaceId;
 
-        private String imageUrl;
-
         private String name;
+
+        private String imageUrl;
     }
 }
