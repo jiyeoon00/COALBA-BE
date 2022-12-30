@@ -105,9 +105,8 @@ public interface ScheduleMapper {
     BossWorkspacePageResponse.WorkspaceResponse toWorkspaceDtoOfBossWorkspace(Workspace workspace);
 
     default BossWorkspaceDateResponse toDto(BossWorkspaceDateServiceDto serviceDto) {
-        int day = serviceDto.getDay();
         TotalScheduleStatus totalScheduleStatus = getTotalScheduleStatus(serviceDto.getIsSchedule(), serviceDto.getIsAfterToday(), serviceDto.getIsAllSuccess());
-        return new BossWorkspaceDateResponse(day, totalScheduleStatus);
+        return new BossWorkspaceDateResponse(serviceDto.getDate(), totalScheduleStatus);
     }
 
     interface BossWorkspaceScheduleListRef extends Supplier<List<Schedule>> {}
@@ -193,8 +192,9 @@ public interface ScheduleMapper {
     })
     StaffWorkspacePageResponse.WorkspaceResponse toWorkspaceDtoOfStaffWorkspace(Workspace workspace);
 
-    @Mappings({})
-    StaffWorkspaceDateResponse toDto(StaffWorkspaceDateServiceDto serviceDto);
+    default StaffWorkspaceDateResponse toDto(StaffWorkspaceDateServiceDto serviceDto) {
+        return new StaffWorkspaceDateResponse(serviceDto.getDate(), serviceDto.getIsMySchedule());
+    }
 
     interface StaffWorkspaceScheduleListRef extends Supplier<List<ScheduleServiceDto>> {}
     default StaffWorkspaceScheduleListResponse toDto(int selectedDay, StaffWorkspaceScheduleListRef ref) {

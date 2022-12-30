@@ -84,7 +84,7 @@ public class StaffScheduleService {
         for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
             List<Schedule> scheduleList = workspaceScheduleMap.get(date);
             boolean isMySchedule = isMySchedule(scheduleList);
-            dateList.add(new StaffWorkspaceDateServiceDto(date.getDayOfMonth(), isMySchedule));
+            dateList.add(new StaffWorkspaceDateServiceDto(date, isMySchedule));
         }
         return dateList;
     }

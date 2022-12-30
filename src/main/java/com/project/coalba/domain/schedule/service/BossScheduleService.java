@@ -87,11 +87,10 @@ public class BossScheduleService {
     }
 
     private BossWorkspaceDateServiceDto getWorkspaceDate(LocalDate date, List<Schedule> scheduleList) {
-        int day = date.getDayOfMonth();
-        if (scheduleList == null) return new BossWorkspaceDateServiceDto(day, false, false, false);
-        if (date.isAfter(LocalDate.now())) return new BossWorkspaceDateServiceDto(day, true, true, false);
-        if (isAllSuccess(scheduleList)) return new BossWorkspaceDateServiceDto(day, true, false, true);
-        return new BossWorkspaceDateServiceDto(day, true, false, false);
+        if (scheduleList == null) return new BossWorkspaceDateServiceDto(date, false, false, false);
+        if (date.isAfter(LocalDate.now())) return new BossWorkspaceDateServiceDto(date, true, true, false);
+        if (isAllSuccess(scheduleList)) return new BossWorkspaceDateServiceDto(date, true, false, true);
+        return new BossWorkspaceDateServiceDto(date, true, false, false);
     }
 
     public List<Schedule> getWorkspaceScheduleList(Long workspaceId, LocalDate selectedDate) {
