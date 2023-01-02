@@ -67,11 +67,8 @@ public class BossSubstituteReqService {
 
     @Transactional(readOnly = true)
     public SubstituteReq getSubstituteReqById(Long substituteReqId) {
-        Optional<SubstituteReq> substituteReq = substituteRepository.findById(substituteReqId);
-        if(substituteReq.isPresent()) {
-            return substituteReq.get();
-        } else {
-            throw new RuntimeException("해당 대타근무 요청건을 찾을 수 없습니다.");
+        return substituteRepository.findById(substituteReqId)
+                .orElseThrow(() -> new RuntimeException("해당 대타근무 요청건을 찾을 수 없습니다."));
         }
     }
 }
