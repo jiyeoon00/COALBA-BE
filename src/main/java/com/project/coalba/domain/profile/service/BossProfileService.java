@@ -41,4 +41,14 @@ public class BossProfileService {
         Boss boss = profileUtil.getCurrentBoss();
         boss.update(profileRequest.getRealName(), profileRequest.getPhoneNumber(), profileRequest.getBirthDate(), profileRequest.getImageUrl());
     }
+
+    @Transactional(readOnly = true)
+    public Boss getBossByScheduleId(Long scheduleId) {
+        Boss boss = bossProfileRepository.findByScheduleId(scheduleId);
+        if(boss == null){
+            throw new RuntimeException("해당 스케줄의 사장님이 존재하지 않습니다.");
+        } else{
+            return boss;
+        }
+    }
 }

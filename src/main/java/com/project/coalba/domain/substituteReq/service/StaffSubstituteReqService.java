@@ -2,6 +2,7 @@ package com.project.coalba.domain.substituteReq.service;
 
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.entity.Staff;
+import com.project.coalba.domain.profile.service.BossProfileService;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.dto.response.ReceivedSubstituteReq;
 import com.project.coalba.domain.substituteReq.dto.response.SentSubstituteReq;
@@ -13,7 +14,6 @@ import com.project.coalba.domain.substituteReq.repository.SubstituteRepository;
 import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +26,13 @@ import static java.util.stream.Collectors.groupingBy;
 public class StaffSubstituteReqService {
     private final ProfileUtil profileUtil;
     private final SubstituteRepository substituteRepository;
+    private final BossProfileService bossProfileService;
 
     @Transactional
     public void createSubstituteReq(Schedule schedule, Long receiverId, String reqMessage) {
         Staff sender = profileUtil.getCurrentStaff();
         Staff receiver = profileUtil.getStaffById(receiverId);
-        Boss boss = profileUtil.getBossByScheduleId(schedule.getId());
+        Boss boss = bossProfileService.getBossByScheduleId(schedule.getId());
 
         SubstituteReq substituteReq = SubstituteReq.builder()
                 .schedule(schedule)
