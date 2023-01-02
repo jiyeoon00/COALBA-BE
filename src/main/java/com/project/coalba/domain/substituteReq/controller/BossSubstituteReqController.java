@@ -3,7 +3,7 @@ package com.project.coalba.domain.substituteReq.controller;
 import com.project.coalba.domain.substituteReq.dto.response.BothSubstituteReq;
 import com.project.coalba.domain.substituteReq.dto.response.DetailSubstituteReqResponse;
 import com.project.coalba.domain.substituteReq.dto.response.SubstituteReqsResponse;
-import com.project.coalba.domain.substituteReq.repository.dto.DetailSubstituteReqDto;
+import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.service.BossSubstituteReqService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class BossSubstituteReqController {
 
     @GetMapping("/{substituteReqId}")
     public DetailSubstituteReqResponse getDetailSubstituteReqs(@PathVariable Long substituteReqId){
-        DetailSubstituteReqDto detailSubstituteReqDto = bossSubstituteReqService.getDetailSubstituteReq(substituteReqId);
+        BothSubstituteReqDto detailSubstituteReqDto = bossSubstituteReqService.getDetailSubstituteReq(substituteReqId);
         return new DetailSubstituteReqResponse(detailSubstituteReqDto);
     }
 

@@ -6,11 +6,8 @@ import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import lombok.*;
 
-@Builder
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class DetailSubstituteReqDto {
+public class BothSubstituteReqDto {
     SubstituteReq substituteReq;
     Workspace workspace;
     Staff receiver;

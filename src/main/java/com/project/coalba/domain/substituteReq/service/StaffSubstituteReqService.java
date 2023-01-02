@@ -5,18 +5,21 @@ import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.dto.response.ReceivedSubstituteReq;
 import com.project.coalba.domain.substituteReq.dto.response.SentSubstituteReq;
+import com.project.coalba.domain.substituteReq.dto.response.YearMonth;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
-import com.project.coalba.domain.substituteReq.repository.dto.DetailSubstituteReqDto;
+import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.repository.SubstituteRepository;
+import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @RequiredArgsConstructor
 @Service
@@ -64,20 +67,42 @@ public class StaffSubstituteReqService {
     }
 
     @Transactional(readOnly = true)
-    public DetailSubstituteReqDto getDetailSubstituteReqs(Long substituteReqId) {
+    public BothSubstituteReqDto getDetailSubstituteReqs(Long substituteReqId) {
         return substituteRepository.getSubstituteReq(substituteReqId);
     }
 
     @Transactional(readOnly = true)
     public List<SentSubstituteReq> getSentSubstituteReqs() {
         Staff currentStaff = profileUtil.getCurrentStaff();
-        return substituteRepository.getSentSubstituteReqs(currentStaff);
+        List<SubstituteReqDto> substituteReqDtos = substituteRepository.getSentSubstituteReqs(currentStaff);
+
+        Map<YearMonth, List<SubstituteReqDto>> substituteReqMap = substituteReqDtos.stream()
+                .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));
+
+        List<SentSubstituteReq> sentSubstituteReqs = new ArrayList<>();
+        for(YearMonth yearMonth : substituteReqMap.keySet()){
+            sentSubstituteReqs.add(new SentSubstituteReq(yearMonth, substituteReqMap.get(yearMonth)));
+        }
+        Collections.sort(sentSubstituteReqs);
+
+        return sentSubstituteReqs;
     }
 
     @Transactional(readOnly = true)
     public List<ReceivedSubstituteReq> getReceivedSubstituteReqs() {
         Staff currentStaff = profileUtil.getCurrentStaff();
-        return substituteRepository.getReceivedSubstituteReqs(currentStaff);
+        List<SubstituteReqDto> substituteReqDtos = substituteRepository.getReceivedSubstituteReqs(currentStaff);
+
+        Map<YearMonth, List<SubstituteReqDto>> substituteReqMap = substituteReqDtos.stream()
+                .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));
+
+        List<ReceivedSubstituteReq> receivedSubstituteReqs = new ArrayList<>();
+        for(YearMonth yearMonth : substituteReqMap.keySet()){
+            receivedSubstituteReqs.add(new ReceivedSubstituteReq(yearMonth, substituteReqMap.get(yearMonth)));
+        }
+        Collections.sort(receivedSubstituteReqs);
+
+        return receivedSubstituteReqs;
     }
 
     @Transactional

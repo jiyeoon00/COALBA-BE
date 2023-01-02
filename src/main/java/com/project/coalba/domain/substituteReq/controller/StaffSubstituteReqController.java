@@ -7,7 +7,7 @@ import com.project.coalba.domain.substituteReq.dto.response.DetailSubstituteReqR
 import com.project.coalba.domain.substituteReq.dto.response.ReceivedSubstituteReq;
 import com.project.coalba.domain.substituteReq.dto.response.SentSubstituteReq;
 import com.project.coalba.domain.substituteReq.dto.response.SubstituteReqsResponse;
-import com.project.coalba.domain.substituteReq.repository.dto.DetailSubstituteReqDto;
+import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.service.StaffSubstituteReqService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class StaffSubstituteReqController {
 
     @GetMapping("/{substituteReqId}")
     public DetailSubstituteReqResponse getDetailSentSubstituteReqs(@PathVariable Long substituteReqId){
-        DetailSubstituteReqDto detailSubstituteReqDto = staffSubstituteReqService.getDetailSubstituteReqs(substituteReqId);
+        BothSubstituteReqDto detailSubstituteReqDto = staffSubstituteReqService.getDetailSubstituteReqs(substituteReqId);
         return new DetailSubstituteReqResponse(detailSubstituteReqDto);
     }
 

@@ -5,7 +5,7 @@ import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
-import com.project.coalba.domain.substituteReq.repository.dto.DetailSubstituteReqDto;
+import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +31,7 @@ public class DetailSubstituteReqResponse {
     private String reqMessage;
     private SubstituteReqStatus status;
 
-    public DetailSubstituteReqResponse(DetailSubstituteReqDto detailSubstituteReqDto){
+    public DetailSubstituteReqResponse(BothSubstituteReqDto detailSubstituteReqDto){
         SubstituteReq substituteReq = detailSubstituteReqDto.getSubstituteReq();
         Staff receiver = detailSubstituteReqDto.getReceiver();
         Staff sender = detailSubstituteReqDto.getSender();

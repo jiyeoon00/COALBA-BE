@@ -5,8 +5,7 @@ import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
-import com.project.coalba.domain.substituteReq.repository.dto.DetailSubstituteReqDto;
-import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
+import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import lombok.Data;
 
@@ -29,7 +28,7 @@ public class BothDetailSubstituteReq {
     private LocalDateTime endDateTime;
     private SubstituteReqStatus status;
 
-    public BothDetailSubstituteReq(DetailSubstituteReqDto detailSubstituteReqDto) {
+    public BothDetailSubstituteReq(BothSubstituteReqDto detailSubstituteReqDto) {
         SubstituteReq substituteReq = detailSubstituteReqDto.getSubstituteReq();
         Staff receiver = detailSubstituteReqDto.getReceiver();
         Staff sender = detailSubstituteReqDto.getSender();
