@@ -43,7 +43,7 @@ public class BossSubstituteReqService {
          * 사장님 최종승인시 알바한테 알림 보내기
          */
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
-        substituteReq.approveReq();
+        substituteReq.approve();
         bossScheduleService.changeScheduleStaff(substituteReq.getSchedule(), substituteReq.getReceiver());
         return ResponseEntity.ok("대타근무 요청을 최종승인하였습니다. 스케줄이 교체 됩니다.");
     }
@@ -51,7 +51,7 @@ public class BossSubstituteReqService {
     @Transactional
     public ResponseEntity disapproveSubstituteReq(Long substituteReqId) {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
-        substituteReq.disapproveReq();
+        substituteReq.disapprove();
         return ResponseEntity.ok("대타근무 요청을 최종거절하였습니다.");
     }
 
