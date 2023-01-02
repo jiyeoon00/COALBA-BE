@@ -107,7 +107,7 @@ public class Schedule extends BaseTimeEntity {
         physicalEndDateTime = currentDateTime;
     }
 
-    public void changeScheduleStaff(Staff staff) {
+    public void changeStaff(Staff staff) {
         this.staff = staff;
     }
 

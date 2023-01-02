@@ -1,6 +1,7 @@
 package com.project.coalba.domain.substituteReq.service;
 
 import com.project.coalba.domain.profile.entity.Boss;
+import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.service.BossScheduleService;
 import com.project.coalba.domain.substituteReq.dto.response.BothSubstituteReq;
 import com.project.coalba.domain.substituteReq.dto.response.YearMonth;
@@ -21,7 +22,6 @@ import static java.util.stream.Collectors.groupingBy;
 public class BossSubstituteReqService {
     private final ProfileUtil profileUtil;
     private final SubstituteRepository substituteRepository;
-    private final BossScheduleService bossScheduleService;
 
     @Transactional(readOnly = true)
     public BothSubstituteReqDto getDetailSubstituteReq(Long substituteReqId) {
@@ -53,7 +53,9 @@ public class BossSubstituteReqService {
          */
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         substituteReq.approve();
-        bossScheduleService.changeScheduleStaff(substituteReq.getSchedule(), substituteReq.getReceiver());
+
+        Schedule schedule = substituteReq.getSchedule();
+        schedule.changeStaff(substituteReq.getReceiver());
     }
 
     @Transactional
