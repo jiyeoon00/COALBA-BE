@@ -11,6 +11,7 @@ import com.project.coalba.domain.substituteReq.repository.dto.DetailSubstituteRe
 import com.project.coalba.domain.substituteReq.service.StaffSubstituteReqService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class StaffSubstituteReqController {
 
     @PostMapping("/{scheduleId}/from")
     public void createSubstituteReq(@PathVariable Long scheduleId,
-                                    @RequestBody CreateSubstituteReqRequest request) {
+                                    @Validated @RequestBody CreateSubstituteReqRequest request) {
         Schedule schedule = scheduleService.getSchedule(scheduleId);
         staffSubstituteReqService.createSubstituteReq(schedule, request.getReceiverId(), request.getReqMessage());
     }
