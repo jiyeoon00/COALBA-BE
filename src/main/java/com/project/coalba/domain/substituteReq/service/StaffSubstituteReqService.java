@@ -45,7 +45,7 @@ public class StaffSubstituteReqService {
     @Transactional
     public ResponseEntity cancelSubstituteReq(Long substituteReqId) {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
-        if(substituteReq.isWating()) {
+        if(substituteReq.isWaiting()) {
             substituteReq.cancelReq();
             return ResponseEntity.ok("취소되었습니다.");
         }else {

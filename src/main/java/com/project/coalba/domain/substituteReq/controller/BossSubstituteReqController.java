@@ -23,7 +23,7 @@ public class BossSubstituteReqController {
         return new DetailSubstituteReqResponse(detailSubstituteReqDto);
     }
 
-    @GetMapping("/")
+    @GetMapping
     public SubstituteReqsResponse getSubstituteReqs() {
         List<BothSubstituteReq> bothSubstituteReqs = bossSubstituteReqService.getSubstituteReqs();
         return new SubstituteReqsResponse(bothSubstituteReqs);
