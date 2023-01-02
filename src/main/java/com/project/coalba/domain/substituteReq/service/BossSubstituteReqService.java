@@ -9,7 +9,6 @@ import com.project.coalba.domain.substituteReq.repository.SubstituteRepository;
 import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +46,7 @@ public class BossSubstituteReqService {
     }
 
     @Transactional
-    public ResponseEntity approveSubstituteReq(Long substituteReqId) {
+    public void approveSubstituteReq(Long substituteReqId) {
         /**
          * 추후 기능 보완
          * 사장님 최종승인시 알바한테 알림 보내기
@@ -55,14 +54,12 @@ public class BossSubstituteReqService {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         substituteReq.approve();
         bossScheduleService.changeScheduleStaff(substituteReq.getSchedule(), substituteReq.getReceiver());
-        return ResponseEntity.ok("대타근무 요청을 최종승인하였습니다. 스케줄이 교체 됩니다.");
     }
 
     @Transactional
-    public ResponseEntity disapproveSubstituteReq(Long substituteReqId) {
+    public void disapproveSubstituteReq(Long substituteReqId) {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         substituteReq.disapprove();
-        return ResponseEntity.ok("대타근무 요청을 최종거절하였습니다.");
     }
 
     @Transactional(readOnly = true)
@@ -70,5 +67,4 @@ public class BossSubstituteReqService {
         return substituteRepository.findById(substituteReqId)
                 .orElseThrow(() -> new RuntimeException("해당 대타근무 요청건을 찾을 수 없습니다."));
         }
-    }
 }

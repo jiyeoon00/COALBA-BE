@@ -32,7 +32,8 @@ public class StaffSubstituteReqController {
 
     @PutMapping("/{substituteReqId}/from")
     public ResponseEntity cancelSubstituteReq(@PathVariable Long substituteReqId) {
-        return staffSubstituteReqService.cancelSubstituteReq(substituteReqId);
+        staffSubstituteReqService.cancelSubstituteReq(substituteReqId);
+        return ResponseEntity.ok("취소되었습니다.");
     }
 
     @GetMapping("/{substituteReqId}")
@@ -55,11 +56,13 @@ public class StaffSubstituteReqController {
 
     @PutMapping("/{substituteReqId}/accept")
     public ResponseEntity acceptSubstituteReq(@PathVariable Long substituteReqId) {
-        return staffSubstituteReqService.acceptSubstituteReq(substituteReqId);
+        staffSubstituteReqService.acceptSubstituteReq(substituteReqId);
+        return ResponseEntity.ok("대타근무 요청이 수락되었습니다. 사장님께 최종승인 요청이 갑니다.");
     }
 
     @PutMapping("/{substituteReqId}/reject")
     public ResponseEntity rejectSubstituteReq(@PathVariable Long substituteReqId) {
-        return staffSubstituteReqService.rejectSubstituteReq(substituteReqId);
+        staffSubstituteReqService.rejectSubstituteReq(substituteReqId);
+        return ResponseEntity.ok("대타근무 요청이 거절되었습니다.");
     }
 }

@@ -31,11 +31,13 @@ public class BossSubstituteReqController {
 
     @PutMapping("/{substituteReqId}/accept")
     public ResponseEntity approveSubstituteReq(@PathVariable Long substituteReqId) {
-        return bossSubstituteReqService.approveSubstituteReq(substituteReqId);
+        bossSubstituteReqService.approveSubstituteReq(substituteReqId);
+        return ResponseEntity.ok("대타근무 요청을 최종승인하였습니다. 스케줄이 교체 됩니다.");
     }
 
     @PutMapping("/{substituteReqId}/reject")
     public ResponseEntity disapproveSubstituteReq(@PathVariable Long substituteReqId) {
-        return bossSubstituteReqService.disapproveSubstituteReq(substituteReqId);
+        bossSubstituteReqService.disapproveSubstituteReq(substituteReqId);
+        return ResponseEntity.ok("대타근무 요청을 최종거절하였습니다.");
     }
 }
