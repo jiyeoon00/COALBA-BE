@@ -2,8 +2,6 @@ package com.project.coalba.domain.schedule.entity;
 
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
-import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
-import com.project.coalba.domain.timecardReq.entity.TimecardReq;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.global.audit.BaseTimeEntity;
 import lombok.*;
@@ -11,8 +9,6 @@ import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter @Builder
 @AllArgsConstructor
@@ -55,13 +51,6 @@ public class Schedule extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id", nullable = false)
     private Staff staff;
-
-    @Builder.Default
-    @OneToMany(mappedBy = "schedule")
-    private List<SubstituteReq> substituteReqList = new ArrayList<>();
-
-    @OneToOne(mappedBy = "schedule")
-    private TimecardReq timecardReq;
 
     public void onDuty() {
         status = ScheduleStatus.ON_DUTY;
