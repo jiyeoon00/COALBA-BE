@@ -1,4 +1,4 @@
-package com.project.coalba.exception;
+package com.project.coalba.global.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
