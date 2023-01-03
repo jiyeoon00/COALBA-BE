@@ -2,12 +2,13 @@ package com.project.coalba.domain.substituteReq.service;
 
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.schedule.entity.Schedule;
-import com.project.coalba.domain.schedule.service.BossScheduleService;
 import com.project.coalba.domain.substituteReq.dto.response.BothSubstituteReq;
 import com.project.coalba.domain.substituteReq.dto.response.YearMonth;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.repository.SubstituteRepository;
 import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
+import com.project.coalba.exception.BusinessException;
+import com.project.coalba.exception.ErrorCode;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -67,6 +68,6 @@ public class BossSubstituteReqService {
     @Transactional(readOnly = true)
     public SubstituteReq getSubstituteReqById(Long substituteReqId) {
         return substituteRepository.findById(substituteReqId)
-                .orElseThrow(() -> new RuntimeException("해당 대타근무 요청건을 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND));
         }
 }

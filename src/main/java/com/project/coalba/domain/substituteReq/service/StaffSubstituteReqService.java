@@ -12,6 +12,8 @@ import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
 import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.repository.SubstituteRepository;
 import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
+import com.project.coalba.exception.BusinessException;
+import com.project.coalba.exception.ErrorCode;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,23 +54,22 @@ public class StaffSubstituteReqService {
         if(substituteReq.isWaiting()) {
             substituteReq.cancel();
         }else {
-            throw new RuntimeException("이미 수락 혹은 거절된 요청이므로 취소할 수 없습니다.");
+            throw new BusinessException(ErrorCode.ALREADY_PROCESSED_REQ);
         }
     }
 
     @Transactional(readOnly = true)
     public SubstituteReq getSubstituteReqById(Long substituteReqId) {
-        Optional<SubstituteReq> substituteReq = substituteRepository.findById(substituteReqId);
-        if(substituteReq.isPresent()) {
-            return substituteReq.get();
-        } else {
-            throw new RuntimeException("해당 대타근무 요청건을 찾을 수 없습니다.");
-        }
+        return substituteRepository.findById(substituteReqId)
+                .orElseThrow(()-> new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
-    public BothSubstituteReqDto getDetailSubstituteReqs(Long substituteReqId) {
-        return substituteRepository.getSubstituteReq(substituteReqId);
+    public BothSubstituteReqDto getDetailSubstituteReq(Long substituteReqId) {
+        BothSubstituteReqDto substituteReq = substituteRepository.getSubstituteReq(substituteReqId);
+        if(substituteReq != null) {
+            return substituteReq;
+        } else throw new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND);
     }
 
     @Transactional(readOnly = true)
