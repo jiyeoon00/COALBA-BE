@@ -11,19 +11,19 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
-public class BothSubstituteReq implements Comparable<BothSubstituteReq> {
+public class BothSubstituteReqResponse implements Comparable<BothSubstituteReqResponse> {
     private Integer year;
     private Integer month;
-    private List<BothDetailSubstituteReq> substituteReqList = new ArrayList<>();
+    private List<BothDetailSubstituteReqResponse> substituteReqList = new ArrayList<>();
 
-    public BothSubstituteReq(YearMonth yearMonth, List<BothSubstituteReqDto> substituteReqDtos) {
+    public BothSubstituteReqResponse(YearMonth yearMonth, List<BothSubstituteReqDto> substituteReqDtos) {
         year = yearMonth.getYear();
         month = yearMonth.getMonth();
-        substituteReqList = substituteReqDtos.stream().map(substituteReqDto -> new BothDetailSubstituteReq(substituteReqDto)).collect(Collectors.toList());
+        substituteReqList = substituteReqDtos.stream().map(substituteReqDto -> new BothDetailSubstituteReqResponse(substituteReqDto)).collect(Collectors.toList());
     }
 
     @Override
-    public int compareTo(@NotNull BothSubstituteReq o) {
+    public int compareTo(@NotNull BothSubstituteReqResponse o) {
         if ((year == o.year && month < o.getMonth()) || year < o.getYear()) return 1;
         else return -1;
     }

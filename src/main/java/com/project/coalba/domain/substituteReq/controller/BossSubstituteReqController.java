@@ -1,7 +1,7 @@
 package com.project.coalba.domain.substituteReq.controller;
 
-import com.project.coalba.domain.substituteReq.dto.response.BothDetailSubstituteReq;
-import com.project.coalba.domain.substituteReq.dto.response.BothSubstituteReq;
+import com.project.coalba.domain.substituteReq.dto.response.BothDetailSubstituteReqResponse;
+import com.project.coalba.domain.substituteReq.dto.response.BothSubstituteReqResponse;
 import com.project.coalba.domain.substituteReq.dto.response.SubstituteReqsResponse;
 import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.service.BossSubstituteReqService;
@@ -18,14 +18,14 @@ public class BossSubstituteReqController {
     private final BossSubstituteReqService bossSubstituteReqService;
 
     @GetMapping("/{substituteReqId}")
-    public BothDetailSubstituteReq getDetailSubstituteReqs(@PathVariable Long substituteReqId){
+    public BothDetailSubstituteReqResponse getDetailSubstituteReqs(@PathVariable Long substituteReqId){
         BothSubstituteReqDto detailSubstituteReqDto = bossSubstituteReqService.getDetailSubstituteReq(substituteReqId);
-        return new BothDetailSubstituteReq(detailSubstituteReqDto);
+        return new BothDetailSubstituteReqResponse(detailSubstituteReqDto);
     }
 
     @GetMapping
     public SubstituteReqsResponse getSubstituteReqs() {
-        List<BothSubstituteReq> bothSubstituteReqs = bossSubstituteReqService.getSubstituteReqs();
+        List<BothSubstituteReqResponse> bothSubstituteReqs = bossSubstituteReqService.getSubstituteReqs();
         return new SubstituteReqsResponse(bothSubstituteReqs);
     }
 

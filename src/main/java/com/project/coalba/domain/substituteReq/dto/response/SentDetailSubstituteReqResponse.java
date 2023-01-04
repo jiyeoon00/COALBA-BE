@@ -12,11 +12,11 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ReceivedDetailSubstituteReq {
+public class SentDetailSubstituteReqResponse {
     private Long substituteReqId;
-    private Long senderId;
-    private String senderImageUrl;
-    private String senderName;
+    private Long receiverId;
+    private String receiverImageUrl;
+    private String receiverName;
     private Long workspaceId;
     private String workspaceName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd HH:mm", timezone = "Asia/Seoul")
@@ -25,16 +25,16 @@ public class ReceivedDetailSubstituteReq {
     private LocalDateTime endDateTime;
     private SubstituteReqStatus status;
 
-    public ReceivedDetailSubstituteReq(SubstituteReqDto substituteReqDto) {
+    public SentDetailSubstituteReqResponse(SubstituteReqDto substituteReqDto) {
         SubstituteReq substituteReq = substituteReqDto.getSubstituteReq();
-        Staff sender = substituteReqDto.getStaff();
+        Staff receiver = substituteReqDto.getStaff();
         Schedule schedule = substituteReqDto.getSchedule();
         Workspace workspace = substituteReqDto.getWorkspace();
 
         this.substituteReqId = substituteReq.getId();
-        this.senderId = sender.getId();
-        this.senderImageUrl = sender.getImageUrl();
-        this.senderName = sender.getRealName();
+        this.receiverId = receiver.getId();
+        this.receiverImageUrl = receiver.getImageUrl();
+        this.receiverName = receiver.getRealName();
         this.workspaceId = workspace.getId();
         this.workspaceName = workspace.getName();
         this.startDateTime = schedule.getScheduleStartDateTime();

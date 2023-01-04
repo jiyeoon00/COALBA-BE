@@ -74,16 +74,16 @@ public class StaffSubstituteReqService {
     }
 
     @Transactional(readOnly = true)
-    public List<SentSubstituteReq> getSentSubstituteReqs() {
+    public List<SentSubstituteReqResponse> getSentSubstituteReqs() {
         Staff currentStaff = profileUtil.getCurrentStaff();
         List<SubstituteReqDto> substituteReqDtos = substituteRepository.getSentSubstituteReqs(currentStaff);
 
         Map<YearMonth, List<SubstituteReqDto>> substituteReqMap = substituteReqDtos.stream()
                 .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));
 
-        List<SentSubstituteReq> sentSubstituteReqs = new ArrayList<>();
+        List<SentSubstituteReqResponse> sentSubstituteReqs = new ArrayList<>();
         for (YearMonth yearMonth : substituteReqMap.keySet()) {
-            sentSubstituteReqs.add(new SentSubstituteReq(yearMonth, substituteReqMap.get(yearMonth)));
+            sentSubstituteReqs.add(new SentSubstituteReqResponse(yearMonth, substituteReqMap.get(yearMonth)));
         }
         Collections.sort(sentSubstituteReqs);
 
@@ -91,16 +91,16 @@ public class StaffSubstituteReqService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReceivedSubstituteReq> getReceivedSubstituteReqs() {
+    public List<ReceivedSubstituteReqResponse> getReceivedSubstituteReqs() {
         Staff currentStaff = profileUtil.getCurrentStaff();
         List<SubstituteReqDto> substituteReqDtos = substituteRepository.getReceivedSubstituteReqs(currentStaff);
 
         Map<YearMonth, List<SubstituteReqDto>> substituteReqMap = substituteReqDtos.stream()
                 .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));
 
-        List<ReceivedSubstituteReq> receivedSubstituteReqs = new ArrayList<>();
+        List<ReceivedSubstituteReqResponse> receivedSubstituteReqs = new ArrayList<>();
         for (YearMonth yearMonth : substituteReqMap.keySet()) {
-            receivedSubstituteReqs.add(new ReceivedSubstituteReq(yearMonth, substituteReqMap.get(yearMonth)));
+            receivedSubstituteReqs.add(new ReceivedSubstituteReqResponse(yearMonth, substituteReqMap.get(yearMonth)));
         }
         Collections.sort(receivedSubstituteReqs);
 

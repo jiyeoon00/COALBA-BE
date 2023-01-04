@@ -5,15 +5,18 @@ import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
-import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
+import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class SentDetailSubstituteReq {
+public class BothDetailSubstituteReqResponse {
     private Long substituteReqId;
+    private Long senderId;
+    private String senderImageUrl;
+    private String senderName;
     private Long receiverId;
     private String receiverImageUrl;
     private String receiverName;
@@ -25,16 +28,20 @@ public class SentDetailSubstituteReq {
     private LocalDateTime endDateTime;
     private SubstituteReqStatus status;
 
-    public SentDetailSubstituteReq(SubstituteReqDto substituteReqDto) {
-        SubstituteReq substituteReq = substituteReqDto.getSubstituteReq();
-        Staff receiver = substituteReqDto.getStaff();
-        Schedule schedule = substituteReqDto.getSchedule();
-        Workspace workspace = substituteReqDto.getWorkspace();
+    public BothDetailSubstituteReqResponse(BothSubstituteReqDto detailSubstituteReqDto) {
+        SubstituteReq substituteReq = detailSubstituteReqDto.getSubstituteReq();
+        Staff receiver = detailSubstituteReqDto.getReceiver();
+        Staff sender = detailSubstituteReqDto.getSender();
+        Schedule schedule = detailSubstituteReqDto.getSchedule();
+        Workspace workspace = detailSubstituteReqDto.getWorkspace();
 
         this.substituteReqId = substituteReq.getId();
         this.receiverId = receiver.getId();
         this.receiverImageUrl = receiver.getImageUrl();
         this.receiverName = receiver.getRealName();
+        this.senderId = sender.getId();
+        this.senderImageUrl = sender.getImageUrl();
+        this.senderName = sender.getRealName();
         this.workspaceId = workspace.getId();
         this.workspaceName = workspace.getName();
         this.startDateTime = schedule.getScheduleStartDateTime();

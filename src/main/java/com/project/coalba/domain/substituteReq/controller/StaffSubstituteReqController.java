@@ -30,20 +30,20 @@ public class StaffSubstituteReqController {
     }
 
     @GetMapping("/{substituteReqId}")
-    public BothDetailSubstituteReq getDetailSentSubstituteReq(@PathVariable Long substituteReqId){
+    public BothDetailSubstituteReqResponse getDetailSentSubstituteReq(@PathVariable Long substituteReqId){
         BothSubstituteReqDto detailSubstituteReqDto = staffSubstituteReqService.getDetailSubstituteReq(substituteReqId);
-        return new BothDetailSubstituteReq(detailSubstituteReqDto);
+        return new BothDetailSubstituteReqResponse(detailSubstituteReqDto);
     }
 
     @GetMapping("/from")
     public SubstituteReqsResponse getSentSubstituteReqs() {
-        List<SentSubstituteReq> sentSubstituteReqs = staffSubstituteReqService.getSentSubstituteReqs();
+        List<SentSubstituteReqResponse> sentSubstituteReqs = staffSubstituteReqService.getSentSubstituteReqs();
         return new SubstituteReqsResponse(sentSubstituteReqs);
     }
 
     @GetMapping("/to")
     public SubstituteReqsResponse getReceivedSubstituteReqs() {
-        List<ReceivedSubstituteReq> receivedSubstituteReqs = staffSubstituteReqService.getReceivedSubstituteReqs();
+        List<ReceivedSubstituteReqResponse> receivedSubstituteReqs = staffSubstituteReqService.getReceivedSubstituteReqs();
         return new SubstituteReqsResponse(receivedSubstituteReqs);
     }
 
