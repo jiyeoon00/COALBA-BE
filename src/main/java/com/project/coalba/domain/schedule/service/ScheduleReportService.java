@@ -1,11 +1,10 @@
 package com.project.coalba.domain.schedule.service;
 
 import com.project.coalba.domain.profile.entity.Staff;
+import com.project.coalba.domain.profile.service.StaffProfileService;
 import com.project.coalba.domain.schedule.service.dto.WorkReportServiceDto;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.repository.ScheduleRepository;
-import com.project.coalba.domain.workspace.entity.WorkspaceMember;
-import com.project.coalba.domain.workspace.repository.WorkspaceMemberRepository;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.time.Month.*;
 import static java.util.stream.Collectors.groupingBy;
@@ -23,8 +21,8 @@ import static java.util.stream.Collectors.groupingBy;
 @Transactional(readOnly = true)
 public class ScheduleReportService {
 
+    private final StaffProfileService staffProfileService;
     private final ScheduleRepository scheduleRepository;
-    private final WorkspaceMemberRepository workspaceMemberRepository;
     private final ProfileUtil profileUtil;
 
     public Map<Integer, WorkReportServiceDto> getStaffWorkReportList(int year) {
@@ -41,8 +39,7 @@ public class ScheduleReportService {
 
     public Map<Staff, WorkReportServiceDto> getBossWorkReportList(Long workspaceId, int year, int month) {
         Map<Long, List<Schedule>> scheduleListByStaff = getWorkspaceScheduleListByStaffForYearAndMonth(workspaceId, year, month);
-        List<Staff> staffList = workspaceMemberRepository.findAllByWorkspaceIdFetch(workspaceId)
-                .stream().map(WorkspaceMember::getStaff).collect(Collectors.toList());
+        List<Staff> staffList = staffProfileService.getStaffListInWorkspace(workspaceId);
         Map<Staff, WorkReportServiceDto> workReportByStaff = new HashMap<>();
 
         for (Staff staff : staffList) {
