@@ -38,7 +38,7 @@ public class BossSubstituteReqService {
                 .collect(groupingBy(bothSubstituteReqDto -> new YearMonth(bothSubstituteReqDto.getSubstituteReq().getCreatedDate())));
 
         List<BothSubstituteReq> bothSubstituteReqs = new ArrayList<>();
-        for(YearMonth yearMonth : substituteReqMap.keySet()){
+        for (YearMonth yearMonth : substituteReqMap.keySet()) {
             bothSubstituteReqs.add(new BothSubstituteReq(yearMonth, substituteReqMap.get(yearMonth)));
         }
         Collections.sort(bothSubstituteReqs);

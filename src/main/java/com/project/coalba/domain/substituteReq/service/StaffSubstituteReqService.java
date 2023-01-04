@@ -52,7 +52,7 @@ public class StaffSubstituteReqService {
     @Transactional
     public void cancelSubstituteReq(Long substituteReqId) {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
-        if(substituteReq.isWaiting()) {
+        if (substituteReq.isWaiting()) {
             substituteReq.cancel();
         }else {
             throw new BusinessException(ErrorCode.ALREADY_PROCESSED_REQ);
@@ -68,7 +68,7 @@ public class StaffSubstituteReqService {
     @Transactional(readOnly = true)
     public BothSubstituteReqDto getDetailSubstituteReq(Long substituteReqId) {
         BothSubstituteReqDto substituteReq = substituteRepository.getSubstituteReq(substituteReqId);
-        if(substituteReq != null) {
+        if (substituteReq != null) {
             return substituteReq;
         } else throw new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND);
     }
@@ -82,7 +82,7 @@ public class StaffSubstituteReqService {
                 .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));
 
         List<SentSubstituteReq> sentSubstituteReqs = new ArrayList<>();
-        for(YearMonth yearMonth : substituteReqMap.keySet()){
+        for (YearMonth yearMonth : substituteReqMap.keySet()) {
             sentSubstituteReqs.add(new SentSubstituteReq(yearMonth, substituteReqMap.get(yearMonth)));
         }
         Collections.sort(sentSubstituteReqs);
@@ -99,7 +99,7 @@ public class StaffSubstituteReqService {
                 .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));
 
         List<ReceivedSubstituteReq> receivedSubstituteReqs = new ArrayList<>();
-        for(YearMonth yearMonth : substituteReqMap.keySet()){
+        for (YearMonth yearMonth : substituteReqMap.keySet()) {
             receivedSubstituteReqs.add(new ReceivedSubstituteReq(yearMonth, substituteReqMap.get(yearMonth)));
         }
         Collections.sort(receivedSubstituteReqs);

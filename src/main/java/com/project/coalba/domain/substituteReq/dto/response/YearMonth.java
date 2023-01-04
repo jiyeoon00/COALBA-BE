@@ -9,7 +9,7 @@ public class YearMonth {
     int year;
     int month;
 
-    public YearMonth(LocalDateTime localDateTime){
+    public YearMonth(LocalDateTime localDateTime) {
         year = localDateTime.getYear();
         month = localDateTime.getMonthValue();
     }

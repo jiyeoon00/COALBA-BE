@@ -42,10 +42,10 @@ public class SubstituteReq extends BaseTimeEntity {
     @JoinColumn(name = "boss_id")
     private Boss boss;
 
-    public Boolean isWaiting(){
-        if(this.status.equals(SubstituteReqStatus.WAITING)){
+    public Boolean isWaiting() {
+        if (this.status.equals(SubstituteReqStatus.WAITING)) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
