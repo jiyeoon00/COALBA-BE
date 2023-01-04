@@ -99,6 +99,10 @@ public class Schedule extends BaseTimeEntity {
         physicalEndDateTime = currentDateTime;
     }
 
+    public void changeStaff(Staff staff) {
+        this.staff = staff;
+    }
+
     private LocalDateTime convertToLogicalDateTime(LocalDateTime physicalDateTime) {
         int physicalMinute = physicalDateTime.getMinute();
         int logicalMinute = physicalMinute - (physicalMinute % 10);

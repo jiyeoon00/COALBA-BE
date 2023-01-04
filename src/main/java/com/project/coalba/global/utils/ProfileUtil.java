@@ -7,8 +7,6 @@ import com.project.coalba.domain.profile.repository.StaffProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @RequiredArgsConstructor
 @Component
 public class ProfileUtil {
