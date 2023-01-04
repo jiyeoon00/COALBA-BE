@@ -1,7 +1,5 @@
 package com.project.coalba.domain.substituteReq.controller;
 
-import com.project.coalba.domain.schedule.entity.Schedule;
-import com.project.coalba.domain.schedule.service.ScheduleService;
 import com.project.coalba.domain.substituteReq.dto.request.CreateSubstituteReqRequest;
 import com.project.coalba.domain.substituteReq.dto.response.*;
 import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
@@ -18,13 +16,11 @@ import java.util.List;
 @RestController
 public class StaffSubstituteReqController {
     private final StaffSubstituteReqService staffSubstituteReqService;
-    private final ScheduleService scheduleService;
 
     @PostMapping("/{scheduleId}/from")
     public void createSubstituteReq(@PathVariable Long scheduleId,
                                     @Validated @RequestBody CreateSubstituteReqRequest request) {
-        Schedule schedule = scheduleService.getSchedule(scheduleId);
-        staffSubstituteReqService.createSubstituteReq(schedule, request.getReceiverId(), request.getReqMessage());
+        staffSubstituteReqService.createSubstituteReq(scheduleId, request.getReceiverId(), request.getReqMessage());
     }
 
     @PutMapping("/{substituteReqId}/from")

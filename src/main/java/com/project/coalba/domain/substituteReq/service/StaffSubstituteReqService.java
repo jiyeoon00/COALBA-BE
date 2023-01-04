@@ -4,6 +4,7 @@ import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.service.BossProfileService;
 import com.project.coalba.domain.schedule.entity.Schedule;
+import com.project.coalba.domain.schedule.service.ScheduleService;
 import com.project.coalba.domain.substituteReq.dto.response.*;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
@@ -25,11 +26,13 @@ import static java.util.stream.Collectors.groupingBy;
 @Service
 public class StaffSubstituteReqService {
     private final ProfileUtil profileUtil;
-    private final SubstituteRepository substituteRepository;
     private final BossProfileService bossProfileService;
+    private final ScheduleService scheduleService;
+    private final SubstituteRepository substituteRepository;
 
     @Transactional
-    public void createSubstituteReq(Schedule schedule, Long receiverId, String reqMessage) {
+    public void createSubstituteReq(Long scheduleId, Long receiverId, String reqMessage) {
+        Schedule schedule = scheduleService.getSchedule(scheduleId);
         Staff sender = profileUtil.getCurrentStaff();
         Staff receiver = profileUtil.getStaffById(receiverId);
         Boss boss = bossProfileService.getBossByScheduleId(schedule.getId());
