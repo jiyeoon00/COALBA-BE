@@ -23,7 +23,10 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface ScheduleMapper {
 
-    @Mappings({})
+    @Mappings({
+            @Mapping(source = "scheduleDateTime.start", target = "scheduleStartDateTime"),
+            @Mapping(source = "scheduleDateTime.end", target = "scheduleEndDateTime")
+    })
     ScheduleCreateServiceDto toServiceDto(ScheduleCreateRequest scheduleCreateRequest);
 
     @Mappings({
