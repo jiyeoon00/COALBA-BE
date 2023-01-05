@@ -28,11 +28,12 @@ public class StaffWorkspaceController {
         return mapper.toDto(staffWorkspaceService::getMyWorkspaceList);
     }
 
+    //substituteReq 도메인에서 사용 → 나중에 옮기기
     @GetMapping("/{workspaceId}/staffs")
     public WorkspaceStaffListResponse getWorkspaceStaffListPossibleForSchedule(@PathVariable Long workspaceId,
                                                                                @RequestParam Long scheduleId) {
         Schedule schedule = scheduleService.getSchedule(scheduleId);
-        List<Staff> staffList = staffProfileService.getStaffListInWorkspaceAndPossibleForDateTime(workspaceId,
+        List<Staff> staffList = staffProfileService.getStaffListInWorkspaceAndPossibleForDateTimeRange(workspaceId,
                 schedule.getScheduleStartDateTime(), schedule.getScheduleEndDateTime());
         return mapper.toDto(() -> staffList);
     }

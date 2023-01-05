@@ -2,7 +2,6 @@ package com.project.coalba.domain.workspace.controller;
 
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.service.StaffProfileService;
-import com.project.coalba.domain.workspace.dto.request.SearchDateTime;
 import com.project.coalba.domain.workspace.dto.request.WorkspaceCreateRequest;
 import com.project.coalba.domain.workspace.dto.request.WorkspaceUpdateRequest;
 import com.project.coalba.domain.workspace.dto.response.*;
@@ -49,14 +48,7 @@ public class BossWorkspaceController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @GetMapping("/{workspaceId}/schedule/staffs")
-    public WorkspaceStaffListResponse getWorkspaceStaffListPossibleForDateTime(@PathVariable Long workspaceId,
-                                                                               SearchDateTime searchDateTime) {
-        List<Staff> staffList = staffProfileService.getStaffListInWorkspaceAndPossibleForDateTime(workspaceId,
-                searchDateTime.getScheduleStartDateTime(), searchDateTime.getScheduleEndDateTime());
-        return mapper.toDto(() -> staffList);
-    }
-
+    //message 도메인에서 사용: /boss/messages/workspaces/{workspaceId}/staffs
     @GetMapping("/{workspaceId}/message/staffs")
     public WorkspaceStaffListResponse getWorkspaceStaffListForMessage(@PathVariable Long workspaceId) {
         List<Staff> staffList = staffProfileService.getStaffListInWorkspace(workspaceId);

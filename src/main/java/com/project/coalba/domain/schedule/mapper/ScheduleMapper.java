@@ -145,6 +145,20 @@ public interface ScheduleMapper {
     })
     BossWorkReportListResponse.WorkReportResponse toWorkReportDtoOfBoss(Staff staff, WorkReportServiceDto workReport);
 
+    interface StaffListRef extends Supplier<List<Staff>> {}
+    default PossibleStaffListResponse toDto(StaffListRef ref) {
+        List<PossibleStaffListResponse.StaffResponse> staffList = ref.get().stream()
+                .map(this::toSubDto).collect(Collectors.toList());
+        return new PossibleStaffListResponse(staffList);
+    }
+
+    @Mappings({
+            @Mapping(source = "id", target = "staffId"),
+            @Mapping(source = "realName", target = "name"),
+            @Mapping(source = "imageUrl", target = "imageUrl")
+    })
+    PossibleStaffListResponse.StaffResponse toSubDto(Staff staff);
+
     default StaffHomePageResponse toDto(StaffHomePageServiceDto serviceDto) {
         List<HomeDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
         StaffHomeScheduleListResponse selectedScheduleListOfDate = toDto(serviceDto.getSelectedDate(), serviceDto::getSelectedScheduleList);

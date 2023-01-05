@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -95,6 +96,11 @@ public class BossScheduleService {
 
     public List<Schedule> getWorkspaceScheduleList(Long workspaceId, LocalDate selectedDate) {
         return scheduleRepository.findAllByWorkspaceIdAndDateFetch(workspaceId, selectedDate);
+    }
+
+    public List<Staff> getStaffListInWorkspaceAndPossibleForDateTimeRange(Long workspaceId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+        bossWorkspaceService.getWorkspace(workspaceId);
+        return staffProfileService.getStaffListInWorkspaceAndPossibleForDateTimeRange(workspaceId, fromDateTime, toDateTime);
     }
 
     @Transactional
