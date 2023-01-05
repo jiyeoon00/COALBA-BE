@@ -52,7 +52,7 @@ public class BossScheduleController {
 
     @GetMapping("/workspaces/{workspaceId}/staffs/possible/for")
     public PossibleStaffListResponse getStaffListInWorkspaceAndPossibleForScheduleDateTime(@PathVariable Long workspaceId,
-                                                                                           @Validated @RequestBody ScheduleDateTime scheduleDateTime) {
+                                                                                           @Validated ScheduleDateTime scheduleDateTime) {
         List<Staff> staffList = bossScheduleService.getStaffListInWorkspaceAndPossibleForDateTimeRange(workspaceId,
                 scheduleDateTime.getStart(), scheduleDateTime.getEnd());
         return mapper.toDto(() -> staffList);
