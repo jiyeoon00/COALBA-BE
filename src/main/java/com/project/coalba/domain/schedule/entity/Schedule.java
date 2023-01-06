@@ -35,9 +35,9 @@ public class Schedule extends BaseTimeEntity {
     private LocalDateTime physicalEndDateTime;
 
     @Builder.Default
-    @ColumnDefault("9160")
+    @ColumnDefault("9620")
     @Column(nullable = false)
-    private Integer hourlyWage = 9160;
+    private Integer hourlyWage = 9620;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)

@@ -18,6 +18,6 @@ public class ScheduleCreateRequest {
     @NotNull @Valid
     ScheduleDateTime scheduleDateTime;
 
-    @NotNull @Min(9160)
+    @NotNull @Min(9620)
     private Integer hourlyWage;
 }
