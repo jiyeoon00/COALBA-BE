@@ -1,22 +1,15 @@
 package com.project.coalba.domain.schedule.mapper;
 
 import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.schedule.dto.response.enums.TotalScheduleStatus;
 import com.project.coalba.domain.schedule.service.dto.*;
 import com.project.coalba.domain.schedule.dto.request.ScheduleCreateRequest;
 import com.project.coalba.domain.schedule.dto.response.*;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.workspace.entity.Workspace;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
+import java.time.*;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -39,16 +32,7 @@ public interface ScheduleMapper {
     ScheduleBriefResponse toDto(Schedule schedule);
 
     default HomeDateResponse toDto(HomeDateServiceDto serviceDto) {
-        LocalDate date = serviceDto.getDate();
-        TotalScheduleStatus totalScheduleStatus = getTotalScheduleStatus(serviceDto.getIsSchedule(), serviceDto.getIsAfterToday(), serviceDto.getIsAllSuccess());
-        return new HomeDateResponse(date, totalScheduleStatus);
-    }
-
-    default TotalScheduleStatus getTotalScheduleStatus(Boolean isSchedule, Boolean isAfterToday, Boolean isAllSuccess) {
-        if (!isSchedule) return TotalScheduleStatus.NONE;
-        if (isAfterToday) return TotalScheduleStatus.BEFORE;
-        if (isAllSuccess) return TotalScheduleStatus.COMPLETE;
-        return TotalScheduleStatus.INCOMPLETE;
+        return new HomeDateResponse(serviceDto.getDate(), serviceDto.getTotalScheduleStatus());
     }
 
     default BossHomePageResponse toDto(BossHomePageServiceDto serviceDto) {
@@ -108,8 +92,7 @@ public interface ScheduleMapper {
     BossWorkspacePageResponse.WorkspaceResponse toWorkspaceDtoOfBossWorkspace(Workspace workspace);
 
     default BossWorkspaceDateResponse toDto(BossWorkspaceDateServiceDto serviceDto) {
-        TotalScheduleStatus totalScheduleStatus = getTotalScheduleStatus(serviceDto.getIsSchedule(), serviceDto.getIsAfterToday(), serviceDto.getIsAllSuccess());
-        return new BossWorkspaceDateResponse(serviceDto.getDate(), totalScheduleStatus);
+        return new BossWorkspaceDateResponse(serviceDto.getDate(), serviceDto.getTotalScheduleStatus());
     }
 
     interface BossWorkspaceScheduleListRef extends Supplier<List<Schedule>> {}

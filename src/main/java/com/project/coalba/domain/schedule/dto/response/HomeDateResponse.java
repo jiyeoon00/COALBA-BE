@@ -1,6 +1,6 @@
 package com.project.coalba.domain.schedule.dto.response;
 
-import com.project.coalba.domain.schedule.dto.response.enums.TotalScheduleStatus;
+import com.project.coalba.domain.schedule.entity.enums.TotalScheduleStatus;
 import lombok.Getter;
 
 import java.time.LocalDate;

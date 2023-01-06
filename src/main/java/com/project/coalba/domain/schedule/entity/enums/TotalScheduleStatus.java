@@ -1,4 +1,4 @@
-package com.project.coalba.domain.schedule.dto.response.enums;
+package com.project.coalba.domain.schedule.entity.enums;
 
 public enum TotalScheduleStatus {
     /**

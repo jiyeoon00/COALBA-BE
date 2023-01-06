@@ -1,5 +1,6 @@
 package com.project.coalba.domain.schedule.service.dto;
 
+import com.project.coalba.domain.schedule.entity.enums.TotalScheduleStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,9 +12,5 @@ public class BossWorkspaceDateServiceDto {
 
     private LocalDate date;
 
-    private Boolean isSchedule;
-
-    private Boolean isAfterToday;
-
-    private Boolean isAllSuccess;
+    private TotalScheduleStatus totalScheduleStatus;
 }

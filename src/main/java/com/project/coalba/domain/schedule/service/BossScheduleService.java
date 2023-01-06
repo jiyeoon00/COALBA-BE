@@ -2,6 +2,7 @@ package com.project.coalba.domain.schedule.service;
 
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.service.StaffProfileService;
+import com.project.coalba.domain.schedule.entity.enums.TotalScheduleStatus;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
 import com.project.coalba.domain.schedule.service.dto.*;
 import com.project.coalba.domain.schedule.entity.Schedule;
@@ -12,11 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.time.*;
+import java.util.*;
 
 import static java.time.temporal.TemporalAdjusters.*;
 import static java.util.stream.Collectors.*;
@@ -47,16 +45,16 @@ public class BossScheduleService {
         List<HomeDateServiceDto> dateList = new ArrayList<>();
         for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
             List<Schedule> scheduleList = homeScheduleMap.get(date);
-            dateList.add(getHomeDate(date, scheduleList));
+            dateList.add(new HomeDateServiceDto(date, getTotalScheduleStatus(date, scheduleList)));
         }
         return dateList;
     }
 
-    private HomeDateServiceDto getHomeDate(LocalDate date, List<Schedule> scheduleList) {
-        if (scheduleList == null) return new HomeDateServiceDto(date, false, false, false);
-        if (date.isAfter(LocalDate.now())) return new HomeDateServiceDto(date, true, true, false);
-        if (isAllSuccess(scheduleList)) return new HomeDateServiceDto(date, true, false, true);
-        return new HomeDateServiceDto(date, true, false, false);
+    private TotalScheduleStatus getTotalScheduleStatus(LocalDate date, List<Schedule> scheduleList) {
+        if (scheduleList == null) return TotalScheduleStatus.NONE;
+        if (date.isAfter(LocalDate.now())) return TotalScheduleStatus.BEFORE;
+        if (isAllSuccess(scheduleList)) return TotalScheduleStatus.COMPLETE;
+        return TotalScheduleStatus.INCOMPLETE;
     }
 
     private boolean isAllSuccess(List<Schedule> scheduleList) {
@@ -82,16 +80,9 @@ public class BossScheduleService {
         List<BossWorkspaceDateServiceDto> dateList = new ArrayList<>();
         for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
             List<Schedule> scheduleList = workspaceScheduleMap.get(date);
-            dateList.add(getWorkspaceDate(date, scheduleList));
+            dateList.add(new BossWorkspaceDateServiceDto(date, getTotalScheduleStatus(date, scheduleList)));
         }
         return dateList;
-    }
-
-    private BossWorkspaceDateServiceDto getWorkspaceDate(LocalDate date, List<Schedule> scheduleList) {
-        if (scheduleList == null) return new BossWorkspaceDateServiceDto(date, false, false, false);
-        if (date.isAfter(LocalDate.now())) return new BossWorkspaceDateServiceDto(date, true, true, false);
-        if (isAllSuccess(scheduleList)) return new BossWorkspaceDateServiceDto(date, true, false, true);
-        return new BossWorkspaceDateServiceDto(date, true, false, false);
     }
 
     public List<Schedule> getWorkspaceScheduleList(Long workspaceId, LocalDate selectedDate) {
