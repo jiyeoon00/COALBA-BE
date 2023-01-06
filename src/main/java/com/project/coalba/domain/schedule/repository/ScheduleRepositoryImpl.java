@@ -5,8 +5,7 @@ import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.List;
 
 import static com.project.coalba.domain.schedule.entity.QSchedule.*;
@@ -92,10 +91,10 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     }
 
     private LocalDateTime getStartTimeOf(LocalDate date) {
-        return date.atTime(0, 0, 0);
+        return date.atTime(LocalTime.MIN);
     }
 
     private LocalDateTime getEndTimeOf(LocalDate date) {
-        return date.atTime(23, 59, 59);
+        return date.atTime(LocalTime.MAX);
     }
 }

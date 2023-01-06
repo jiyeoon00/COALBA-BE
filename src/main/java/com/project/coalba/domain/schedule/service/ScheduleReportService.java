@@ -15,6 +15,7 @@ import java.util.*;
 
 import static java.time.Month.*;
 import static java.util.stream.Collectors.groupingBy;
+import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
 
 @RequiredArgsConstructor
 @Service
@@ -52,8 +53,8 @@ public class ScheduleReportService {
 
     private Map<Integer, List<Schedule>> getMyMonthlyScheduleListForYear(int year) {
         Long staffId = profileUtil.getCurrentStaff().getId();
-        LocalDateTime yearStart = LocalDateTime.of(year, 1, 1, 0, 0, 0);
-        LocalDateTime yearEnd = LocalDateTime.of(year, 12, 31, 23, 59, 59);
+        LocalDateTime yearStart = LocalDate.of(year, JANUARY.getValue(), 1).atTime(LocalTime.MIN);
+        LocalDateTime yearEnd = YearMonth.of(year, DECEMBER.getValue()).atEndOfMonth().atTime(LocalTime.MAX);
 
         List<Schedule> MyScheduleList = scheduleRepository.findAllByStaffIdAndDateTimeRangeAndEndStatus(staffId, yearStart, yearEnd);
         return MyScheduleList.stream()
@@ -61,10 +62,8 @@ public class ScheduleReportService {
     }
 
     private Map<Long, List<Schedule>> getWorkspaceScheduleListByStaffForYearAndMonth(Long workspaceId, int year, int month) {
-        LocalDateTime monthStart = LocalDateTime.of(year, month, 1, 0, 0, 0);
-        LocalDate monthStartDate = monthStart.toLocalDate();
-        LocalDate monthEndDate = monthStartDate.plusDays(monthStartDate.lengthOfMonth() - 1);
-        LocalDateTime monthEnd = monthEndDate.atTime(23, 59, 59);
+        LocalDateTime monthStart = LocalDate.of(year, month, 1).atTime(LocalTime.MIN);
+        LocalDateTime monthEnd = YearMonth.of(year, month).atEndOfMonth().atTime(LocalTime.MAX);
 
         List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateTimeRangeAndEndStatus(workspaceId, monthStart, monthEnd);
         return workspaceScheduleList.stream()
@@ -91,7 +90,7 @@ public class ScheduleReportService {
 
     private Long calculateWorkPay(LocalDateTime startDateTime, LocalDateTime endDateTime, Integer hourlyWage) {
         Long workTimeMin = calculateWorkTimeMin(startDateTime, endDateTime);
-        double workTimeHour = workTimeMin / 60.;
+        double workTimeHour = (double) workTimeMin / MINUTES_PER_HOUR ;
         return (long) workTimeHour * hourlyWage;
     }
 
