@@ -20,13 +20,13 @@ import static java.util.stream.Collectors.*;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class StaffScheduleService {
 
     private final BossWorkspaceService bossWorkspaceService;
     private final ScheduleRepository scheduleRepository;
     private final ProfileUtil profileUtil;
 
+    @Transactional(readOnly = true)
     public StaffHomePageServiceDto getHomePage() {
         final int offset = 3;
         Long staffId = profileUtil.getCurrentStaff().getId();
@@ -60,11 +60,13 @@ public class StaffScheduleService {
         return scheduleList.stream().allMatch(schedule -> schedule.getStatus() == ScheduleStatus.SUCCESS);
     }
 
+    @Transactional(readOnly = true)
     public List<Schedule> getHomeScheduleList(LocalDate selectedDate) {
         Long staffId = profileUtil.getCurrentStaff().getId();
         return scheduleRepository.findAllByStaffIdAndDateFetch(staffId, selectedDate);
     }
 
+    @Transactional(readOnly = true)
     public StaffWorkspacePageServiceDto getWorkspacePage(Long workspaceId) {
         LocalDate now = LocalDate.now(), fromDate = now.with(firstDayOfMonth()), toDate = now.with(lastDayOfMonth());
         List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateRange(workspaceId, fromDate, toDate);
@@ -92,6 +94,7 @@ public class StaffScheduleService {
         return scheduleList.stream().anyMatch(schedule -> Objects.equals(schedule.getStaff().getId(), staffId));
     }
 
+    @Transactional(readOnly = true)
     public List<ScheduleServiceDto> getWorkspaceScheduleList(Long workspaceId, LocalDate selectedDate) {
         List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateFetch(workspaceId, selectedDate);
         Long staffId = profileUtil.getCurrentStaff().getId();
@@ -103,6 +106,7 @@ public class StaffScheduleService {
                 .collect(toList());
     }
 
+    @Transactional(readOnly = true)
     public Schedule getScheduleFetch(Long scheduleId) {
         return scheduleRepository.findByIdFetch(scheduleId)
                 .orElseThrow(() -> new RuntimeException("해당 스케줄이 존재하지 않습니다."));
@@ -157,8 +161,7 @@ public class StaffScheduleService {
     }
 
     private void end(LocalDateTime currentDateTime, Schedule schedule) {
-        if (schedule.getStatus() == ScheduleStatus.LATE ||
-                currentDateTime.isBefore(schedule.getScheduleEndDateTime())) {
+        if (schedule.getStatus() == ScheduleStatus.LATE || currentDateTime.isBefore(schedule.getScheduleEndDateTime())) {
             schedule.fail();
         }
         else {

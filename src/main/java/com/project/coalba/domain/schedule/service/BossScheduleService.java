@@ -21,13 +21,13 @@ import static java.util.stream.Collectors.*;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class BossScheduleService {
 
     private final BossWorkspaceService bossWorkspaceService;
     private final StaffProfileService staffProfileService;
     private final ScheduleRepository scheduleRepository;
 
+    @Transactional(readOnly = true)
     public BossHomePageServiceDto getHomePage() {
         final int offset = 3;
         LocalDate now = LocalDate.now(), fromDate = now.minusDays(offset), toDate = now.plusDays(offset);
@@ -61,10 +61,12 @@ public class BossScheduleService {
         return scheduleList.stream().allMatch(schedule -> schedule.getStatus() == ScheduleStatus.SUCCESS);
     }
 
+    @Transactional(readOnly = true)
     public List<Schedule> getHomeScheduleList(Long workspaceId, LocalDate selectedDate) {
         return scheduleRepository.findAllByWorkspaceIdAndDateFetch(workspaceId, selectedDate);
     }
 
+    @Transactional(readOnly = true)
     public BossWorkspacePageServiceDto getWorkspacePage(Long workspaceId) {
         LocalDate now = LocalDate.now(), fromDate = now.with(firstDayOfMonth()), toDate = now.with(lastDayOfMonth());
         List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateRange(workspaceId, fromDate, toDate);
@@ -85,10 +87,12 @@ public class BossScheduleService {
         return dateList;
     }
 
+    @Transactional(readOnly = true)
     public List<Schedule> getWorkspaceScheduleList(Long workspaceId, LocalDate selectedDate) {
         return scheduleRepository.findAllByWorkspaceIdAndDateFetch(workspaceId, selectedDate);
     }
 
+    @Transactional(readOnly = true)
     public List<Staff> getStaffListInWorkspaceAndPossibleForDateTimeRange(Long workspaceId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
         bossWorkspaceService.getWorkspace(workspaceId);
         return staffProfileService.getStaffListInWorkspaceAndPossibleForDateTimeRange(workspaceId, fromDateTime, toDateTime);

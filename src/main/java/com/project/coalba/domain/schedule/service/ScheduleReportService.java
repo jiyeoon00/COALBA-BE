@@ -19,13 +19,13 @@ import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class ScheduleReportService {
 
     private final StaffProfileService staffProfileService;
     private final ScheduleRepository scheduleRepository;
     private final ProfileUtil profileUtil;
 
+    @Transactional(readOnly = true)
     public Map<Integer, WorkReportServiceDto> getStaffWorkReportList(int year) {
         Map<Integer, List<Schedule>> monthlyScheduleList = getMyMonthlyScheduleListForYear(year);
         Map<Integer, WorkReportServiceDto> monthlyWorkReport = new HashMap<>();
@@ -38,6 +38,7 @@ public class ScheduleReportService {
         return monthlyWorkReport;
     }
 
+    @Transactional(readOnly = true)
     public Map<Staff, WorkReportServiceDto> getBossWorkReportList(Long workspaceId, int year, int month) {
         Map<Long, List<Schedule>> scheduleListByStaff = getWorkspaceScheduleListByStaffForYearAndMonth(workspaceId, year, month);
         List<Staff> staffList = staffProfileService.getStaffListInWorkspace(workspaceId);
@@ -70,6 +71,13 @@ public class ScheduleReportService {
                 .collect(groupingBy(schedule -> schedule.getStaff().getId()));
     }
 
+    private WorkReportServiceDto getWorkReportServiceDto(List<Schedule> scheduleList) {
+        if (scheduleList == null) return new WorkReportServiceDto();
+        long totalWorkTimeMin = calculateTotalWorkTimeMin(scheduleList);
+        long totalWorkPay = calculateTotalWorkPay(scheduleList);
+        return new WorkReportServiceDto(totalWorkTimeMin, totalWorkPay);
+    }
+
     private long calculateTotalWorkTimeMin(List<Schedule> scheduleList) {
         return scheduleList.stream()
                 .mapToLong(schedule ->
@@ -92,13 +100,5 @@ public class ScheduleReportService {
         Long workTimeMin = calculateWorkTimeMin(startDateTime, endDateTime);
         double workTimeHour = (double) workTimeMin / MINUTES_PER_HOUR ;
         return (long) workTimeHour * hourlyWage;
-    }
-
-    private WorkReportServiceDto getWorkReportServiceDto(List<Schedule> scheduleList) {
-        if (scheduleList == null) return new WorkReportServiceDto();
-
-        long totalWorkTimeMin = calculateTotalWorkTimeMin(scheduleList);
-        long totalWorkPay = calculateTotalWorkPay(scheduleList);
-        return new WorkReportServiceDto(totalWorkTimeMin, totalWorkPay);
     }
 }
