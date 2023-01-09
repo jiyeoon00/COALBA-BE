@@ -69,5 +69,5 @@ public class BossSubstituteReqService {
     public SubstituteReq getSubstituteReqById(Long substituteReqId) {
         return substituteRepository.findById(substituteReqId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND));
-        }
+    }
 }

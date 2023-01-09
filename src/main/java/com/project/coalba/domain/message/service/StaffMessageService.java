@@ -45,5 +45,4 @@ public class StaffMessageService {
         List<Message> messages = messageRepository.getMessages(staffId, workspaceId);
         return new MessageResponse.StaffMessageResponse(workspace, messages);
     }
-
 }

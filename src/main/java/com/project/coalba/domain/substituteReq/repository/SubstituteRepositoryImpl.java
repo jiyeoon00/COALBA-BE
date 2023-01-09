@@ -109,6 +109,4 @@ public class SubstituteRepositoryImpl implements SubstituteReqRepositoryCustom {
         builder.and(substituteReq.status.in(SubstituteReqStatus.ACCEPTANCE, SubstituteReqStatus.APPROVAL, SubstituteReqStatus.DISAPPROVAL));
         return builder;
     }
-
-
 }

@@ -22,53 +22,48 @@ public class SubstituteReq extends BaseTimeEntity {
     @Column(nullable = false, length = 150)
     private String reqMessage;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SubstituteReqStatus status;
+    private SubstituteReqStatus status = SubstituteReqStatus.WAITING;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
+    @JoinColumn(name = "schedule_id", nullable = false)
     private Schedule schedule;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id")
+    @JoinColumn(name = "receiver_id", nullable = false)
     private Staff receiver;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id")
+    @JoinColumn(name = "sender_id", nullable = false)
     private Staff sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "boss_id")
+    @JoinColumn(name = "boss_id", nullable = false)
     private Boss boss;
 
     public Boolean isWaiting() {
-        if (this.status.equals(SubstituteReqStatus.WAITING)) {
-            return true;
-        } else {
-            return false;
-        }
+        return status == SubstituteReqStatus.WAITING;
     }
 
     public void cancel() {
-        this.status = SubstituteReqStatus.CANCELLATION;
+        status = SubstituteReqStatus.CANCELLATION;
     }
 
     public void accept() {
-        this.status = SubstituteReqStatus.ACCEPTANCE;
+        status = SubstituteReqStatus.ACCEPTANCE;
     }
 
     public void refuse() {
-        this.status = SubstituteReqStatus.REFUSAL;
+        status = SubstituteReqStatus.REFUSAL;
     }
 
     public void approve() {
-        this.status = SubstituteReqStatus.APPROVAL;
+        status = SubstituteReqStatus.APPROVAL;
     }
 
     public void disapprove() {
-        this.status = SubstituteReqStatus.DISAPPROVAL;
+        status = SubstituteReqStatus.DISAPPROVAL;
     }
-
-
 }

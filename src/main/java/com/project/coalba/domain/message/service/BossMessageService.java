@@ -47,6 +47,4 @@ public class BossMessageService {
         List<Message> messages = messageRepository.getMessages(staffId, workspaceId);
         return new MessageResponse.BossMessageResponse(workspace, staff, messages);
     }
-
-
 }

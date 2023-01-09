@@ -7,7 +7,7 @@ import com.project.coalba.global.audit.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Getter @Builder
 @AllArgsConstructor
@@ -20,23 +20,24 @@ public class TimecardReq extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
-    private LocalTime reqStartTime;
+    private LocalDateTime reqStartDateTime;
 
     @Column(nullable = false)
-    private LocalTime reqEndTime;
+    private LocalDateTime reqEndDateTime;
 
     @Column(nullable = false, length = 150)
     private String reason;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TimecardReqStatus status;
+    private TimecardReqStatus status = TimecardReqStatus.WAITING;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
+    @JoinColumn(name = "schedule_id", unique = true, nullable = false)
     private Schedule schedule;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "boss_id")
+    @JoinColumn(name = "boss_id", nullable = false)
     private Boss boss;
 }
