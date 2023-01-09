@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class MessageRequest {
-    String content;
+    private String content;
 }
