@@ -1,6 +1,6 @@
 package com.project.coalba.domain.schedule.validation;
 
-import com.project.coalba.domain.schedule.dto.request.ScheduleCreateRequest;
+import com.project.coalba.domain.schedule.dto.request.ScheduleDateTime;
 
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -15,8 +15,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({ TYPE })
 @Retention(RUNTIME)
-@Constraint(validatedBy = ValidScheduleRequest.ScheduleRequestValidator.class)
-public @interface ValidScheduleRequest {
+@Constraint(validatedBy = ValidScheduleDateTime.ScheduleDateTimeValidator.class)
+public @interface ValidScheduleDateTime {
 
     String message() default "스케줄 시작 날짜 시간은 스케줄 종료 날짜 시간보다 앞서야 합니다.";
 
@@ -24,12 +24,12 @@ public @interface ValidScheduleRequest {
 
     Class<? extends Payload>[] payload() default { };
 
-    class ScheduleRequestValidator implements ConstraintValidator<ValidScheduleRequest, ScheduleCreateRequest> {
+    class ScheduleDateTimeValidator implements ConstraintValidator<ValidScheduleDateTime, ScheduleDateTime> {
 
         @Override
-        public boolean isValid(ScheduleCreateRequest value, ConstraintValidatorContext context) {
-            LocalDateTime scheduleStartDateTime = value.getScheduleStartDateTime();
-            LocalDateTime scheduleEndDateTime = value.getScheduleEndDateTime();
+        public boolean isValid(ScheduleDateTime value, ConstraintValidatorContext context) {
+            LocalDateTime scheduleStartDateTime = value.getStart();
+            LocalDateTime scheduleEndDateTime = value.getEnd();
             return scheduleStartDateTime.isBefore(scheduleEndDateTime);
         }
     }

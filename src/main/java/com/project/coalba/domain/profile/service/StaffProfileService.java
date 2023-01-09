@@ -39,8 +39,8 @@ public class StaffProfileService {
         staff.update(serviceDto.getRealName(), serviceDto.getPhoneNumber(), serviceDto.getBirthDate(), serviceDto.getImageUrl());
     }
 
-    public List<Staff> getStaffListInWorkspaceAndPossibleForDateTime(Long workspaceId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        return staffProfileRepository.findAllByWorkspaceIdAndDateTime(workspaceId, startDateTime, endDateTime);
+    public List<Staff> getStaffListInWorkspaceAndPossibleForDateTimeRange(Long workspaceId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+        return staffProfileRepository.findAllByWorkspaceIdAndDateTimeRange(workspaceId, fromDateTime, toDateTime);
     }
 
     public List<Staff> getStaffListInWorkspace(Long workspaceId) {

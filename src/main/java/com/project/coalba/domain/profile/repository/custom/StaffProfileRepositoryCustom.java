@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface StaffProfileRepositoryCustom {
 
-    List<Staff> findAllByWorkspaceIdAndDateTime(Long workspaceId, LocalDateTime startDateTime, LocalDateTime endDateTime);
+    List<Staff> findAllByWorkspaceIdAndDateTimeRange(Long workspaceId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
 }

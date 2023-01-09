@@ -1,9 +1,7 @@
 package com.project.coalba.domain.schedule.controller;
 
+import com.project.coalba.domain.schedule.dto.response.*;
 import com.project.coalba.domain.schedule.service.dto.ScheduleServiceDto;
-import com.project.coalba.domain.schedule.dto.response.StaffHomeScheduleResponse;
-import com.project.coalba.domain.schedule.dto.response.ScheduleBriefResponse;
-import com.project.coalba.domain.schedule.dto.response.StaffWorkspaceScheduleResponse;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.mapper.ScheduleMapper;
 import com.project.coalba.domain.schedule.service.StaffScheduleService;
@@ -23,19 +21,29 @@ public class StaffScheduleController {
     private final StaffScheduleService staffScheduleService;
     private final ScheduleMapper mapper;
 
+    @GetMapping("/home")
+    public StaffHomePageResponse getHomePage() {
+        return mapper.toDto(staffScheduleService.getHomePage());
+    }
+
     @GetMapping("/home/selected")
-    public StaffHomeScheduleResponse getHomeScheduleList(@RequestParam int year, @RequestParam int month, @RequestParam int day) {
+    public StaffHomeScheduleListResponse getHomeScheduleList(@RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
         List<Schedule> homeScheduleList = staffScheduleService.getHomeScheduleList(selectedDate);
         return mapper.toDto(selectedDate, () -> homeScheduleList);
     }
 
+    @GetMapping("/workspaces/{workspaceId}")
+    public StaffWorkspacePageResponse getWorkspacePage(@PathVariable Long workspaceId) {
+        return mapper.toDto(staffScheduleService.getWorkspacePage(workspaceId));
+    }
+
     @GetMapping("/workspaces/{workspaceId}/selected")
-    public StaffWorkspaceScheduleResponse getWorkspaceScheduleList(@PathVariable Long workspaceId,
-                                                                   @RequestParam int year, @RequestParam int month, @RequestParam int day) {
+    public StaffWorkspaceScheduleListResponse getWorkspaceScheduleList(@PathVariable Long workspaceId,
+                                                                       @RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
-        List<ScheduleServiceDto> workspaceScheduleDtoList = staffScheduleService.getWorkspaceScheduleDtoList(workspaceId, selectedDate);
-        return mapper.toDto(day, () -> workspaceScheduleDtoList);
+        List<ScheduleServiceDto> workspaceScheduleList = staffScheduleService.getWorkspaceScheduleList(workspaceId, selectedDate);
+        return mapper.toDto(day, () -> workspaceScheduleList);
     }
 
     @GetMapping("/{scheduleId}")

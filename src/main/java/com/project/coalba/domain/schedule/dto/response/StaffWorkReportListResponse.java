@@ -1,22 +1,21 @@
 package com.project.coalba.domain.schedule.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
 @AllArgsConstructor
-@Getter @Builder
-public class StaffWorkReportResponse {
+@Getter
+public class StaffWorkReportListResponse {
 
     private int selectedYear;
 
-    private List<SubResponse> workReportList;
+    private List<WorkReportResponse> workReportList;
 
     @AllArgsConstructor
-    @Getter @Builder
-    public static class SubResponse {
+    @Getter
+    public static class WorkReportResponse {
 
         private int month;
 
