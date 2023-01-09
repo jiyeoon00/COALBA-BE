@@ -1,8 +1,7 @@
 package com.project.coalba.domain.substituteReq.service;
 
-import com.project.coalba.domain.profile.entity.Boss;
-import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.profile.service.BossProfileService;
+import com.project.coalba.domain.profile.entity.*;
+import com.project.coalba.domain.profile.service.*;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.service.ScheduleService;
 import com.project.coalba.domain.substituteReq.dto.response.*;
@@ -11,8 +10,7 @@ import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
 import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.repository.SubstituteRepository;
 import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
-import com.project.coalba.global.exception.BusinessException;
-import com.project.coalba.global.exception.ErrorCode;
+import com.project.coalba.global.exception.*;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,18 +23,18 @@ import static java.util.stream.Collectors.groupingBy;
 @RequiredArgsConstructor
 @Service
 public class StaffSubstituteReqService {
-    private final ProfileUtil profileUtil;
     private final BossProfileService bossProfileService;
+    private final StaffProfileService staffProfileService;
     private final ScheduleService scheduleService;
     private final SubstituteRepository substituteRepository;
+    private final ProfileUtil profileUtil;
 
     @Transactional
     public void createSubstituteReq(Long scheduleId, Long receiverId, String reqMessage) {
         Schedule schedule = scheduleService.getSchedule(scheduleId);
+        Staff receiver = staffProfileService.getStaff(receiverId);
         Staff sender = profileUtil.getCurrentStaff();
-        Staff receiver = profileUtil.getStaffById(receiverId);
         Boss boss = bossProfileService.getBossByScheduleId(schedule.getId());
-
         SubstituteReq substituteReq = SubstituteReq.builder()
                 .schedule(schedule)
                 .receiver(receiver)
