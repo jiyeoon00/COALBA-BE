@@ -7,9 +7,8 @@ import com.project.coalba.domain.schedule.service.ScheduleService;
 import com.project.coalba.domain.substituteReq.dto.response.*;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
-import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.repository.SubstituteRepository;
-import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
+import com.project.coalba.domain.substituteReq.repository.dto.*;
 import com.project.coalba.global.exception.*;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,7 @@ public class StaffSubstituteReqService {
         Schedule schedule = scheduleService.getSchedule(scheduleId);
         Staff receiver = staffProfileService.getStaff(receiverId);
         Staff sender = profileUtil.getCurrentStaff();
-        Boss boss = bossProfileService.getBossByScheduleId(schedule.getId());
+        Boss boss = bossProfileService.getBossWithWorkspace(schedule.getWorkspace().getId());
         SubstituteReq substituteReq = SubstituteReq.builder()
                 .schedule(schedule)
                 .receiver(receiver)

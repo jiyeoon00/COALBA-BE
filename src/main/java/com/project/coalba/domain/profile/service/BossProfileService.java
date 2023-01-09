@@ -36,10 +36,9 @@ public class BossProfileService {
         boss.update(serviceDto.getRealName(), serviceDto.getPhoneNumber(), serviceDto.getBirthDate(), serviceDto.getImageUrl());
     }
 
-    //수정할 예정
     @Transactional(readOnly = true)
-    public Boss getBossByScheduleId(Long scheduleId) {
-        return bossProfileRepository.findByScheduleId(scheduleId)
-                .orElseThrow(() -> new RuntimeException("해당 스케줄의 사장님이 존재하지 않습니다."));
+    public Boss getBossWithWorkspace(Long workspaceId) {
+        return bossProfileRepository.findByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new RuntimeException("해당 워크스페이스의 사장님이 존재하지 않습니다."));
     }
 }
