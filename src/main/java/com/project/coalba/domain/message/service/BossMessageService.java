@@ -28,18 +28,18 @@ public class BossMessageService {
         Message message = Message.builder()
                 .content(content)
                 .criteria(Criteria.WORKSPACE_TO_STAFF)
-                .staff(staff)
                 .workspace(workspace)
+                .staff(staff)
                 .build();
 
         messageRepository.save(message);
     }
 
     @Transactional(readOnly = true)
-    public MessageResponse.BossMessageResponse getDetailMessages(Long staffId, Long workspaceId){
+    public MessageResponse.BossMessageResponse getDetailMessages(Long workspaceId, Long staffId){
         Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
         Staff staff = staffProfileService.getStaff(staffId);
-        List<Message> messages = messageRepository.getMessages(staffId, workspaceId);
+        List<Message> messages = messageRepository.getMessages(workspaceId, staffId);
         return new MessageResponse.BossMessageResponse(workspace, staff, messages);
     }
 }

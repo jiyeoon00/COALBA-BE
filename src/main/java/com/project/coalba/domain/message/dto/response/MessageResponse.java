@@ -26,7 +26,7 @@ public class MessageResponse {
             this.workspaceImageUrl = workspace.getImageUrl();
             this.workspaceName = workspace.getName();
             this.messageList.addAll(messages.stream()
-                    .map(message -> new DetailMessageResponse(message)).collect(Collectors.toList()));
+                    .map(DetailMessageResponse::new).collect(Collectors.toList()));
         }
     }
 
@@ -44,7 +44,7 @@ public class MessageResponse {
             this.staffImageUrl = staff.getImageUrl();
             this.staffName = staff.getRealName();
             this.messageList.addAll(messages.stream()
-                    .map(message -> new DetailMessageResponse(message)).collect(Collectors.toList()));
+                    .map(DetailMessageResponse::new).collect(Collectors.toList()));
         }
     }
 

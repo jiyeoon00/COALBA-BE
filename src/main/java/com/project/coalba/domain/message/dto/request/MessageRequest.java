@@ -1,8 +1,8 @@
 package com.project.coalba.domain.message.dto.request;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class MessageRequest {
     String content;
 }
