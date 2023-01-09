@@ -1,12 +1,13 @@
 package com.project.coalba.domain.profile.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
 
-@Getter @Builder
+@AllArgsConstructor
+@Getter
 public class ProfileResponse {
 
     private String realName;

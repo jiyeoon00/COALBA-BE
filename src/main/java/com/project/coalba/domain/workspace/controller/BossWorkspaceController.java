@@ -63,7 +63,7 @@ public class BossWorkspaceController {
 
     @PostMapping("/{workspaceId}/staffs")
     public ResponseEntity<Void> inviteStaff(@PathVariable Long workspaceId, @RequestParam String email){
-        Staff staff = staffProfileService.getStaffByUserEmail(email);
+        Staff staff = staffProfileService.getStaffWithEmail(email);
         bossWorkspaceService.inviteStaff(staff, workspaceId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

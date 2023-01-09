@@ -20,29 +20,26 @@ public class BossProfileService {
     private final UserUtil userUtil;
     private final ProfileUtil profileUtil;
 
-    public Boss getMyBossProfile() {
+    public Boss getMyProfile() {
         return profileUtil.getCurrentBoss();
     }
 
     @Transactional
-    public void saveMyBossProfile(ProfileCreateServiceDto serviceDto) {
+    public void saveMyProfile(ProfileCreateServiceDto serviceDto) {
         User user = userUtil.getCurrentUser();
         bossProfileRepository.save(serviceDto.toBossEntity(user));
     }
 
     @Transactional
-    public void updateMyBossProfile(ProfileUpdateServiceDto serviceDto) {
+    public void updateMyProfile(ProfileUpdateServiceDto serviceDto) {
         Boss boss = profileUtil.getCurrentBoss();
         boss.update(serviceDto.getRealName(), serviceDto.getPhoneNumber(), serviceDto.getBirthDate(), serviceDto.getImageUrl());
     }
 
+    //수정할 예정
     @Transactional(readOnly = true)
     public Boss getBossByScheduleId(Long scheduleId) {
-        Boss boss = bossProfileRepository.findByScheduleId(scheduleId);
-        if(boss == null){
-            throw new RuntimeException("해당 스케줄의 사장님이 존재하지 않습니다.");
-        } else{
-            return boss;
-        }
+        return bossProfileRepository.findByScheduleId(scheduleId)
+                .orElseThrow(() -> new RuntimeException("해당 스케줄의 사장님이 존재하지 않습니다."));
     }
 }
