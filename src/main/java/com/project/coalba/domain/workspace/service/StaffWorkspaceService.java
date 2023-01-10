@@ -5,6 +5,7 @@ import com.project.coalba.domain.workspace.repository.WorkspaceRepository;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class StaffWorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     private final ProfileUtil profileUtil;
 
+    @Transactional(readOnly = true)
     public List<Workspace> getMyWorkspaceList() {
         Long staffId = profileUtil.getCurrentStaff().getId();
         return workspaceRepository.findAllByStaffId(staffId);

@@ -16,13 +16,13 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class StaffProfileService {
 
     private final StaffProfileRepository staffProfileRepository;
     private final UserUtil userUtil;
     private final ProfileUtil profileUtil;
 
+    @Transactional(readOnly = true)
     public Staff getMyProfile() {
         return profileUtil.getCurrentStaff();
     }
@@ -39,20 +39,24 @@ public class StaffProfileService {
         staff.update(serviceDto.getRealName(), serviceDto.getPhoneNumber(), serviceDto.getBirthDate(), serviceDto.getImageUrl());
     }
 
+    @Transactional(readOnly = true)
     public Staff getStaff(Long staffId) {
         return staffProfileRepository.findById(staffId)
                 .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
     }
 
+    @Transactional(readOnly = true)
     public Staff getStaffWithEmail(String email){
         return staffProfileRepository.findByUserEmail(email)
                 .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
     }
 
+    @Transactional(readOnly = true)
     public List<Staff> getStaffListInWorkspace(Long workspaceId) {
         return staffProfileRepository.findAllByWorkspaceId(workspaceId);
     }
 
+    @Transactional(readOnly = true)
     public List<Staff> getStaffListInWorkspaceAndPossibleForDateTimeRange(Long workspaceId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
         return staffProfileRepository.findAllByWorkspaceIdAndDateTimeRange(workspaceId, fromDateTime, toDateTime);
     }

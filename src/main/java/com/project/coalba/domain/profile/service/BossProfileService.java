@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class BossProfileService {
 
     private final BossProfileRepository bossProfileRepository;
     private final UserUtil userUtil;
     private final ProfileUtil profileUtil;
 
+    @Transactional(readOnly = true)
     public Boss getMyProfile() {
         return profileUtil.getCurrentBoss();
     }

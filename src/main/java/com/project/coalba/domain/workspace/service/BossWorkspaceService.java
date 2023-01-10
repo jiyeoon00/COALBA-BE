@@ -23,11 +23,13 @@ public class BossWorkspaceService {
     private final WorkspaceMemberRepository workspaceMemberRepository;
     private final ProfileUtil profileUtil;
 
+    @Transactional(readOnly = true)
     public List<Workspace> getMyWorkspaceList() {
         Long bossId = profileUtil.getCurrentBoss().getId();
         return workspaceRepository.findAllByBossId(bossId);
     }
 
+    @Transactional(readOnly = true)
     public Workspace getWorkspace(Long workspaceId) {
         return workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new RuntimeException("해당 워크스페이스가 존재하지 않습니다."));
@@ -45,6 +47,7 @@ public class BossWorkspaceService {
         workspace.update(serviceDto.getName(), serviceDto.getPhoneNumber(), serviceDto.getAddress(), serviceDto.getImageUrl());
     }
 
+    @Transactional(readOnly = true)
     public List<WorkspaceMember> getWorkspaceMemberList(Long workspaceId) {
         return workspaceMemberRepository.findAllByWorkspaceIdFetch(workspaceId);
     }
