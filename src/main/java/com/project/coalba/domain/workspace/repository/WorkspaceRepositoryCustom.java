@@ -1,4 +1,4 @@
-package com.project.coalba.domain.workspace.repository.custom;
+package com.project.coalba.domain.workspace.repository;
 
 import com.project.coalba.domain.workspace.entity.Workspace;
 

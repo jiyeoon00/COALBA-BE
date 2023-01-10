@@ -1,4 +1,4 @@
-package com.project.coalba.domain.profile.repository.custom;
+package com.project.coalba.domain.profile.repository;
 
 import com.project.coalba.domain.profile.entity.Staff;
 

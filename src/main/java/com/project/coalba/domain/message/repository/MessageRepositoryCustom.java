@@ -1,4 +1,4 @@
-package com.project.coalba.domain.message.repository.custom;
+package com.project.coalba.domain.message.repository;
 
 import com.project.coalba.domain.message.entity.Message;
 
