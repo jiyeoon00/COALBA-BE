@@ -1,5 +1,6 @@
 package com.project.coalba.domain.substituteReq.service;
 
+import com.project.coalba.domain.notification.FirebaseCloudMessageService;
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.dto.response.BothSubstituteReqResponse;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.*;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -23,6 +25,7 @@ import static java.util.stream.Collectors.groupingBy;
 public class BossSubstituteReqService {
     private final ProfileUtil profileUtil;
     private final SubstituteRepository substituteRepository;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @Transactional(readOnly = true)
     public BothSubstituteReqDto getDetailSubstituteReq(Long substituteReqId) {
@@ -47,16 +50,22 @@ public class BossSubstituteReqService {
     }
 
     @Transactional
-    public void approveSubstituteReq(Long substituteReqId) {
-        /**
-         * 추후 기능 보완
-         * 사장님 최종승인시 알바한테 알림 보내기
-         */
+    public void approveSubstituteReq(Long substituteReqId) throws IOException {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         substituteReq.approve();
 
         Schedule schedule = substituteReq.getSchedule();
         schedule.changeStaff(substituteReq.getReceiver());
+
+        sendApprovalNotice(substituteReq);
+    }
+
+    private void sendApprovalNotice(SubstituteReq substituteReq) throws IOException {
+        String senderTargetToken = substituteReq.getSender().getDeviceToken();
+        String receiverTargetToken = substituteReq.getReceiver().getDeviceToken();
+
+        firebaseCloudMessageService.sendMessageTo(senderTargetToken, "대타 승인", "스케줄에 해당 근무가 삭제되었습니다.");
+        firebaseCloudMessageService.sendMessageTo(receiverTargetToken, "대타 승인", "스케줄에 해당 근무가 추가되었습니다.");
     }
 
     @Transactional
