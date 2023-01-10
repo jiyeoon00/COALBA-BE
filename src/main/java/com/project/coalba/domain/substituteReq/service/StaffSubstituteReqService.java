@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.*;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -34,7 +33,7 @@ public class StaffSubstituteReqService {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @Transactional
-    public void createSubstituteReq(Long scheduleId, Long receiverId, String reqMessage) throws IOException {
+    public void createSubstituteReq(Long scheduleId, Long receiverId, String reqMessage) {
         Schedule schedule = scheduleService.getSchedule(scheduleId);
         Staff sender = profileUtil.getCurrentStaff();
         Staff receiver = profileUtil.getStaffById(receiverId);
@@ -54,7 +53,7 @@ public class StaffSubstituteReqService {
         sendSubstituteRequestNotice(substituteReq);
     }
 
-    private void sendSubstituteRequestNotice(SubstituteReq substituteReq) throws IOException {
+    private void sendSubstituteRequestNotice(SubstituteReq substituteReq) {
         String senderName = substituteReq.getSender().getRealName();
         String deviceToken = substituteReq.getReceiver().getDeviceToken();
 
@@ -120,7 +119,7 @@ public class StaffSubstituteReqService {
     }
 
     @Transactional
-    public void acceptSubstituteReq(Long substituteReqId) throws IOException {
+    public void acceptSubstituteReq(Long substituteReqId) {
         /**
          * 추후 기능 보완
          * 요청 성사시 다른 사람한테 보낸 요청 다 취소(?)
@@ -131,7 +130,7 @@ public class StaffSubstituteReqService {
         sendAcceptanceNotice(substituteReq);
     }
 
-    private void sendAcceptanceNotice(SubstituteReq substituteReq) throws IOException {
+    private void sendAcceptanceNotice(SubstituteReq substituteReq) {
         String bossDeviceToken = substituteReq.getBoss().getDeviceToken();
         String senderDeviceToken = substituteReq.getSender().getDeviceToken();
         String senderName = substituteReq.getSender().getRealName();

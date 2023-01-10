@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RequestMapping("/boss/substituteReqs")
@@ -31,7 +30,7 @@ public class BossSubstituteReqController {
     }
 
     @PutMapping("/{substituteReqId}/accept")
-    public ResponseEntity approveSubstituteReq(@PathVariable Long substituteReqId) throws IOException {
+    public ResponseEntity approveSubstituteReq(@PathVariable Long substituteReqId) {
         bossSubstituteReqService.approveSubstituteReq(substituteReqId);
         return ResponseEntity.ok("대타근무 요청을 최종승인하였습니다. 스케줄이 교체 됩니다.");
     }

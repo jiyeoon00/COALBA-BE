@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.*;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -50,7 +49,7 @@ public class BossSubstituteReqService {
     }
 
     @Transactional
-    public void approveSubstituteReq(Long substituteReqId) throws IOException {
+    public void approveSubstituteReq(Long substituteReqId) {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         substituteReq.approve();
 
@@ -60,7 +59,7 @@ public class BossSubstituteReqService {
         sendApprovalNotice(substituteReq);
     }
 
-    private void sendApprovalNotice(SubstituteReq substituteReq) throws IOException {
+    private void sendApprovalNotice(SubstituteReq substituteReq) {
         String senderTargetToken = substituteReq.getSender().getDeviceToken();
         String receiverTargetToken = substituteReq.getReceiver().getDeviceToken();
 

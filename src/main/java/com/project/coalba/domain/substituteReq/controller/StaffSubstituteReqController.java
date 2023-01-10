@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RequestMapping("/staff/substituteReqs")
@@ -20,7 +19,7 @@ public class StaffSubstituteReqController {
 
     @PostMapping("/{scheduleId}/from")
     public void createSubstituteReq(@PathVariable Long scheduleId,
-                                    @Validated @RequestBody CreateSubstituteReqRequest request) throws IOException {
+                                    @Validated @RequestBody CreateSubstituteReqRequest request) {
         staffSubstituteReqService.createSubstituteReq(scheduleId, request.getReceiverId(), request.getReqMessage());
     }
 
@@ -49,7 +48,7 @@ public class StaffSubstituteReqController {
     }
 
     @PutMapping("/{substituteReqId}/accept")
-    public ResponseEntity acceptSubstituteReq(@PathVariable Long substituteReqId) throws IOException {
+    public ResponseEntity acceptSubstituteReq(@PathVariable Long substituteReqId) {
         staffSubstituteReqService.acceptSubstituteReq(substituteReqId);
         return ResponseEntity.ok("대타근무 요청이 수락되었습니다. 사장님께 최종승인 요청이 갑니다.");
     }
