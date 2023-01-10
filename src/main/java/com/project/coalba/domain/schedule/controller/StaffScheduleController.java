@@ -46,20 +46,20 @@ public class StaffScheduleController {
     }
 
     @GetMapping("/{scheduleId}")
-    public ScheduleBriefResponse getSchedule(@PathVariable Long scheduleId) {
-        Schedule schedule = staffScheduleService.getScheduleFetch(scheduleId);
+    public ScheduleBriefResponse getScheduleBrief(@PathVariable Long scheduleId) {
+        Schedule schedule = staffScheduleService.getScheduleBrief(scheduleId);
         return mapper.toDto(schedule);
     }
 
     @PutMapping("/{scheduleId}/start")
     public ResponseEntity<Void> startSchedule(@PathVariable Long scheduleId) {
-        staffScheduleService.startSchedule(scheduleId);
+        staffScheduleService.start(scheduleId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PutMapping("/{scheduleId}/end")
     public ResponseEntity<Void> endSchedule(@PathVariable Long scheduleId) {
-        staffScheduleService.endSchedule(scheduleId);
+        staffScheduleService.end(scheduleId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

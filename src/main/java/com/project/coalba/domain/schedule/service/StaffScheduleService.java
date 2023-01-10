@@ -106,13 +106,13 @@ public class StaffScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public Schedule getScheduleFetch(Long scheduleId) {
+    public Schedule getScheduleBrief(Long scheduleId) {
         return scheduleRepository.findByIdFetch(scheduleId)
                 .orElseThrow(() -> new RuntimeException("해당 스케줄이 존재하지 않습니다."));
     }
 
     @Transactional
-    public void startSchedule(Long scheduleId) {
+    public void start(Long scheduleId) {
         Schedule schedule = getSchedule(scheduleId);
         LocalDateTime currentDateTime = LocalDateTime.now();
         validateCurrentDateTime(currentDateTime, schedule.getScheduleStartDateTime().minusMinutes(10), schedule.getScheduleEndDateTime());
@@ -120,7 +120,7 @@ public class StaffScheduleService {
     }
 
     @Transactional
-    public void endSchedule(Long scheduleId) {
+    public void end(Long scheduleId) {
         Schedule schedule = getSchedule(scheduleId);
         LocalDateTime currentDateTime = LocalDateTime.now();
         validateScheduleStatus(schedule.getStatus());

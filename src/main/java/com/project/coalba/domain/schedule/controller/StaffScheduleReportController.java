@@ -3,7 +3,7 @@ package com.project.coalba.domain.schedule.controller;
 import com.project.coalba.domain.schedule.dto.response.StaffWorkReportListResponse;
 import com.project.coalba.domain.schedule.service.dto.WorkReportServiceDto;
 import com.project.coalba.domain.schedule.mapper.ScheduleMapper;
-import com.project.coalba.domain.schedule.service.ScheduleReportService;
+import com.project.coalba.domain.schedule.service.WorkReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,12 +16,12 @@ import java.util.Map;
 @RequestMapping("/staff/schedules/reports")
 @RestController
 public class StaffScheduleReportController {
-    private final ScheduleReportService scheduleReportService;
+    private final WorkReportService workReportService;
     private final ScheduleMapper mapper;
 
     @GetMapping
     public StaffWorkReportListResponse getWorkReportList(@RequestParam int year) {
-        Map<Integer, WorkReportServiceDto> monthlyWorkReport = scheduleReportService.getStaffWorkReportList(year);
+        Map<Integer, WorkReportServiceDto> monthlyWorkReport = workReportService.getStaffWorkReportList(year);
         return mapper.toDto(year, () -> monthlyWorkReport);
     }
 }
