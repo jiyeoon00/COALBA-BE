@@ -47,7 +47,7 @@ public class BossWorkspaceService {
     }
 
     @Transactional(readOnly = true)
-    public List<WorkspaceMember> getWorkspaceMemberList(Long workspaceId) {
+    public List<WorkspaceMember> getWorkspaceMemberInfoList(Long workspaceId) {
         return workspaceMemberRepository.findAllByWorkspaceIdFetch(workspaceId);
     }
 

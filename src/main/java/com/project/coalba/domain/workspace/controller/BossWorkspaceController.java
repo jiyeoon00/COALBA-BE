@@ -56,7 +56,7 @@ public class BossWorkspaceController {
 
     @GetMapping("/{workspaceId}/staffs")
     public WorkspaceMemberInfoListResponse getWorkspaceMemberInfoList(@PathVariable Long workspaceId) {
-        List<WorkspaceMember> workspaceMemberList = bossWorkspaceService.getWorkspaceMemberList(workspaceId);
+        List<WorkspaceMember> workspaceMemberList = bossWorkspaceService.getWorkspaceMemberInfoList(workspaceId);
         return mapper.toDto(() -> workspaceMemberList);
     }
 

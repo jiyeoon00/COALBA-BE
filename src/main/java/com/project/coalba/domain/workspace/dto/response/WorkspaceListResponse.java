@@ -9,4 +9,12 @@ import java.util.List;
 @AllArgsConstructor
 public class WorkspaceListResponse {
     private List<WorkspaceResponse> workspaceList;
+
+    @Getter
+    @AllArgsConstructor
+    public static class WorkspaceResponse {
+        private Long workspaceId;
+        private String name;
+        private String imageUrl;
+    }
 }

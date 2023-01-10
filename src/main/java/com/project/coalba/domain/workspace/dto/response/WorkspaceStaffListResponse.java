@@ -8,5 +8,13 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class WorkspaceStaffListResponse {
-    private List<WorkspaceStaffResponse> staffList;
+    private List<StaffResponse> staffList;
+
+    @Getter
+    @AllArgsConstructor
+    public static class StaffResponse {
+        private Long staffId;
+        private String name;
+        private String imageUrl;
+    }
 }
