@@ -7,7 +7,7 @@ import com.project.coalba.domain.schedule.service.ScheduleService;
 import com.project.coalba.domain.substituteReq.dto.response.*;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
-import com.project.coalba.domain.substituteReq.repository.SubstituteRepository;
+import com.project.coalba.domain.substituteReq.repository.SubstituteReqRepository;
 import com.project.coalba.domain.substituteReq.repository.dto.*;
 import com.project.coalba.global.exception.*;
 import com.project.coalba.global.utils.ProfileUtil;
@@ -25,7 +25,7 @@ public class StaffSubstituteReqService {
     private final BossProfileService bossProfileService;
     private final StaffProfileService staffProfileService;
     private final ScheduleService scheduleService;
-    private final SubstituteRepository substituteRepository;
+    private final SubstituteReqRepository substituteReqRepository;
     private final ProfileUtil profileUtil;
 
     @Transactional
@@ -43,7 +43,7 @@ public class StaffSubstituteReqService {
                 .status(SubstituteReqStatus.WAITING)
                 .build();
 
-        substituteRepository.save(substituteReq);
+        substituteReqRepository.save(substituteReq);
     }
 
     @Transactional
@@ -58,13 +58,13 @@ public class StaffSubstituteReqService {
 
     @Transactional(readOnly = true)
     public SubstituteReq getSubstituteReqById(Long substituteReqId) {
-        return substituteRepository.findById(substituteReqId)
+        return substituteReqRepository.findById(substituteReqId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
     public BothSubstituteReqDto getDetailSubstituteReq(Long substituteReqId) {
-        BothSubstituteReqDto substituteReq = substituteRepository.getSubstituteReq(substituteReqId);
+        BothSubstituteReqDto substituteReq = substituteReqRepository.getSubstituteReq(substituteReqId);
         if (substituteReq != null) {
             return substituteReq;
         } else throw new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND);
@@ -73,7 +73,7 @@ public class StaffSubstituteReqService {
     @Transactional(readOnly = true)
     public List<SentSubstituteReqResponse> getSentSubstituteReqs() {
         Staff currentStaff = profileUtil.getCurrentStaff();
-        List<SubstituteReqDto> substituteReqDtos = substituteRepository.getSentSubstituteReqs(currentStaff);
+        List<SubstituteReqDto> substituteReqDtos = substituteReqRepository.getSentSubstituteReqs(currentStaff);
 
         Map<YearMonth, List<SubstituteReqDto>> substituteReqMap = substituteReqDtos.stream()
                 .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));
@@ -90,7 +90,7 @@ public class StaffSubstituteReqService {
     @Transactional(readOnly = true)
     public List<ReceivedSubstituteReqResponse> getReceivedSubstituteReqs() {
         Staff currentStaff = profileUtil.getCurrentStaff();
-        List<SubstituteReqDto> substituteReqDtos = substituteRepository.getReceivedSubstituteReqs(currentStaff);
+        List<SubstituteReqDto> substituteReqDtos = substituteReqRepository.getReceivedSubstituteReqs(currentStaff);
 
         Map<YearMonth, List<SubstituteReqDto>> substituteReqMap = substituteReqDtos.stream()
                 .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));
