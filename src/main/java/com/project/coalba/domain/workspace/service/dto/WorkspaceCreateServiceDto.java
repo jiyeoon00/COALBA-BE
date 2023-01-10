@@ -7,21 +7,15 @@ import com.project.coalba.domain.workspace.entity.enums.WorkType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class WorkspaceCreateServiceDto {
     private String name;
-
     private String phoneNumber;
-
     private String address;
-
     private String businessNumber;
-
     private WorkType workType;
-
     private PayType payType;
-
     private String imageUrl;
 
     public Workspace toEntity(Boss boss) {

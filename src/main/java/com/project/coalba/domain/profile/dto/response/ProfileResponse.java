@@ -6,11 +6,10 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class ProfileResponse {
     private String realName;
-
     private String phoneNumber;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")

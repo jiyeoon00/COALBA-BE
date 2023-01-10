@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-@RequestMapping("/staff/schedules/reports")
 @RequiredArgsConstructor
+@RequestMapping("/staff/schedules/reports")
 @RestController
 public class StaffScheduleReportController {
     private final ScheduleReportService scheduleReportService;

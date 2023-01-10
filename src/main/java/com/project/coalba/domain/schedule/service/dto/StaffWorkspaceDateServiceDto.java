@@ -5,10 +5,9 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class StaffWorkspaceDateServiceDto {
     private LocalDate date;
-
     private Boolean isMySchedule;
 }

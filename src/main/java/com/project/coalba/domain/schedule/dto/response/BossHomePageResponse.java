@@ -9,9 +9,7 @@ import java.util.List;
 @Getter
 public class BossHomePageResponse {
     private List<HomeDateResponse> dateList;
-
     private DateResponse selectedDate;
-
     private List<WorkspaceResponse> workspaceList;
 
     public BossHomePageResponse(List<HomeDateResponse> dateList, LocalDate date, List<WorkspaceResponse> workspaceList) {
@@ -20,14 +18,11 @@ public class BossHomePageResponse {
         this.workspaceList = workspaceList;
     }
 
-    @AllArgsConstructor
     @Getter
+    @AllArgsConstructor
     public static class WorkspaceResponse {
-
         private Long workspaceId;
-
         private String name;
-
         private String imageUrl;
     }
 }

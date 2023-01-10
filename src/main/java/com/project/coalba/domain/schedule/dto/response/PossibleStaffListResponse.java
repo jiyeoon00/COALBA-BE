@@ -5,19 +5,16 @@ import lombok.Getter;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class PossibleStaffListResponse {
     private List<StaffResponse> staffList;
 
-    @AllArgsConstructor
     @Getter
+    @AllArgsConstructor
     public static class StaffResponse {
-
         private Long staffId;
-
         private String name;
-
         private String imageUrl;
     }
 }

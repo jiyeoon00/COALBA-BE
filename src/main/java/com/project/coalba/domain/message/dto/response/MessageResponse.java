@@ -53,6 +53,7 @@ public class MessageResponse {
         private Long messageId;
         private Criteria criteria;
         private String content;
+
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime createDate;
 

@@ -4,24 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
+@Getter @Builder
 @AllArgsConstructor
-@Getter
 public class FcmMessage {
     private boolean validate_only;
     private Message message;
 
-    @Builder
+    @Getter @Builder
     @AllArgsConstructor
-    @Getter
     public static class Message {
         private Notification notification;
         private String token;
     }
 
-    @Builder
+    @Getter @Builder
     @AllArgsConstructor
-    @Getter
     public static class Notification {
         private String title;
         private String body;

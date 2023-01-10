@@ -7,12 +7,10 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class StaffHomePageServiceDto {
     private List<HomeDateServiceDto> dateList;
-
     private LocalDate selectedDate;
-
     private List<Schedule> selectedScheduleList;
 }

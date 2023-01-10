@@ -19,7 +19,7 @@ public class SentSubstituteReqResponse implements Comparable<SentSubstituteReqRe
     public SentSubstituteReqResponse(YearMonth yearMonth, List<SubstituteReqDto> substituteReqDtos) {
         year = yearMonth.getYear();
         month = yearMonth.getMonth();
-        substituteReqList = substituteReqDtos.stream().map(substituteReqDto -> new SentDetailSubstituteReqResponse(substituteReqDto)).collect(Collectors.toList());
+        substituteReqList = substituteReqDtos.stream().map(SentDetailSubstituteReqResponse::new).collect(Collectors.toList());
     }
 
     @Override

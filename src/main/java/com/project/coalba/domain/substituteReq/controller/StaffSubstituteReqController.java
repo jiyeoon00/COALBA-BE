@@ -1,6 +1,6 @@
 package com.project.coalba.domain.substituteReq.controller;
 
-import com.project.coalba.domain.substituteReq.dto.request.CreateSubstituteReqRequest;
+import com.project.coalba.domain.substituteReq.dto.request.SubstituteReqCreateRequest;
 import com.project.coalba.domain.substituteReq.dto.response.*;
 import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.service.StaffSubstituteReqService;
@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/staff/substituteReqs")
 @RequiredArgsConstructor
+@RequestMapping("/staff/substituteReqs")
 @RestController
 public class StaffSubstituteReqController {
     private final StaffSubstituteReqService staffSubstituteReqService;
 
     @PostMapping("/{scheduleId}/from")
     public void createSubstituteReq(@PathVariable Long scheduleId,
-                                    @Validated @RequestBody CreateSubstituteReqRequest request) {
+                                    @Validated @RequestBody SubstituteReqCreateRequest request) {
         staffSubstituteReqService.createSubstituteReq(scheduleId, request.getReceiverId(), request.getReqMessage());
     }
 

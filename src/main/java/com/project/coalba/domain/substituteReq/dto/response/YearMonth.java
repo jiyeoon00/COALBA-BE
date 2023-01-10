@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 
 @Data
 public class YearMonth {
-    int year;
-    int month;
+    private int year;
+    private int month;
 
     public YearMonth(LocalDateTime localDateTime) {
         year = localDateTime.getYear();

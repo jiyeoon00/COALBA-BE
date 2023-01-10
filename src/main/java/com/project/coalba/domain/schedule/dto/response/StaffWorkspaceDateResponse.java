@@ -8,9 +8,7 @@ import java.time.LocalDate;
 @Getter
 public class StaffWorkspaceDateResponse {
     private int day;
-
     private DayOfWeek dayOfWeek;
-
     private Boolean isMySchedule;
 
     public StaffWorkspaceDateResponse(LocalDate date, Boolean isMySchedule) {

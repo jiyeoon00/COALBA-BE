@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@RequestMapping("/staff/schedules")
 @RequiredArgsConstructor
+@RequestMapping("/staff/schedules")
 @RestController
 public class StaffScheduleController {
     private final StaffScheduleService staffScheduleService;

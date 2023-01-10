@@ -7,8 +7,8 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class ScheduleBriefResponse {
     private Long scheduleId;
 

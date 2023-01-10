@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@RequestMapping("/boss/schedules")
 @RequiredArgsConstructor
+@RequestMapping("/boss/schedules")
 @RestController
 public class BossScheduleController {
     private final BossScheduleService bossScheduleService;

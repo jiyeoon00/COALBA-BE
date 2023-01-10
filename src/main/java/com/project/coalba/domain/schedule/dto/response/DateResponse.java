@@ -8,11 +8,8 @@ import java.time.LocalDate;
 @Getter
 public class DateResponse {
     private Integer year;
-
     private Integer month;
-
     private Integer day;
-
     private DayOfWeek dayOfWeek;
 
     public DateResponse(LocalDate date) {

@@ -15,8 +15,8 @@ public class ProfileCreateRequest {
     @NotBlank @Pattern(regexp = "010[0-9]{8}")
     private String phoneNumber;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     @NotNull @Past
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate birthDate;
 
     private String imageUrl;

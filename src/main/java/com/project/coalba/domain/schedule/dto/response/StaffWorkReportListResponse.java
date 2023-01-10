@@ -5,23 +5,18 @@ import lombok.Getter;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class StaffWorkReportListResponse {
     private int selectedYear;
-
     private List<WorkReportResponse> workReportList;
 
-    @AllArgsConstructor
     @Getter
+    @AllArgsConstructor
     public static class WorkReportResponse {
-
         private int month;
-
         private long totalWorkTimeHour;
-
         private long totalWorkTimeMin;
-
         private String totalWorkPay;
     }
 }

@@ -8,8 +8,8 @@ import lombok.Data;
 
 @Data
 public class SubstituteReqDto {
-    SubstituteReq substituteReq;
-    Workspace workspace;
-    Staff staff;
-    Schedule schedule;
+    private SubstituteReq substituteReq;
+    private Workspace workspace;
+    private Staff staff;
+    private Schedule schedule;
 }

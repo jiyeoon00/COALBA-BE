@@ -1,6 +1,6 @@
 package com.project.coalba.domain.message.controller;
 
-import com.project.coalba.domain.message.dto.request.MessageRequest;
+import com.project.coalba.domain.message.dto.request.MessageCreateRequest;
 import com.project.coalba.domain.message.dto.response.MessageResponse;
 import com.project.coalba.domain.message.service.BossMessageService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class BossMessageController {
 
     @PostMapping("/workspaces/{workspaceId}/staffs/{staffId}")
     public ResponseEntity<Void> sendMessageToStaff(@PathVariable Long workspaceId, @PathVariable Long staffId,
-                                                   @RequestBody MessageRequest request) {
+                                                   @RequestBody MessageCreateRequest request) {
         bossMessageService.sendMessageToStaff(workspaceId, staffId, request.getContent());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

@@ -19,10 +19,13 @@ public class SentDetailSubstituteReqResponse {
     private String receiverName;
     private Long workspaceId;
     private String workspaceName;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime startDateTime;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime endDateTime;
+
     private SubstituteReqStatus status;
 
     public SentDetailSubstituteReqResponse(SubstituteReqDto substituteReqDto) {

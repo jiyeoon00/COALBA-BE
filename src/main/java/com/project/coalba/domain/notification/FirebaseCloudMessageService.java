@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 
-@Component
 @RequiredArgsConstructor
+@Component
 public class FirebaseCloudMessageService {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/delivery-1343f/messages:send";
     private final ObjectMapper objectMapper;
