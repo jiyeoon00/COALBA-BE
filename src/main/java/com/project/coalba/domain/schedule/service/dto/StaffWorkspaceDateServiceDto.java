@@ -8,7 +8,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 public class StaffWorkspaceDateServiceDto {
-
     private LocalDate date;
 
     private Boolean isMySchedule;

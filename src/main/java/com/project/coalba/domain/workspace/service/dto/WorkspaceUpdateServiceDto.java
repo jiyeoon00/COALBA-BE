@@ -6,7 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class WorkspaceUpdateServiceDto {
-
     private String name;
 
     private String phoneNumber;

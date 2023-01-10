@@ -8,7 +8,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class PossibleStaffListResponse {
-
     private List<StaffResponse> staffList;
 
     @AllArgsConstructor

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/staff/profile")
 @RestController
 public class StaffProfileController {
-
     private final StaffProfileService staffProfileService;
     private final ProfileMapper mapper;
 

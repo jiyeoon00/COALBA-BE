@@ -20,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class BossScheduleController {
-
     private final BossScheduleService bossScheduleService;
     private final ScheduleMapper mapper;
 

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class ProfileUtil {
-
     private final StaffProfileRepository staffProfileRepository;
     private final BossProfileRepository bossProfileRepository;
 

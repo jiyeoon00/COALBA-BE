@@ -20,7 +20,6 @@ import java.util.List;
 @RequestMapping("/boss/workspaces")
 @RestController
 public class BossWorkspaceController {
-
     private final BossWorkspaceService bossWorkspaceService;
     private final StaffProfileService staffProfileService;
     private final WorkspaceMapper mapper;

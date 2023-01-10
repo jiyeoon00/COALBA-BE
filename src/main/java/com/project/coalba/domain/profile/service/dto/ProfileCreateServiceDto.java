@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 public class ProfileCreateServiceDto {
-
     private String realName;
 
     private String phoneNumber;

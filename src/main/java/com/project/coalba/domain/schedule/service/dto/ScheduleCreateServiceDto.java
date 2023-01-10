@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter @Builder
 public class ScheduleCreateServiceDto {
-
     private Long workspaceId;
 
     private Long staffId;

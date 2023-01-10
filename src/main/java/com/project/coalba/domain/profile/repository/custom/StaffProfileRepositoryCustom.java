@@ -6,6 +6,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StaffProfileRepositoryCustom {
-
     List<Staff> findAllByWorkspaceIdAndDateTimeRange(Long workspaceId, LocalDateTime fromDateTime, LocalDateTime toDateTime);
 }

@@ -7,8 +7,10 @@ import javax.validation.constraints.Size;
 
 @Getter
 public class CreateSubstituteReqRequest {
+
     @NotNull(message = "응답자 아이디는 필수입니다.")
     private Long receiverId;
+
     @NotBlank @Size(max = 500)
     private String reqMessage;
 }

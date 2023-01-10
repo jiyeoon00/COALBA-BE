@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Getter
 public class HomeDateResponse {
-
     private DateResponse date;
 
     private TotalScheduleStatus totalScheduleStatus;

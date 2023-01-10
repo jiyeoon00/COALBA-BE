@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Getter
 public class StaffWorkspaceDateResponse {
-
     private int day;
 
     private DayOfWeek dayOfWeek;

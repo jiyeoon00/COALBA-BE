@@ -17,7 +17,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RestController
 public class BossScheduleReportController {
-
     private final ScheduleReportService scheduleReportService;
     private final ScheduleMapper mapper;
 

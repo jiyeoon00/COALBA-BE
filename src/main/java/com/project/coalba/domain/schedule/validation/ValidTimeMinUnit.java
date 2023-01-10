@@ -15,7 +15,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Constraint(validatedBy = ValidTimeMinUnit.TimeMinUnitValidator.class)
 public @interface ValidTimeMinUnit {
-
     String message() default "스케줄 시간은 10분 단위이어야 합니다.";
 
     Class<?>[] groups() default { };

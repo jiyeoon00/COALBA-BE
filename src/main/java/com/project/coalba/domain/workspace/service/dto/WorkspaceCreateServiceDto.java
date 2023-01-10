@@ -10,7 +10,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class WorkspaceCreateServiceDto {
-
     private String name;
 
     private String phoneNumber;

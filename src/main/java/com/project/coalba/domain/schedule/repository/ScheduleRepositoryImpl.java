@@ -12,7 +12,6 @@ import static com.project.coalba.domain.schedule.entity.QSchedule.*;
 
 @RequiredArgsConstructor
 public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
-
     private final JPAQueryFactory queryFactory;
 
     @Override

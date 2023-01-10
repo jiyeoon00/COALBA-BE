@@ -9,7 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter @Builder
 public class StaffWorkspacePageResponse {
-
     private WorkspaceResponse selectedWorkspace;
 
     private Integer year;

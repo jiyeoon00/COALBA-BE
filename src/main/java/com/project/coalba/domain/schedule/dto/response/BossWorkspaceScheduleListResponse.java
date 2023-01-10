@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class BossWorkspaceScheduleListResponse {
-
     private int selectedDay;
 
     private List<ScheduleResponse> selectedScheduleList;

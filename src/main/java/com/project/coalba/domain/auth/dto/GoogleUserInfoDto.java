@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GoogleUserInfoDto {
-
     private String sub;
     private String email;
     private String name;

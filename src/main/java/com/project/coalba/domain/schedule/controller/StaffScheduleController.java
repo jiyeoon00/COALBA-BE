@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class StaffScheduleController {
-
     private final StaffScheduleService staffScheduleService;
     private final ScheduleMapper mapper;
 

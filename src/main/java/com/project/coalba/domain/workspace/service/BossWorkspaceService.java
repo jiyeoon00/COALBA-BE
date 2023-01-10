@@ -18,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class BossWorkspaceService {
-
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
     private final ProfileUtil profileUtil;

@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 public class ProfileResponse {
-
     private String realName;
 
     private String phoneNumber;

@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class BossProfileService {
-
     private final BossProfileRepository bossProfileRepository;
     private final UserUtil userUtil;
     private final ProfileUtil profileUtil;

@@ -7,7 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter @Builder
 public class WorkspaceResponse {
-
     private Long workspaceId;
 
     private String name;

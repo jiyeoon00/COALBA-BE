@@ -8,7 +8,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class BossWorkReportListResponse {
-
     private Long selectedWorkspaceId;
 
     private int selectedYear;

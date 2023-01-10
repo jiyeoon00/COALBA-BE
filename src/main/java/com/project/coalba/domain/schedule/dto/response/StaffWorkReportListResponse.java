@@ -8,7 +8,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class StaffWorkReportListResponse {
-
     private int selectedYear;
 
     private List<WorkReportResponse> workReportList;

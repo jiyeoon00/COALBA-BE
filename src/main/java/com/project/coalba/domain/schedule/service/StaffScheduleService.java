@@ -21,7 +21,6 @@ import static java.util.stream.Collectors.*;
 @RequiredArgsConstructor
 @Service
 public class StaffScheduleService {
-
     private final BossWorkspaceService bossWorkspaceService;
     private final ScheduleRepository scheduleRepository;
     private final ProfileUtil profileUtil;

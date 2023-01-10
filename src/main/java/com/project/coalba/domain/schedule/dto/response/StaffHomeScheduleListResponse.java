@@ -11,7 +11,6 @@ import java.util.List;
 
 @Getter
 public class StaffHomeScheduleListResponse {
-
     private DateResponse selectedDate;
 
     private List<ScheduleResponse> selectedScheduleList;

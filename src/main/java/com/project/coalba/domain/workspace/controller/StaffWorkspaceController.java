@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/staff/workspaces")
 @RestController
 public class StaffWorkspaceController {
-
     private final StaffWorkspaceService staffWorkspaceService;
     private final StaffProfileService  staffProfileService;
     private final ScheduleService scheduleService;

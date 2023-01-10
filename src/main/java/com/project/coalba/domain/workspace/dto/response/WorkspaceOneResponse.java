@@ -9,7 +9,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter @Builder
 public class WorkspaceOneResponse {
-
     private Long workspaceId;
 
     private String name;

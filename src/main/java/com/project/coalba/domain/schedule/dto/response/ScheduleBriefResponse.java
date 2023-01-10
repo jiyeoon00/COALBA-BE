@@ -10,7 +10,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Getter
 public class ScheduleBriefResponse {
-
     private Long scheduleId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")

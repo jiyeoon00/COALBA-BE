@@ -10,7 +10,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter @Builder
 public class WorkspaceMemberInfoResponse {
-
     private Long staffId;
 
     private String name;

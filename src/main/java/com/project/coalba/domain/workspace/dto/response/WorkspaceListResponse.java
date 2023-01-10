@@ -8,6 +8,5 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class WorkspaceListResponse {
-
     private List<WorkspaceResponse> workspaceList;
 }

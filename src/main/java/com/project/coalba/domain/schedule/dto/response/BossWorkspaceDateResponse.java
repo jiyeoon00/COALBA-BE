@@ -8,7 +8,6 @@ import java.time.LocalDate;
 
 @Getter
 public class BossWorkspaceDateResponse {
-
     private int day;
 
     private DayOfWeek dayOfWeek;

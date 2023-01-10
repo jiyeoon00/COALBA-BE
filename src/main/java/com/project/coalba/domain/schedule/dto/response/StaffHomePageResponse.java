@@ -8,7 +8,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class StaffHomePageResponse {
-
     private List<HomeDateResponse> dateList;
 
     private StaffHomeScheduleListResponse selectedScheduleListOfDate;

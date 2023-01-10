@@ -8,7 +8,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 public class ProfileUpdateServiceDto {
-
     private String realName;
 
     private String phoneNumber;

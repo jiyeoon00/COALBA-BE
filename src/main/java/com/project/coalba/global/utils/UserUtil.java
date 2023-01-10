@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Component
 public class UserUtil {
-
     private final UserRepository userRepository;
 
     public User getCurrentUser() {

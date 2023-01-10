@@ -12,7 +12,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class StaffWorkspaceService {
-
     private final WorkspaceRepository workspaceRepository;
     private final ProfileUtil profileUtil;
 

@@ -14,7 +14,6 @@ import static com.project.coalba.domain.workspace.entity.QWorkspaceMember.*;
 
 @RequiredArgsConstructor
 public class StaffProfileRepositoryImpl implements StaffProfileRepositoryCustom {
-
     private final JPAQueryFactory queryFactory;
 
     @Override

@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class StaffWorkspacePageServiceDto {
-
     private Workspace workspace;
 
     private List<StaffWorkspaceDateServiceDto> dateList;

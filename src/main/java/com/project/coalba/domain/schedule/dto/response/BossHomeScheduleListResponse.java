@@ -11,7 +11,6 @@ import java.util.List;
 
 @Getter
 public class BossHomeScheduleListResponse {
-
     private DateResponse selectedDate;
 
     private Long selectedWorkspaceId;

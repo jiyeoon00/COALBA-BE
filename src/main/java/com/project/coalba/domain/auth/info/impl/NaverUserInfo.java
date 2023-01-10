@@ -14,7 +14,6 @@ import java.net.URLConnection;
 
 @Slf4j
 public class NaverUserInfo implements UserInfo {
-
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override

@@ -9,7 +9,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter @Builder
 public class BossWorkspacePageResponse {
-
     private WorkspaceResponse selectedWorkspace;
 
     private int year;

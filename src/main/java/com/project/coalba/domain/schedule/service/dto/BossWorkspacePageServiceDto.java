@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class BossWorkspacePageServiceDto {
-
     private Workspace workspace;
 
     private List<BossWorkspaceDateServiceDto> dateList;

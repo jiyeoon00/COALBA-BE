@@ -12,7 +12,6 @@ import static com.project.coalba.domain.workspace.entity.QWorkspaceMember.*;
 
 @RequiredArgsConstructor
 public class WorkspaceRepositoryImpl implements WorkspaceRepositoryCustom {
-
     private final JPAQueryFactory queryFactory;
 
     @Override

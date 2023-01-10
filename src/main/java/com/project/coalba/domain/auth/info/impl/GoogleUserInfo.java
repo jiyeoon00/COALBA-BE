@@ -13,7 +13,6 @@ import java.net.URL;
 
 @Slf4j
 public class GoogleUserInfo implements UserInfo {
-
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override

@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class StaffProfileService {
-
     private final StaffProfileRepository staffProfileRepository;
     private final UserUtil userUtil;
     private final ProfileUtil profileUtil;

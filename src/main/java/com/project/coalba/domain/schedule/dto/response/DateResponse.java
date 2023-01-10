@@ -7,7 +7,6 @@ import java.time.LocalDate;
 
 @Getter
 public class DateResponse {
-
     private Integer year;
 
     private Integer month;

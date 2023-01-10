@@ -16,7 +16,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Constraint(validatedBy = ValidScheduleDate.ScheduleDateValidator.class)
 public @interface ValidScheduleDate {
-
     String message() default "현재로부터 +1 ~ +90일 날짜까지만 스케줄 생성이 가능합니다.";
 
     Class<?>[] groups() default { };

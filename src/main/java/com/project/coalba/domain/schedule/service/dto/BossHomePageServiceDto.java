@@ -10,7 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class BossHomePageServiceDto {
-
     private List<HomeDateServiceDto> dateList;
 
     private LocalDate selectedDate;

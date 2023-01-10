@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 public class HomeDateServiceDto {
-
     private LocalDate date;
 
     private TotalScheduleStatus totalScheduleStatus;

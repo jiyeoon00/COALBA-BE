@@ -8,7 +8,6 @@ import java.util.List;
 
 @Getter
 public class BossHomePageResponse {
-
     private List<HomeDateResponse> dateList;
 
     private DateResponse selectedDate;
