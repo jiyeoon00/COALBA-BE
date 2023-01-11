@@ -1,9 +1,10 @@
 package com.project.coalba.domain.auth.dto.response;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter @Builder
+@Getter
+@AllArgsConstructor
 public class TokenResponse {
     private String accessToken;
     private String refreshToken;

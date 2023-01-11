@@ -37,10 +37,11 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String providerId;
 
-    public void updateSocialInfo(User user) {
+    public User updateSocialInfo(User user) {
         this.email = user.getEmail();
         this.name = user.getName();
         this.imageUrl = user.getImageUrl();
         this.providerId = user.getProviderId();
+        return this;
     }
 }
