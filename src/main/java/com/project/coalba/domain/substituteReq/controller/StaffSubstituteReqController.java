@@ -1,7 +1,9 @@
 package com.project.coalba.domain.substituteReq.controller;
 
+import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.substituteReq.dto.request.SubstituteReqCreateRequest;
 import com.project.coalba.domain.substituteReq.dto.response.*;
+import com.project.coalba.domain.substituteReq.mapper.SubstituteReqMapper;
 import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.service.StaffSubstituteReqService;
 import lombok.RequiredArgsConstructor;
@@ -16,23 +18,12 @@ import java.util.List;
 @RestController
 public class StaffSubstituteReqController {
     private final StaffSubstituteReqService staffSubstituteReqService;
+    private final SubstituteReqMapper mapper;
 
-    @PostMapping("/{scheduleId}/from")
-    public void createSubstituteReq(@PathVariable Long scheduleId,
-                                    @Validated @RequestBody SubstituteReqCreateRequest request) {
-        staffSubstituteReqService.createSubstituteReq(scheduleId, request.getReceiverId(), request.getReqMessage());
-    }
-
-    @PutMapping("/{substituteReqId}/from")
-    public ResponseEntity cancelSubstituteReq(@PathVariable Long substituteReqId) {
-        staffSubstituteReqService.cancelSubstituteReq(substituteReqId);
-        return ResponseEntity.ok("취소되었습니다.");
-    }
-
-    @GetMapping("/{substituteReqId}")
-    public BothDetailSubstituteReqResponse getDetailSentSubstituteReq(@PathVariable Long substituteReqId){
-        BothSubstituteReqDto detailSubstituteReqDto = staffSubstituteReqService.getDetailSubstituteReq(substituteReqId);
-        return new BothDetailSubstituteReqResponse(detailSubstituteReqDto);
+    @GetMapping("/schedules/{scheduleId}/possible/staffs")
+    public PossibleStaffListResponse getStaffListPossibleForSubstituteReq(@PathVariable Long scheduleId) {
+        List<Staff> staffList = staffSubstituteReqService.getStaffListPossibleForSubstituteReq(scheduleId);
+        return mapper.toDto(() -> staffList);
     }
 
     @GetMapping("/from")
@@ -45,6 +36,24 @@ public class StaffSubstituteReqController {
     public SubstituteReqsResponse getReceivedSubstituteReqs() {
         List<ReceivedSubstituteReqResponse> receivedSubstituteReqs = staffSubstituteReqService.getReceivedSubstituteReqs();
         return new SubstituteReqsResponse(receivedSubstituteReqs);
+    }
+
+    @GetMapping("/{substituteReqId}")
+    public BothDetailSubstituteReqResponse getDetailSentSubstituteReq(@PathVariable Long substituteReqId){
+        BothSubstituteReqDto detailSubstituteReqDto = staffSubstituteReqService.getDetailSubstituteReq(substituteReqId);
+        return new BothDetailSubstituteReqResponse(detailSubstituteReqDto);
+    }
+
+    @PostMapping("/{scheduleId}/from")
+    public void createSubstituteReq(@PathVariable Long scheduleId,
+                                    @Validated @RequestBody SubstituteReqCreateRequest request) {
+        staffSubstituteReqService.createSubstituteReq(scheduleId, request.getReceiverId(), request.getReqMessage());
+    }
+
+    @PutMapping("/{substituteReqId}/from")
+    public ResponseEntity cancelSubstituteReq(@PathVariable Long substituteReqId) {
+        staffSubstituteReqService.cancelSubstituteReq(substituteReqId);
+        return ResponseEntity.ok("취소되었습니다.");
     }
 
     @PutMapping("/{substituteReqId}/accept")

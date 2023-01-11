@@ -28,6 +28,13 @@ public class StaffSubstituteReqService {
     private final SubstituteReqRepository substituteReqRepository;
     private final ProfileUtil profileUtil;
 
+    public List<Staff> getStaffListPossibleForSubstituteReq(Long scheduleId) {
+        Schedule schedule = scheduleService.getSchedule(scheduleId);
+        return staffProfileService.getStaffListInWorkspaceAndPossibleForDateTimeRange(schedule.getWorkspace().getId(),
+                schedule.getScheduleStartDateTime(), schedule.getScheduleEndDateTime());
+        //대타요청 관련 비즈니스 로직 추가 ex. 위 staffList 중에서 이미 해당 스케줄에 대한 대타요청 받은 staff 제외
+    }
+
     @Transactional
     public void createSubstituteReq(Long scheduleId, Long receiverId, String reqMessage) {
         Schedule schedule = scheduleService.getSchedule(scheduleId);

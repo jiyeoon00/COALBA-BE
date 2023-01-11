@@ -16,7 +16,7 @@ public interface MessageMapper {
     interface MessageBoxListRef extends Supplier<List<MessageBoxServiceDto>> {}
     default MessageBoxListResponse toDto(MessageBoxListRef ref) {
         List<MessageBoxListResponse.BoxResponse> messageBoxList = ref.get().stream()
-                .map(this::toDto)
+                .map(this::toSubDto)
                 .collect(Collectors.toList());
         return new MessageBoxListResponse(messageBoxList);
     }
@@ -28,5 +28,5 @@ public interface MessageMapper {
             @Mapping(source = "latestMessage", target = "latestMessage"),
             @Mapping(source = "latestDateTime", target = "latestDateTime")
     })
-    MessageBoxListResponse.BoxResponse toDto(MessageBoxServiceDto serviceDto);
+    MessageBoxListResponse.BoxResponse toSubDto(MessageBoxServiceDto serviceDto);
 }

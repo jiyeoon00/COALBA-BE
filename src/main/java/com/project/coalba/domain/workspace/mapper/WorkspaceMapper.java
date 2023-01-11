@@ -1,6 +1,5 @@
 package com.project.coalba.domain.workspace.mapper;
 
-import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.workspace.dto.request.WorkspaceCreateRequest;
 import com.project.coalba.domain.workspace.dto.request.WorkspaceUpdateRequest;
 import com.project.coalba.domain.workspace.dto.response.*;
@@ -55,18 +54,4 @@ public interface WorkspaceMapper {
             @Mapping(source = "staff.imageUrl", target = "imageUrl")
     })
     WorkspaceMemberInfoListResponse.InfoResponse toSubDto(WorkspaceMember workspaceMember);
-
-    interface StaffListRef extends Supplier<List<Staff>> {}
-    default WorkspaceStaffListResponse toDto(StaffListRef ref) {
-        List<WorkspaceStaffListResponse.StaffResponse> staffList = ref.get().stream()
-                .map(this::toSubDto)
-                .collect(Collectors.toList());
-        return new WorkspaceStaffListResponse(staffList);
-    }
-
-    @Mappings({
-            @Mapping(source = "id", target = "staffId"),
-            @Mapping(source = "realName", target = "name")
-    })
-    WorkspaceStaffListResponse.StaffResponse toSubDto(Staff staff);
 }
