@@ -47,13 +47,6 @@ public class BossWorkspaceController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    //message 도메인에서 사용: /boss/messages/workspaces/{workspaceId}/staffs
-    @GetMapping("/{workspaceId}/message/staffs")
-    public WorkspaceStaffListResponse getWorkspaceStaffListForMessage(@PathVariable Long workspaceId) {
-        List<Staff> staffList = staffProfileService.getStaffListInWorkspace(workspaceId);
-        return mapper.toDto(() -> staffList);
-    }
-
     @GetMapping("/{workspaceId}/staffs")
     public WorkspaceMemberInfoListResponse getWorkspaceMemberInfoList(@PathVariable Long workspaceId) {
         List<WorkspaceMember> workspaceMemberList = bossWorkspaceService.getWorkspaceMemberInfoList(workspaceId);
