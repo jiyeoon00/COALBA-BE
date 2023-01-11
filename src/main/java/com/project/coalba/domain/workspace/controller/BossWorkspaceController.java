@@ -1,7 +1,5 @@
 package com.project.coalba.domain.workspace.controller;
 
-import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.profile.service.StaffProfileService;
 import com.project.coalba.domain.workspace.dto.request.WorkspaceCreateRequest;
 import com.project.coalba.domain.workspace.dto.request.WorkspaceUpdateRequest;
 import com.project.coalba.domain.workspace.dto.response.*;
@@ -21,7 +19,6 @@ import java.util.List;
 @RestController
 public class BossWorkspaceController {
     private final BossWorkspaceService bossWorkspaceService;
-    private final StaffProfileService staffProfileService;
     private final WorkspaceMapper mapper;
 
     @GetMapping
@@ -55,8 +52,7 @@ public class BossWorkspaceController {
 
     @PostMapping("/{workspaceId}/staffs")
     public ResponseEntity<Void> inviteStaff(@PathVariable Long workspaceId, @RequestParam String email){
-        Staff staff = staffProfileService.getStaffWithEmail(email);
-        bossWorkspaceService.inviteStaff(staff, workspaceId);
+        bossWorkspaceService.inviteStaff(workspaceId, email);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

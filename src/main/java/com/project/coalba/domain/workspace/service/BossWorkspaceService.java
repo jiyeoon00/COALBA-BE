@@ -2,6 +2,7 @@ package com.project.coalba.domain.workspace.service;
 
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.entity.Staff;
+import com.project.coalba.domain.profile.service.StaffProfileService;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.domain.workspace.entity.WorkspaceMember;
 import com.project.coalba.domain.workspace.repository.WorkspaceMemberRepository;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class BossWorkspaceService {
+    private final StaffProfileService staffProfileService;
     private final WorkspaceRepository workspaceRepository;
     private final WorkspaceMemberRepository workspaceMemberRepository;
     private final ProfileUtil profileUtil;
@@ -52,12 +54,14 @@ public class BossWorkspaceService {
     }
 
     @Transactional
-    public void inviteStaff(Staff staff, Long workSpaceId){
+    public void inviteStaff(Long workSpaceId, String email) {
         Workspace workspace = getWorkspace(workSpaceId);
+        Staff staff = staffProfileService.getStaffWithEmail(email);
         WorkspaceMember workspaceMember = WorkspaceMember.builder()
-                .staff(staff)
                 .workspace(workspace)
+                .staff(staff)
                 .build();
+
         workspaceMemberRepository.save(workspaceMember);
     }
 }
