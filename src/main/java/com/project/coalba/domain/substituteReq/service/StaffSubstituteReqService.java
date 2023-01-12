@@ -1,5 +1,6 @@
 package com.project.coalba.domain.substituteReq.service;
 
+import com.project.coalba.domain.notification.FirebaseCloudMessageService;
 import com.project.coalba.domain.profile.entity.*;
 import com.project.coalba.domain.profile.service.*;
 import com.project.coalba.domain.schedule.entity.Schedule;
@@ -22,12 +23,14 @@ import static java.util.stream.Collectors.groupingBy;
 @RequiredArgsConstructor
 @Service
 public class StaffSubstituteReqService {
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final BossProfileService bossProfileService;
     private final StaffProfileService staffProfileService;
     private final ScheduleService scheduleService;
     private final SubstituteReqRepository substituteReqRepository;
     private final ProfileUtil profileUtil;
 
+    @Transactional(readOnly = true)
     public List<Staff> getStaffListPossibleForSubstituteReq(Long scheduleId) {
         Schedule schedule = scheduleService.getSchedule(scheduleId);
         return staffProfileService.getStaffListInWorkspaceAndPossibleForDateTimeRange(schedule.getWorkspace().getId(),
@@ -51,6 +54,14 @@ public class StaffSubstituteReqService {
                 .build();
 
         substituteReqRepository.save(substituteReq);
+        sendSubstituteRequestNotice(substituteReq);
+    }
+
+    private void sendSubstituteRequestNotice(SubstituteReq substituteReq) {
+        String senderName = substituteReq.getSender().getRealName();
+        String deviceToken = substituteReq.getReceiver().getDeviceToken();
+        
+        firebaseCloudMessageService.sendMessageTo(deviceToken, "대타근무 요청", senderName + "님이 대타를 요청하였습니다.");
     }
 
     @Transactional
@@ -58,7 +69,7 @@ public class StaffSubstituteReqService {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         if (substituteReq.isWaiting()) {
             substituteReq.cancel();
-        }else {
+        } else {
             throw new BusinessException(ErrorCode.ALREADY_PROCESSED_REQ);
         }
     }
@@ -74,7 +85,8 @@ public class StaffSubstituteReqService {
         BothSubstituteReqDto substituteReq = substituteReqRepository.getSubstituteReq(substituteReqId);
         if (substituteReq != null) {
             return substituteReq;
-        } else throw new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND);
+        } 
+        else throw new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND);
     }
 
     @Transactional(readOnly = true)
@@ -116,10 +128,20 @@ public class StaffSubstituteReqService {
         /**
          * 추후 기능 보완
          * 요청 성사시 다른 사람한테 보낸 요청 다 취소(?)
-         * 요청 성사시 사장님께 알림 보내기
          */
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         substituteReq.accept();
+
+        sendAcceptanceNotice(substituteReq);
+    }
+
+    private void sendAcceptanceNotice(SubstituteReq substituteReq) {
+        String bossDeviceToken = substituteReq.getBoss().getDeviceToken();
+        String senderDeviceToken = substituteReq.getSender().getDeviceToken();
+        String senderName = substituteReq.getSender().getRealName();
+
+        firebaseCloudMessageService.sendMessageTo(bossDeviceToken, "대타 승인 요청", "대타 승인 요청이 도착하였습니다.");
+        firebaseCloudMessageService.sendMessageTo(senderDeviceToken, "대타 요청 수락", senderName + "님이 대타요청을 수락하였습니다. 사장님에게 승인요청이 갑니다.");
     }
 
     @Transactional

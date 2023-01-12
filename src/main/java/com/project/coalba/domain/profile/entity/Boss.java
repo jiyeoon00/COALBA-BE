@@ -28,6 +28,9 @@ public class Boss extends BaseTimeEntity {
 
     private String imageUrl;
 
+    @Column(nullable = false)
+    private String deviceToken;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
