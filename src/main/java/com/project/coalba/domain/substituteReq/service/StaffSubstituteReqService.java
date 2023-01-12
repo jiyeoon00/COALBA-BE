@@ -79,8 +79,8 @@ public class StaffSubstituteReqService {
 
     @Transactional(readOnly = true)
     public List<SentSubstituteReqResponse> getSentSubstituteReqs() {
-        Staff currentStaff = profileUtil.getCurrentStaff();
-        List<SubstituteReqDto> substituteReqDtos = substituteReqRepository.getSentSubstituteReqs(currentStaff);
+        Long staffId = profileUtil.getCurrentStaff().getId();
+        List<SubstituteReqDto> substituteReqDtos = substituteReqRepository.getSentSubstituteReqs(staffId);
 
         Map<YearMonth, List<SubstituteReqDto>> substituteReqMap = substituteReqDtos.stream()
                 .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));
@@ -96,8 +96,8 @@ public class StaffSubstituteReqService {
 
     @Transactional(readOnly = true)
     public List<ReceivedSubstituteReqResponse> getReceivedSubstituteReqs() {
-        Staff currentStaff = profileUtil.getCurrentStaff();
-        List<SubstituteReqDto> substituteReqDtos = substituteReqRepository.getReceivedSubstituteReqs(currentStaff);
+        Long staffId = profileUtil.getCurrentStaff().getId();
+        List<SubstituteReqDto> substituteReqDtos = substituteReqRepository.getReceivedSubstituteReqs(staffId);
 
         Map<YearMonth, List<SubstituteReqDto>> substituteReqMap = substituteReqDtos.stream()
                 .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));

@@ -1,6 +1,5 @@
 package com.project.coalba.domain.substituteReq.service;
 
-import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.dto.response.BothSubstituteReqResponse;
 import com.project.coalba.domain.substituteReq.dto.response.YearMonth;
@@ -31,8 +30,8 @@ public class BossSubstituteReqService {
 
     @Transactional(readOnly = true)
     public List<BothSubstituteReqResponse> getSubstituteReqs() {
-        Boss currentBoss = profileUtil.getCurrentBoss();
-        List<BothSubstituteReqDto> bothSubstituteReqDtos = substituteReqRepository.getSubstituteReqs(currentBoss);
+        Long bossId = profileUtil.getCurrentBoss().getId();
+        List<BothSubstituteReqDto> bothSubstituteReqDtos = substituteReqRepository.getSubstituteReqs(bossId);
 
         Map<YearMonth, List<BothSubstituteReqDto>> substituteReqMap = bothSubstituteReqDtos.stream()
                 .collect(groupingBy(bothSubstituteReqDto -> new YearMonth(bothSubstituteReqDto.getSubstituteReq().getCreatedDate())));

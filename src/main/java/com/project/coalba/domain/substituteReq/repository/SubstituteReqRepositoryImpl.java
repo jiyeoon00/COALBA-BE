@@ -1,8 +1,6 @@
 package com.project.coalba.domain.substituteReq.repository;
 
-import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.entity.QStaff;
-import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
 import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
 import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
@@ -45,7 +43,7 @@ public class SubstituteReqRepositoryImpl implements SubstituteReqRepositoryCusto
     }
 
     @Override
-    public List<SubstituteReqDto> getSentSubstituteReqs(Staff currentStaff) {
+    public List<SubstituteReqDto> getSentSubstituteReqs(Long senderId) {
         return queryFactory.select(Projections.fields(
                         SubstituteReqDto.class,
                         workspace.as("workspace"),
@@ -54,7 +52,7 @@ public class SubstituteReqRepositoryImpl implements SubstituteReqRepositoryCusto
                         schedule.as("schedule")
                 ))
                 .from(substituteReq)
-                .where(substituteReq.sender.eq(currentStaff))
+                .where(substituteReq.sender.id.eq(senderId))
                 .join(substituteReq.receiver, staff)
                 .join(substituteReq.schedule, schedule)
                 .join(schedule.workspace, workspace)
@@ -63,7 +61,7 @@ public class SubstituteReqRepositoryImpl implements SubstituteReqRepositoryCusto
     }
 
     @Override
-    public List<SubstituteReqDto> getReceivedSubstituteReqs(Staff currentStaff) {
+    public List<SubstituteReqDto> getReceivedSubstituteReqs(Long receiverId) {
         return queryFactory.select(Projections.fields(
                         SubstituteReqDto.class,
                         workspace.as("workspace"),
@@ -72,7 +70,7 @@ public class SubstituteReqRepositoryImpl implements SubstituteReqRepositoryCusto
                         schedule.as("schedule")
                 ))
                 .from(substituteReq)
-                .where(substituteReq.receiver.eq(currentStaff))
+                .where(substituteReq.receiver.id.eq(receiverId))
                 .join(substituteReq.sender, staff)
                 .join(substituteReq.schedule, schedule)
                 .join(schedule.workspace, workspace)
@@ -81,7 +79,7 @@ public class SubstituteReqRepositoryImpl implements SubstituteReqRepositoryCusto
     }
 
     @Override
-    public List<BothSubstituteReqDto> getSubstituteReqs(Boss currentBoss) {
+    public List<BothSubstituteReqDto> getSubstituteReqs(Long bossId) {
         QStaff receiver = new QStaff("receiver");
         QStaff sender = new QStaff("sender");
 
@@ -94,7 +92,7 @@ public class SubstituteReqRepositoryImpl implements SubstituteReqRepositoryCusto
                         schedule.as("schedule")
                 ))
                 .from(substituteReq)
-                .where(substituteReq.boss.eq(currentBoss)
+                .where(substituteReq.boss.id.eq(bossId)
                         .and(isStatusForBoss()))
                 .join(substituteReq.receiver, receiver)
                 .join(substituteReq.sender, sender)
