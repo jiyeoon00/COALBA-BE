@@ -19,7 +19,7 @@ public class BothSubstituteReqResponse implements Comparable<BothSubstituteReqRe
     public BothSubstituteReqResponse(YearMonth yearMonth, List<BothSubstituteReqDto> substituteReqDtos) {
         year = yearMonth.getYear();
         month = yearMonth.getMonth();
-        substituteReqList = substituteReqDtos.stream().map(substituteReqDto -> new BothDetailSubstituteReqResponse(substituteReqDto)).collect(Collectors.toList());
+        substituteReqList = substituteReqDtos.stream().map(BothDetailSubstituteReqResponse::new).collect(Collectors.toList());
     }
 
     @Override

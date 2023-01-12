@@ -11,7 +11,6 @@ import java.util.Collections;
 
 @Getter @Builder
 public class UserPrincipal implements UserDetails {
-
     private final Long userId;
     private final String providerId;
     private final Collection<GrantedAuthority> authorities;

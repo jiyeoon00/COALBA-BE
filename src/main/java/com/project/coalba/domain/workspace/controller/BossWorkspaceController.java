@@ -1,7 +1,5 @@
 package com.project.coalba.domain.workspace.controller;
 
-import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.profile.service.StaffProfileService;
 import com.project.coalba.domain.workspace.dto.request.WorkspaceCreateRequest;
 import com.project.coalba.domain.workspace.dto.request.WorkspaceUpdateRequest;
 import com.project.coalba.domain.workspace.dto.response.*;
@@ -20,9 +18,7 @@ import java.util.List;
 @RequestMapping("/boss/workspaces")
 @RestController
 public class BossWorkspaceController {
-
     private final BossWorkspaceService bossWorkspaceService;
-    private final StaffProfileService staffProfileService;
     private final WorkspaceMapper mapper;
 
     @GetMapping
@@ -48,23 +44,15 @@ public class BossWorkspaceController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    //message 도메인에서 사용: /boss/messages/workspaces/{workspaceId}/staffs
-    @GetMapping("/{workspaceId}/message/staffs")
-    public WorkspaceStaffListResponse getWorkspaceStaffListForMessage(@PathVariable Long workspaceId) {
-        List<Staff> staffList = staffProfileService.getStaffListInWorkspace(workspaceId);
-        return mapper.toDto(() -> staffList);
-    }
-
     @GetMapping("/{workspaceId}/staffs")
     public WorkspaceMemberInfoListResponse getWorkspaceMemberInfoList(@PathVariable Long workspaceId) {
-        List<WorkspaceMember> workspaceMemberList = bossWorkspaceService.getWorkspaceMemberList(workspaceId);
+        List<WorkspaceMember> workspaceMemberList = bossWorkspaceService.getWorkspaceMemberInfoList(workspaceId);
         return mapper.toDto(() -> workspaceMemberList);
     }
 
     @PostMapping("/{workspaceId}/staffs")
     public ResponseEntity<Void> inviteStaff(@PathVariable Long workspaceId, @RequestParam String email){
-        Staff staff = staffProfileService.getStaffByUserEmail(email);
-        bossWorkspaceService.inviteStaff(staff, workspaceId);
+        bossWorkspaceService.inviteStaff(workspaceId, email);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

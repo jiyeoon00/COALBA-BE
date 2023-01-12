@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/s3/image")
 @RestController
 public class AwsS3Controller {
-
     private final AwsS3Service awsS3Service;
 
     @PostMapping

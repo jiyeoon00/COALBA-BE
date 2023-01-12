@@ -6,11 +6,9 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class HomeDateServiceDto {
-
     private LocalDate date;
-
     private TotalScheduleStatus totalScheduleStatus;
 }

@@ -11,11 +11,8 @@ import java.util.List;
 
 @Getter
 public class BossHomeScheduleListResponse {
-
     private DateResponse selectedDate;
-
     private Long selectedWorkspaceId;
-
     private List<ScheduleResponse> selectedScheduleList;
 
     public BossHomeScheduleListResponse(LocalDate date, Long selectedWorkspaceId, List<ScheduleResponse> selectedScheduleList) {
@@ -24,10 +21,9 @@ public class BossHomeScheduleListResponse {
         this.selectedScheduleList = selectedScheduleList;
     }
 
-    @AllArgsConstructor
     @Getter
+    @AllArgsConstructor
     public static class ScheduleResponse {
-
         private Long scheduleId;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
@@ -43,17 +39,13 @@ public class BossHomeScheduleListResponse {
         private LocalTime logicalEndTime;
 
         private ScheduleStatus status;
-
         private WorkerResponse worker;
 
-        @AllArgsConstructor
         @Getter
+        @AllArgsConstructor
         public static class WorkerResponse {
-
             private Long workerId;
-
             private String name;
-
             private String imageUrl;
         }
     }

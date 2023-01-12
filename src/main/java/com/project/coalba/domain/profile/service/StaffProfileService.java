@@ -16,44 +16,47 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class StaffProfileService {
-
     private final StaffProfileRepository staffProfileRepository;
     private final UserUtil userUtil;
     private final ProfileUtil profileUtil;
 
-    public Staff getMyStaffProfile() {
+    @Transactional(readOnly = true)
+    public Staff getMyProfile() {
         return profileUtil.getCurrentStaff();
     }
 
     @Transactional
-    public void saveMyStaffProfile(ProfileCreateServiceDto serviceDto) {
+    public void saveMyProfile(ProfileCreateServiceDto serviceDto) {
         User user = userUtil.getCurrentUser();
         staffProfileRepository.save(serviceDto.toStaffEntity(user));
     }
 
     @Transactional
-    public void updateMyStaffProfile(ProfileUpdateServiceDto serviceDto) {
+    public void updateMyProfile(ProfileUpdateServiceDto serviceDto) {
         Staff staff = profileUtil.getCurrentStaff();
         staff.update(serviceDto.getRealName(), serviceDto.getPhoneNumber(), serviceDto.getBirthDate(), serviceDto.getImageUrl());
     }
 
-    public List<Staff> getStaffListInWorkspaceAndPossibleForDateTimeRange(Long workspaceId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
-        return staffProfileRepository.findAllByWorkspaceIdAndDateTimeRange(workspaceId, fromDateTime, toDateTime);
+    @Transactional(readOnly = true)
+    public Staff getStaff(Long staffId) {
+        return staffProfileRepository.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
     }
 
-    public List<Staff> getStaffListInWorkspace(Long workspaceId) {
-        return staffProfileRepository.findAllByWorkspaceId(workspaceId);
-    }
-
-    public Staff getStaffByUserEmail(String email){
+    @Transactional(readOnly = true)
+    public Staff getStaffWithEmail(String email){
         return staffProfileRepository.findByUserEmail(email)
                 .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
     }
 
-    public Staff getStaff(Long staffId) {
-        return staffProfileRepository.findById(staffId)
-                .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
+    @Transactional(readOnly = true)
+    public List<Staff> getStaffListInWorkspace(Long workspaceId) {
+        return staffProfileRepository.findAllByWorkspaceId(workspaceId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Staff> getStaffListInWorkspaceAndPossibleForDateTimeRange(Long workspaceId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+        return staffProfileRepository.findAllByWorkspaceIdAndDateTimeRange(workspaceId, fromDateTime, toDateTime);
     }
 }

@@ -8,13 +8,10 @@ import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
 
 @Getter
 public class WorkReportServiceDto {
-
     private static final DecimalFormat formatter = new DecimalFormat("#,###");
 
     private long totalWorkTimeHour;
-
     private long totalWorkTimeMin;
-
     private String totalWorkPay;
 
     public WorkReportServiceDto() {

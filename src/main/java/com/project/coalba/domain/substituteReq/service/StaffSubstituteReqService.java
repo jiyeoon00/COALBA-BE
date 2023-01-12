@@ -1,19 +1,16 @@
 package com.project.coalba.domain.substituteReq.service;
 
 import com.project.coalba.domain.notification.FirebaseCloudMessageService;
-import com.project.coalba.domain.profile.entity.Boss;
-import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.profile.service.BossProfileService;
+import com.project.coalba.domain.profile.entity.*;
+import com.project.coalba.domain.profile.service.*;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.service.ScheduleService;
 import com.project.coalba.domain.substituteReq.dto.response.*;
 import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
-import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
-import com.project.coalba.domain.substituteReq.repository.SubstituteRepository;
-import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
-import com.project.coalba.global.exception.BusinessException;
-import com.project.coalba.global.exception.ErrorCode;
+import com.project.coalba.domain.substituteReq.repository.SubstituteReqRepository;
+import com.project.coalba.domain.substituteReq.repository.dto.*;
+import com.project.coalba.global.exception.*;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,19 +23,27 @@ import static java.util.stream.Collectors.groupingBy;
 @RequiredArgsConstructor
 @Service
 public class StaffSubstituteReqService {
-    private final ProfileUtil profileUtil;
-    private final BossProfileService bossProfileService;
-    private final ScheduleService scheduleService;
-    private final SubstituteRepository substituteRepository;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final BossProfileService bossProfileService;
+    private final StaffProfileService staffProfileService;
+    private final ScheduleService scheduleService;
+    private final SubstituteReqRepository substituteReqRepository;
+    private final ProfileUtil profileUtil;
+
+    @Transactional(readOnly = true)
+    public List<Staff> getStaffListPossibleForSubstituteReq(Long scheduleId) {
+        Schedule schedule = scheduleService.getSchedule(scheduleId);
+        return staffProfileService.getStaffListInWorkspaceAndPossibleForDateTimeRange(schedule.getWorkspace().getId(),
+                schedule.getScheduleStartDateTime(), schedule.getScheduleEndDateTime());
+        //대타요청 관련 비즈니스 로직 추가 ex. 위 staffList 중에서 이미 해당 스케줄에 대한 대타요청 받은 staff 제외
+    }
 
     @Transactional
     public void createSubstituteReq(Long scheduleId, Long receiverId, String reqMessage) {
         Schedule schedule = scheduleService.getSchedule(scheduleId);
+        Staff receiver = staffProfileService.getStaff(receiverId);
         Staff sender = profileUtil.getCurrentStaff();
-        Staff receiver = profileUtil.getStaffById(receiverId);
-        Boss boss = bossProfileService.getBossByScheduleId(schedule.getId());
-
+        Boss boss = bossProfileService.getBossWithWorkspace(schedule.getWorkspace().getId());
         SubstituteReq substituteReq = SubstituteReq.builder()
                 .schedule(schedule)
                 .receiver(receiver)
@@ -48,16 +53,15 @@ public class StaffSubstituteReqService {
                 .status(SubstituteReqStatus.WAITING)
                 .build();
 
-        substituteRepository.save(substituteReq);
-
+        substituteReqRepository.save(substituteReq);
         sendSubstituteRequestNotice(substituteReq);
     }
 
     private void sendSubstituteRequestNotice(SubstituteReq substituteReq) {
         String senderName = substituteReq.getSender().getRealName();
         String deviceToken = substituteReq.getReceiver().getDeviceToken();
-
-        firebaseCloudMessageService.sendMessageTo(deviceToken, "대타근무 요청",senderName + "님이 대타를 요청하였어요");
+        
+        firebaseCloudMessageService.sendMessageTo(deviceToken, "대타근무 요청", senderName + "님이 대타를 요청하였습니다.");
     }
 
     @Transactional
@@ -65,29 +69,30 @@ public class StaffSubstituteReqService {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         if (substituteReq.isWaiting()) {
             substituteReq.cancel();
-        }else {
+        } else {
             throw new BusinessException(ErrorCode.ALREADY_PROCESSED_REQ);
         }
     }
 
     @Transactional(readOnly = true)
     public SubstituteReq getSubstituteReqById(Long substituteReqId) {
-        return substituteRepository.findById(substituteReqId)
+        return substituteReqRepository.findById(substituteReqId)
                 .orElseThrow(()-> new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
     public BothSubstituteReqDto getDetailSubstituteReq(Long substituteReqId) {
-        BothSubstituteReqDto substituteReq = substituteRepository.getSubstituteReq(substituteReqId);
+        BothSubstituteReqDto substituteReq = substituteReqRepository.getSubstituteReq(substituteReqId);
         if (substituteReq != null) {
             return substituteReq;
-        } else throw new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND);
+        } 
+        else throw new BusinessException(ErrorCode.SUBSTITUTEREQ_NOT_FOUND);
     }
 
     @Transactional(readOnly = true)
     public List<SentSubstituteReqResponse> getSentSubstituteReqs() {
-        Staff currentStaff = profileUtil.getCurrentStaff();
-        List<SubstituteReqDto> substituteReqDtos = substituteRepository.getSentSubstituteReqs(currentStaff);
+        Long staffId = profileUtil.getCurrentStaff().getId();
+        List<SubstituteReqDto> substituteReqDtos = substituteReqRepository.getSentSubstituteReqs(staffId);
 
         Map<YearMonth, List<SubstituteReqDto>> substituteReqMap = substituteReqDtos.stream()
                 .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));
@@ -103,8 +108,8 @@ public class StaffSubstituteReqService {
 
     @Transactional(readOnly = true)
     public List<ReceivedSubstituteReqResponse> getReceivedSubstituteReqs() {
-        Staff currentStaff = profileUtil.getCurrentStaff();
-        List<SubstituteReqDto> substituteReqDtos = substituteRepository.getReceivedSubstituteReqs(currentStaff);
+        Long staffId = profileUtil.getCurrentStaff().getId();
+        List<SubstituteReqDto> substituteReqDtos = substituteReqRepository.getReceivedSubstituteReqs(staffId);
 
         Map<YearMonth, List<SubstituteReqDto>> substituteReqMap = substituteReqDtos.stream()
                 .collect(groupingBy(SubstituteReqDto -> new YearMonth(SubstituteReqDto.getSubstituteReq().getCreatedDate())));
@@ -135,8 +140,8 @@ public class StaffSubstituteReqService {
         String senderDeviceToken = substituteReq.getSender().getDeviceToken();
         String senderName = substituteReq.getSender().getRealName();
 
-        firebaseCloudMessageService.sendMessageTo(bossDeviceToken, "대타 승인 요청","대타 승인 요청이 도착하였습니다.");
-        firebaseCloudMessageService.sendMessageTo(senderDeviceToken, "대타 요청 수락",senderName + "님이 대타요청을 수락하였습니다. 사장님께 승인요청이 갑니다.");
+        firebaseCloudMessageService.sendMessageTo(bossDeviceToken, "대타 승인 요청", "대타 승인 요청이 도착하였습니다.");
+        firebaseCloudMessageService.sendMessageTo(senderDeviceToken, "대타 요청 수락", senderName + "님이 대타요청을 수락하였습니다. 사장님에게 승인요청이 갑니다.");
     }
 
     @Transactional

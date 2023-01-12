@@ -1,4 +1,4 @@
-package com.project.coalba.domain.profile.repository.custom;
+package com.project.coalba.domain.profile.repository;
 
 import com.project.coalba.domain.profile.entity.Staff;
 import com.querydsl.jpa.JPAExpressions;
@@ -14,7 +14,6 @@ import static com.project.coalba.domain.workspace.entity.QWorkspaceMember.*;
 
 @RequiredArgsConstructor
 public class StaffProfileRepositoryImpl implements StaffProfileRepositoryCustom {
-
     private final JPAQueryFactory queryFactory;
 
     @Override

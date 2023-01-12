@@ -5,7 +5,6 @@ import com.project.coalba.domain.auth.info.impl.GoogleUserInfo;
 import com.project.coalba.domain.auth.info.impl.NaverUserInfo;
 
 public abstract class UserInfoFactory {
-
     public static UserInfo getUserInfo(Provider provider) {
         switch (provider) {
             case GOOGLE: return new GoogleUserInfo();

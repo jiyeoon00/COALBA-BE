@@ -20,11 +20,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class AwsS3Service {
+    private final AmazonS3 amazonS3;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
-
-    private final AmazonS3 amazonS3;
 
     public String uploadImage(MultipartFile file) {
         String fileName = createFileName(file.getOriginalFilename());

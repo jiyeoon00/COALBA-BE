@@ -13,36 +13,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-@Transactional(readOnly = true)
 public class BossProfileService {
-
     private final BossProfileRepository bossProfileRepository;
     private final UserUtil userUtil;
     private final ProfileUtil profileUtil;
 
-    public Boss getMyBossProfile() {
+    @Transactional(readOnly = true)
+    public Boss getMyProfile() {
         return profileUtil.getCurrentBoss();
     }
 
     @Transactional
-    public void saveMyBossProfile(ProfileCreateServiceDto serviceDto) {
+    public void saveMyProfile(ProfileCreateServiceDto serviceDto) {
         User user = userUtil.getCurrentUser();
         bossProfileRepository.save(serviceDto.toBossEntity(user));
     }
 
     @Transactional
-    public void updateMyBossProfile(ProfileUpdateServiceDto serviceDto) {
+    public void updateMyProfile(ProfileUpdateServiceDto serviceDto) {
         Boss boss = profileUtil.getCurrentBoss();
         boss.update(serviceDto.getRealName(), serviceDto.getPhoneNumber(), serviceDto.getBirthDate(), serviceDto.getImageUrl());
     }
 
     @Transactional(readOnly = true)
-    public Boss getBossByScheduleId(Long scheduleId) {
-        Boss boss = bossProfileRepository.findByScheduleId(scheduleId);
-        if(boss == null){
-            throw new RuntimeException("해당 스케줄의 사장님이 존재하지 않습니다.");
-        } else{
-            return boss;
-        }
+    public Boss getBossWithWorkspace(Long workspaceId) {
+        return bossProfileRepository.findByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new RuntimeException("해당 워크스페이스의 사장님이 존재하지 않습니다."));
     }
 }

@@ -8,15 +8,11 @@ import lombok.Getter;
 import java.time.LocalDate;
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class BossWorkspacePageServiceDto {
-
     private Workspace workspace;
-
     private List<BossWorkspaceDateServiceDto> dateList;
-
     private LocalDate selectedDate;
-
     private List<Schedule> selectedScheduleList;
 }

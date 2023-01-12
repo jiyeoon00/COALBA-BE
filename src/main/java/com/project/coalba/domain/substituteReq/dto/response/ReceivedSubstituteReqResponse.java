@@ -19,7 +19,7 @@ public class ReceivedSubstituteReqResponse implements Comparable<ReceivedSubstit
     public ReceivedSubstituteReqResponse(YearMonth yearMonth, List<SubstituteReqDto> substituteReqDtos) {
         year = yearMonth.getYear();
         month = yearMonth.getMonth();
-        substituteReqList = substituteReqDtos.stream().map(substituteReqDto -> new ReceivedDetailSubstituteReqResponse(substituteReqDto)).collect(Collectors.toList());
+        substituteReqList = substituteReqDtos.stream().map(ReceivedDetailSubstituteReqResponse::new).collect(Collectors.toList());
     }
 
     @Override

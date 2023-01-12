@@ -16,25 +16,24 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/staff/profile")
 @RestController
 public class StaffProfileController {
-
     private final StaffProfileService staffProfileService;
     private final ProfileMapper mapper;
 
     @GetMapping
-    public ProfileResponse getMyStaffProfile() {
-        Staff staff = staffProfileService.getMyStaffProfile();
+    public ProfileResponse getMyProfile() {
+        Staff staff = staffProfileService.getMyProfile();
         return mapper.toDto(staff);
     }
 
     @PostMapping
-    public ResponseEntity<Void> saveMyStaffProfile(@Validated @RequestBody ProfileCreateRequest profileCreateRequest) {
-        staffProfileService.saveMyStaffProfile(mapper.toServiceDto(profileCreateRequest));
+    public ResponseEntity<Void> saveMyProfile(@Validated @RequestBody ProfileCreateRequest profileCreateRequest) {
+        staffProfileService.saveMyProfile(mapper.toServiceDto(profileCreateRequest));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateMyStaffProfile(@Validated @RequestBody ProfileUpdateRequest profileUpdateRequest) {
-        staffProfileService.updateMyStaffProfile(mapper.toServiceDto(profileUpdateRequest));
+    public ResponseEntity<Void> updateMyProfile(@Validated @RequestBody ProfileUpdateRequest profileUpdateRequest) {
+        staffProfileService.updateMyProfile(mapper.toServiceDto(profileUpdateRequest));
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

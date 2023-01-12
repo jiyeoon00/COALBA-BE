@@ -11,9 +11,7 @@ import java.util.List;
 
 @Getter
 public class StaffHomeScheduleListResponse {
-
     private DateResponse selectedDate;
-
     private List<ScheduleResponse> selectedScheduleList;
 
     public StaffHomeScheduleListResponse(LocalDate date, List<ScheduleResponse> selectedScheduleList) {
@@ -21,10 +19,9 @@ public class StaffHomeScheduleListResponse {
         this.selectedScheduleList = selectedScheduleList;
     }
 
-    @AllArgsConstructor
     @Getter
+    @AllArgsConstructor
     public static class ScheduleResponse {
-
         private Long scheduleId;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
@@ -40,15 +37,12 @@ public class StaffHomeScheduleListResponse {
         private LocalTime logicalEndTime;
 
         private ScheduleStatus status;
-
         private WorkspaceResponse workspace;
 
-        @AllArgsConstructor
         @Getter
+        @AllArgsConstructor
         public static class WorkspaceResponse {
-
             private Long workspaceId;
-
             private String name;
         }
     }

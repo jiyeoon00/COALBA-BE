@@ -6,11 +6,9 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class BossWorkspaceDateServiceDto {
-
     private LocalDate date;
-
     private TotalScheduleStatus totalScheduleStatus;
 }

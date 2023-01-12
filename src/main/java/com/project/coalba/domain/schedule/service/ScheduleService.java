@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Service
 public class ScheduleService {
-
     private final ScheduleRepository scheduleRepository;
 
     @Transactional(readOnly = true)

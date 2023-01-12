@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/userinfo")
 @RestController
 public class UserController {
-
     private final UserRepository userRepository;
 
     //token 발급 후 테스트용 API (나중에 삭제할 예정)

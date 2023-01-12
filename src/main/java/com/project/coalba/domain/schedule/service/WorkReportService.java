@@ -19,8 +19,7 @@ import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
 
 @RequiredArgsConstructor
 @Service
-public class ScheduleReportService {
-
+public class WorkReportService {
     private final StaffProfileService staffProfileService;
     private final ScheduleRepository scheduleRepository;
     private final ProfileUtil profileUtil;

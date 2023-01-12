@@ -23,15 +23,14 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class AuthTokenManager {
+    private final UserRepository userRepository;
+    private final Key key;
 
     @Value("${app.auth.accessTokenExpiry}")
     private Long accessTokenExpiry;
 
     @Value("${app.auth.refreshTokenExpiry}")
     private Long refreshTokenExpiry;
-
-    private final Key key;
-    private final UserRepository userRepository;
 
     private static final String USER_ID_KEY = "userId";
 

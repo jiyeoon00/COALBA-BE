@@ -8,9 +8,9 @@ import lombok.*;
 
 @Data
 public class BothSubstituteReqDto {
-    SubstituteReq substituteReq;
-    Workspace workspace;
-    Staff receiver;
-    Staff sender;
-    Schedule schedule;
+    private SubstituteReq substituteReq;
+    private Workspace workspace;
+    private Staff receiver;
+    private Staff sender;
+    private Schedule schedule;
 }

@@ -8,18 +8,15 @@ import lombok.Getter;
 import java.time.LocalTime;
 import java.util.List;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class BossWorkspaceScheduleListResponse {
-
     private int selectedDay;
-
     private List<ScheduleResponse> selectedScheduleList;
 
-    @AllArgsConstructor
     @Getter
+    @AllArgsConstructor
     public static class ScheduleResponse {
-
         private Long scheduleId;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
@@ -29,15 +26,12 @@ public class BossWorkspaceScheduleListResponse {
         private LocalTime scheduleEndTime;
 
         private ScheduleStatus status;
-
         private WorkerResponse worker;
 
-        @AllArgsConstructor
         @Getter
+        @AllArgsConstructor
         public static class WorkerResponse {
-
             private Long workerId;
-
             private String name;
         }
     }

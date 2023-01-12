@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Role {
-
     STAFF("ROLE_STAFF", "알바"), BOSS("ROLE_BOSS", "사장");
 
     private final String code;

@@ -16,25 +16,24 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/boss/profile")
 @RestController
 public class BossProfileController {
-
     private final BossProfileService bossProfileService;
     private final ProfileMapper mapper;
 
     @GetMapping
-    public ProfileResponse getMyBossProfile() {
-        Boss boss = bossProfileService.getMyBossProfile();
+    public ProfileResponse getMyProfile() {
+        Boss boss = bossProfileService.getMyProfile();
         return mapper.toDto(boss);
     }
 
     @PostMapping
-    public ResponseEntity<Void> saveMyBossProfile(@Validated @RequestBody ProfileCreateRequest profileCreateRequest) {
-        bossProfileService.saveMyBossProfile(mapper.toServiceDto(profileCreateRequest));
+    public ResponseEntity<Void> saveMyProfile(@Validated @RequestBody ProfileCreateRequest profileCreateRequest) {
+        bossProfileService.saveMyProfile(mapper.toServiceDto(profileCreateRequest));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping
-    public ResponseEntity<Void> updateMyBossProfile(@Validated @RequestBody ProfileUpdateRequest profileUpdateRequest) {
-        bossProfileService.updateMyBossProfile(mapper.toServiceDto(profileUpdateRequest));
+    public ResponseEntity<Void> updateMyProfile(@Validated @RequestBody ProfileUpdateRequest profileUpdateRequest) {
+        bossProfileService.updateMyProfile(mapper.toServiceDto(profileUpdateRequest));
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

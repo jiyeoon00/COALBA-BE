@@ -1,4 +1,4 @@
-package com.project.coalba.domain.workspace.repository.custom;
+package com.project.coalba.domain.workspace.repository;
 
 import com.project.coalba.domain.workspace.entity.Workspace;
 import com.querydsl.jpa.JPAExpressions;
@@ -12,7 +12,6 @@ import static com.project.coalba.domain.workspace.entity.QWorkspaceMember.*;
 
 @RequiredArgsConstructor
 public class WorkspaceRepositoryImpl implements WorkspaceRepositoryCustom {
-
     private final JPAQueryFactory queryFactory;
 
     @Override

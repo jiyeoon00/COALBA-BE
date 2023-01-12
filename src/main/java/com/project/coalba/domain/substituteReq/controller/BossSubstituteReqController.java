@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/boss/substituteReqs")
 @RequiredArgsConstructor
+@RequestMapping("/boss/substituteReqs")
 @RestController
 public class BossSubstituteReqController {
     private final BossSubstituteReqService bossSubstituteReqService;

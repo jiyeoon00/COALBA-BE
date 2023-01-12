@@ -17,7 +17,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Constraint(validatedBy = ValidScheduleDateTime.ScheduleDateTimeValidator.class)
 public @interface ValidScheduleDateTime {
-
     String message() default "스케줄 시작 날짜 시간은 스케줄 종료 날짜 시간보다 앞서야 합니다.";
 
     Class<?>[] groups() default { };

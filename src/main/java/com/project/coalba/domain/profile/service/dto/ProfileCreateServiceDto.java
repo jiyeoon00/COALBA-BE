@@ -8,16 +8,12 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class ProfileCreateServiceDto {
-
     private String realName;
-
     private String phoneNumber;
-
     private LocalDate birthDate;
-
     private String imageUrl;
 
     public Boss toBossEntity(User user) {

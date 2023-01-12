@@ -6,28 +6,20 @@ import lombok.Getter;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Getter @Builder
+@AllArgsConstructor
 public class BossWorkspacePageResponse {
-
     private WorkspaceResponse selectedWorkspace;
-
     private int year;
-
     private int month;
-
     private List<BossWorkspaceDateResponse> dateList;
-
     private BossWorkspaceScheduleListResponse selectedScheduleListOfDay;
 
-    @AllArgsConstructor
     @Getter
+    @AllArgsConstructor
     public static class WorkspaceResponse {
-
         private Long workspaceId;
-
         private String name;
-
         private String imageUrl;
     }
 }

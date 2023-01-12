@@ -1,7 +1,6 @@
 package com.project.coalba.domain.profile.repository;
 
 import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.profile.repository.custom.StaffProfileRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
