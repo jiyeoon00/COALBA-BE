@@ -58,7 +58,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                 .join(schedule.staff).fetchJoin()
                 .where(schedule.workspace.id.eq(workspaceId),
                         schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
-                .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc())
+                .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc(), schedule.staff.realName.asc(), schedule.staff.id.asc())
                 .fetch();
     }
 

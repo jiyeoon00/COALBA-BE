@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface WorkspaceMemberRepository extends JpaRepository<WorkspaceMember, Long> {
 
-    @Query("select wm from WorkspaceMember wm join fetch wm.staff where wm.workspace.id = :workspaceId")
+    @Query("select wm from WorkspaceMember wm join fetch wm.staff where wm.workspace.id = :workspaceId order by wm.staff.realName asc, wm.staff.id asc")
     List<WorkspaceMember> findAllByWorkspaceIdFetch(@Param(("workspaceId")) Long workspaceId);
 }

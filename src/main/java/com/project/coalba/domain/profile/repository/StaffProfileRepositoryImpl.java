@@ -37,6 +37,7 @@ public class StaffProfileRepositoryImpl implements StaffProfileRepositoryCustom 
                                 )
                                 .notExists()
                 )
+                .orderBy(staff.realName.asc(), staff.id.asc())
                 .fetch();
     }
 }
