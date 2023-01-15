@@ -26,6 +26,11 @@ public class BossWorkspaceController {
         return mapper.toDto(bossWorkspaceService::getMyWorkspaceList);
     }
 
+    @GetMapping("/brief")
+    public WorkspaceBriefListResponse getMyWorkspaceBriefList() {
+        return mapper.toBriefDto(bossWorkspaceService::getMyWorkspaceList);
+    }
+
     @GetMapping("/{workspaceId}")
     public WorkspaceOneResponse getWorkspace(@PathVariable Long workspaceId) {
         return mapper.toDto(bossWorkspaceService.getWorkspace(workspaceId));
