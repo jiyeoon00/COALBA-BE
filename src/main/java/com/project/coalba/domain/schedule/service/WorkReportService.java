@@ -45,12 +45,24 @@ public class WorkReportService {
         Map<Integer, List<Schedule>> monthlyScheduleList = getMyMonthlyScheduleListForYear(year);
         Map<Integer, WorkReportServiceDto> monthlyWorkReport = new HashMap<>();
 
-        for (int month = JANUARY.getValue(); month <= DECEMBER.getValue(); month++) {
+        for (int month = getStartMonth(year); month <= getEndMonth(year); month++) {
             List<Schedule> scheduleList = monthlyScheduleList.get(month);
             WorkReportServiceDto workReportServiceDto = getWorkReportServiceDto(scheduleList);
             monthlyWorkReport.put(month, workReportServiceDto);
         }
         return monthlyWorkReport;
+    }
+
+    private int getStartMonth(int year) {
+        LocalDateTime registrationDate = profileUtil.getCurrentStaff().getCreatedDate();
+        if (registrationDate.getYear() == year) return registrationDate.getMonthValue();
+        return JANUARY.getValue();
+    }
+
+    private int getEndMonth(int year) {
+        YearMonth now = YearMonth.now();
+        if (now.getYear() == year) return now.getMonthValue();
+        return DECEMBER.getValue();
     }
 
     @Transactional(readOnly = true)
