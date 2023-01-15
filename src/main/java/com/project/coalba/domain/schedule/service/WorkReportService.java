@@ -139,6 +139,6 @@ public class WorkReportService {
     private Long calculateWorkPay(LocalDateTime startDateTime, LocalDateTime endDateTime, Integer hourlyWage) {
         Long workTimeMin = calculateWorkTimeMin(startDateTime, endDateTime);
         double workTimeHour = (double) workTimeMin / MINUTES_PER_HOUR ;
-        return (long) workTimeHour * hourlyWage;
+        return (long) (workTimeHour * hourlyWage);
     }
 }
