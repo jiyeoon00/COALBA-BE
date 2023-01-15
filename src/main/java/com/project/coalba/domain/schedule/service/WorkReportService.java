@@ -28,6 +28,19 @@ public class WorkReportService {
     private final ProfileUtil profileUtil;
 
     @Transactional(readOnly = true)
+    public List<Year> getStaffWorkReportDateList() {
+        Staff staff = profileUtil.getCurrentStaff();
+        Year startYear = Year.from(staff.getCreatedDate()), now = Year.now();
+        List<Year> yearList = new ArrayList<>();
+
+        while (!startYear.isAfter(now)) {
+            yearList.add(startYear);
+            startYear = startYear.plusYears(1);
+        }
+        return yearList;
+    }
+
+    @Transactional(readOnly = true)
     public Map<Integer, WorkReportServiceDto> getStaffWorkReportList(int year) {
         Map<Integer, List<Schedule>> monthlyScheduleList = getMyMonthlyScheduleListForYear(year);
         Map<Integer, WorkReportServiceDto> monthlyWorkReport = new HashMap<>();
