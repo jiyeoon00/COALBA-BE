@@ -5,6 +5,8 @@ import com.project.coalba.domain.profile.service.StaffProfileService;
 import com.project.coalba.domain.schedule.service.dto.WorkReportServiceDto;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.repository.ScheduleRepository;
+import com.project.coalba.domain.workspace.entity.Workspace;
+import com.project.coalba.domain.workspace.service.BossWorkspaceService;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
 @RequiredArgsConstructor
 @Service
 public class WorkReportService {
+    private final BossWorkspaceService bossWorkspaceService;
     private final StaffProfileService staffProfileService;
     private final ScheduleRepository scheduleRepository;
     private final ProfileUtil profileUtil;
@@ -35,6 +38,19 @@ public class WorkReportService {
             monthlyWorkReport.put(month, workReportServiceDto);
         }
         return monthlyWorkReport;
+    }
+
+    @Transactional(readOnly = true)
+    public List<YearMonth> getBossWorkReportDateList(Long workspaceId) {
+        Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
+        YearMonth startYearMonth = YearMonth.from(workspace.getCreatedDate()), now = YearMonth.now();
+        List<YearMonth> yearMonthList = new ArrayList<>();
+
+        while (!startYearMonth.isAfter(now)) {
+            yearMonthList.add(startYearMonth);
+            startYearMonth = startYearMonth.plusMonths(1);
+        }
+        return yearMonthList;
     }
 
     @Transactional(readOnly = true)
