@@ -109,6 +109,8 @@ public class AuthTokenManager {
             log.error("Unsupported JWT token.");
         } catch (IllegalArgumentException e) {
             log.error("JWT token compact of handler are invalid");
+        } catch (JwtException e) {
+            log.error(e.getMessage());
         }
         return null;
     }
@@ -131,6 +133,8 @@ public class AuthTokenManager {
             log.error("Unsupported JWT token.");
         } catch (IllegalArgumentException e) {
             log.error("JWT token compact of handler are invalid");
+        } catch (JwtException e) {
+            log.error(e.getMessage());
         }
         return null;
     }
