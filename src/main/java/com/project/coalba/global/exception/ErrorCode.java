@@ -21,6 +21,11 @@ public enum ErrorCode {
     STAFF_PROFILE_NOT_FOUND_BY_EMAIL(NOT_FOUND, "해당 이메일을 가진 알바생이 없습니다."),
     BOSS_PROFILE_NOT_FOUND_BY_WORKSPACE(NOT_FOUND, "해당 워크스페이스의 사장님이 없습니다."),
 
+    //workspace
+    WORKSPACE_NOT_FOUND(NOT_FOUND, "해당 워크스페이스가 없습니다."),
+    ALREADY_EXIST_WORKSPACE(BAD_REQUEST, "해당 사업자 번호의 워크스페이스가 이미 존재합니다."),
+    ALREADY_EXIST_STAFF_IN_WORKSPACE(BAD_REQUEST, "해당 알바는 이미 해당 워크스페이스의 멤버입니다."),
+
     // NOT_FOUND : Resource를 찾을 수 없음
     SUBSTITUTEREQ_NOT_FOUND(NOT_FOUND, "해당 대타근무 요청건을 찾을 수 없습니다."),
 
