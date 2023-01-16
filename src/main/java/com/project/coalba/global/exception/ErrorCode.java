@@ -26,6 +26,14 @@ public enum ErrorCode {
     ALREADY_EXIST_WORKSPACE(BAD_REQUEST, "해당 사업자 번호의 워크스페이스가 이미 존재합니다."),
     ALREADY_EXIST_STAFF_IN_WORKSPACE(BAD_REQUEST, "해당 알바는 이미 해당 워크스페이스의 멤버입니다."),
 
+    //schedule
+    SCHEDULE_NOT_FOUND(NOT_FOUND, "해당 스케줄이 없습니다."),
+    INVALID_SCHEDULE_WORKER(BAD_REQUEST, "해당 알바는 해당 스케줄 시간에 근무 불가합니다. 다른 알바를 선택합니다."),
+    INVALID_SCHEDULE_CANCEL(BAD_REQUEST, "스케줄 시작 전인 경우에만 취소 가능합니다."),
+    EARLY_SCHEDULE_START(BAD_REQUEST, "해당 스케줄 시작 10분 전부터 출근 가능합니다."),
+    LATE_SCHEDULE_START(BAD_REQUEST, "해당 스케줄이 종료되어 출근 불가합니다."),
+    INVALID_SCHEDULE_END(BAD_REQUEST, "출근 상태일 때에만 퇴근 가능합니다."),
+
     // NOT_FOUND : Resource를 찾을 수 없음
     SUBSTITUTEREQ_NOT_FOUND(NOT_FOUND, "해당 대타근무 요청건을 찾을 수 없습니다."),
 

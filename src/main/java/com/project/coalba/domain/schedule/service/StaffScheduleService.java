@@ -7,6 +7,7 @@ import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
 import com.project.coalba.domain.schedule.repository.ScheduleRepository;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.domain.workspace.service.BossWorkspaceService;
+import com.project.coalba.global.exception.*;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -108,7 +109,7 @@ public class StaffScheduleService {
     @Transactional(readOnly = true)
     public Schedule getScheduleBrief(Long scheduleId) {
         return scheduleRepository.findByIdFetch(scheduleId)
-                .orElseThrow(() -> new RuntimeException("해당 스케줄이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.SCHEDULE_NOT_FOUND));
     }
 
     @Transactional
@@ -129,15 +130,15 @@ public class StaffScheduleService {
 
     private Schedule getSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new RuntimeException("해당 스케줄이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.SCHEDULE_NOT_FOUND));
     }
 
     private void validateCurrentDateTime(LocalDateTime currentDateTime, LocalDateTime scheduleStartCriteriaDateTime, LocalDateTime scheduleEndDateTime) {
         if (currentDateTime.isBefore(scheduleStartCriteriaDateTime)) {
-            throw new RuntimeException("해당 스케줄 시작 10분 전부터 출근 가능합니다.");
+            throw new BusinessException(ErrorCode.EARLY_SCHEDULE_START);
         }
         if (currentDateTime.isAfter(scheduleEndDateTime)) {
-            throw new RuntimeException("해당 스케줄이 종료되어 출근 불가합니다.");
+            throw new BusinessException(ErrorCode.LATE_SCHEDULE_START);
         }
     }
 
@@ -155,7 +156,7 @@ public class StaffScheduleService {
 
     private void validateScheduleStatus(ScheduleStatus status) {
         if (status != ScheduleStatus.ON_DUTY && status != ScheduleStatus.LATE) {
-            throw new RuntimeException("출근 상태일 때에만 퇴근 가능합니다.");
+            throw new BusinessException(ErrorCode.INVALID_SCHEDULE_END);
         }
     }
 
