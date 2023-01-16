@@ -3,10 +3,9 @@ package com.project.coalba.domain.profile.service;
 import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.repository.StaffProfileRepository;
-import com.project.coalba.domain.profile.service.dto.ProfileCreateServiceDto;
-import com.project.coalba.domain.profile.service.dto.ProfileUpdateServiceDto;
-import com.project.coalba.global.utils.ProfileUtil;
-import com.project.coalba.global.utils.UserUtil;
+import com.project.coalba.domain.profile.service.dto.*;
+import com.project.coalba.global.exception.*;
+import com.project.coalba.global.utils.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,13 +40,13 @@ public class StaffProfileService {
     @Transactional(readOnly = true)
     public Staff getStaff(Long staffId) {
         return staffProfileRepository.findById(staffId)
-                .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.STAFF_PROFILE_NOT_FOUND_BY_ID));
     }
 
     @Transactional(readOnly = true)
     public Staff getStaffWithEmail(String email){
         return staffProfileRepository.findByUserEmail(email)
-                .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.STAFF_PROFILE_NOT_FOUND_BY_EMAIL));
     }
 
     @Transactional(readOnly = true)
