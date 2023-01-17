@@ -1,12 +1,10 @@
 package com.project.coalba.global.exception;
 
-import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
 
-@Builder
 @Getter
 public class ErrorResponse {
     private final LocalDateTime timestamp = LocalDateTime.now();
@@ -15,14 +13,16 @@ public class ErrorResponse {
     private final String code;
     private final String message;
 
-    public static ResponseEntity<ErrorResponse> toResponse(ErrorCode errorCode) {
+    public ErrorResponse(ErrorCode errorCode) {
+        status = errorCode.getHttpStatus().value();
+        error = errorCode.getHttpStatus().name();
+        code = errorCode.name();
+        message = errorCode.getMessage();
+    }
+
+    public static ResponseEntity<ErrorResponse> toResponseEntity(ErrorCode errorCode) {
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
-                .body(ErrorResponse.builder()
-                        .status(errorCode.getHttpStatus().value())
-                        .error(errorCode.getHttpStatus().name())
-                        .code(errorCode.name())
-                        .message(errorCode.getDetail())
-                        .build());
+                .body(new ErrorResponse(errorCode));
     }
 }
