@@ -15,7 +15,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Schedule> findAllByStaffIdAndDateTimeRangeAndEndStatus(Long staffId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+    public List<Schedule> findAllByStaffIdAndDateRangeAndEndStatus(Long staffId, LocalDate fromDate, LocalDate toDate) {
+        LocalDateTime fromDateTime = getStartTimeOf(fromDate), toDateTime = getEndTimeOf(toDate);
         return queryFactory.selectFrom(schedule)
                 .where(schedule.staff.id.eq(staffId),
                         schedule.scheduleStartDateTime.between(fromDateTime, toDateTime),
@@ -28,7 +29,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     }
 
     @Override
-    public List<Schedule> findAllByWorkspaceIdAndDateTimeRangeAndEndStatus(Long workspaceId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+    public List<Schedule> findAllByWorkspaceIdAndDateRangeAndEndStatus(Long workspaceId, LocalDate fromDate, LocalDate toDate) {
+        LocalDateTime fromDateTime = getStartTimeOf(fromDate), toDateTime = getEndTimeOf(toDate);
         return queryFactory.selectFrom(schedule)
                 .where(schedule.workspace.id.eq(workspaceId),
                         schedule.scheduleStartDateTime.between(fromDateTime, toDateTime),

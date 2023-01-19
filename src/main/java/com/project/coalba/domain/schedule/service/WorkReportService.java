@@ -94,19 +94,19 @@ public class WorkReportService {
 
     private Map<Integer, List<Schedule>> getMyMonthlyScheduleListForYear(int year) {
         Long staffId = profileUtil.getCurrentStaff().getId();
-        LocalDateTime yearStart = LocalDate.of(year, JANUARY.getValue(), 1).atTime(LocalTime.MIN);
-        LocalDateTime yearEnd = YearMonth.of(year, DECEMBER.getValue()).atEndOfMonth().atTime(LocalTime.MAX);
+        LocalDate yearStart = LocalDate.of(year, JANUARY.getValue(), 1);
+        LocalDate yearEnd = YearMonth.of(year, DECEMBER.getValue()).atEndOfMonth();
 
-        List<Schedule> MyScheduleList = scheduleRepository.findAllByStaffIdAndDateTimeRangeAndEndStatus(staffId, yearStart, yearEnd);
+        List<Schedule> MyScheduleList = scheduleRepository.findAllByStaffIdAndDateRangeAndEndStatus(staffId, yearStart, yearEnd);
         return MyScheduleList.stream()
                 .collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().getMonthValue()));
     }
 
     private Map<Long, List<Schedule>> getWorkspaceScheduleListByStaffForYearAndMonth(Long workspaceId, int year, int month) {
-        LocalDateTime monthStart = LocalDate.of(year, month, 1).atTime(LocalTime.MIN);
-        LocalDateTime monthEnd = YearMonth.of(year, month).atEndOfMonth().atTime(LocalTime.MAX);
+        LocalDate monthStart = LocalDate.of(year, month, 1);
+        LocalDate monthEnd = YearMonth.of(year, month).atEndOfMonth();
 
-        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateTimeRangeAndEndStatus(workspaceId, monthStart, monthEnd);
+        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateRangeAndEndStatus(workspaceId, monthStart, monthEnd);
         return workspaceScheduleList.stream()
                 .collect(groupingBy(schedule -> schedule.getStaff().getId()));
     }
