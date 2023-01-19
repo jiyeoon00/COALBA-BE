@@ -25,6 +25,7 @@ public class BossScheduleService {
     private final BossWorkspaceService bossWorkspaceService;
     private final StaffProfileService staffProfileService;
     private final ScheduleRepository scheduleRepository;
+    private final ScheduleValidator scheduleValidator;
 
     @Transactional(readOnly = true)
     public BossHomePageServiceDto getHomePage() {
@@ -97,9 +98,10 @@ public class BossScheduleService {
         return staffProfileService.getStaffListInWorkspaceAndPossibleForDateTimeRange(workspaceId, fromDateTime, toDateTime);
     }
 
-    //TODO: INVALID_SCHEDULE_WORKER 예외 처리
     @Transactional
     public void save(ScheduleCreateServiceDto serviceDto) {
+        scheduleValidator.validate(serviceDto); //schedule 생성 요청 검증
+
         Workspace workspace = bossWorkspaceService.getWorkspace(serviceDto.getWorkspaceId());
         Staff staff = staffProfileService.getStaff(serviceDto.getStaffId());
         Schedule schedule = serviceDto.toEntity(workspace, staff);
