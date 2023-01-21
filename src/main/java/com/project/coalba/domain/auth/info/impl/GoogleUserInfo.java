@@ -30,7 +30,7 @@ public class GoogleUserInfo implements UserInfo {
 
     private GoogleUserInfoDto getGoogleUserInfoDto(String token) {
         try {
-            String reqURL = "https://oauth2.googleapis.com/tokeninfo?id_token=" + token;
+            String reqURL = "https://www.googleapis.com/oauth2/v3/userinfo?access_token=" + token;
             URL url = new URL(reqURL);
             return mapper.readValue(url, GoogleUserInfoDto.class);
         } catch (IOException e) {
