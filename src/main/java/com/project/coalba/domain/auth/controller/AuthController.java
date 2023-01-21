@@ -5,6 +5,7 @@ import com.project.coalba.domain.auth.dto.response.*;
 import com.project.coalba.domain.auth.entity.enums.*;
 import com.project.coalba.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -14,8 +15,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestParam Provider provider, @RequestParam String token, @RequestParam Role role) {
-        return authService.login(provider, token, role);
+    public AuthResponse login(@RequestParam Provider provider, @RequestParam Role role, @Validated @RequestBody AuthRequest authRequest) {
+        return authService.login(provider, authRequest.getAccessToken(), authRequest.getRefreshToken(), role);
     }
 
     @PostMapping("/refresh")
