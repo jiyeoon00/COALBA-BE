@@ -1,7 +1,6 @@
 package com.project.coalba.domain.auth.entity;
 
-import com.project.coalba.domain.auth.entity.enums.Provider;
-import com.project.coalba.domain.auth.entity.enums.Role;
+import com.project.coalba.domain.auth.entity.enums.*;
 import com.project.coalba.global.audit.BaseTimeEntity;
 import lombok.*;
 
@@ -37,11 +36,24 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String providerId;
 
+    @Column(nullable = false)
+    private String accessToken;
+
+    private String refreshToken;
+
     public User updateSocialInfo(User user) {
         this.email = user.getEmail();
         this.name = user.getName();
         this.imageUrl = user.getImageUrl();
         this.providerId = user.getProviderId();
         return this;
+    }
+
+    public void updateSocialToken(String accessToken, String refreshToken) {
+        //TODO: 각 토큰 모두 암호화하여 저장
+        this.accessToken = accessToken;
+        if (refreshToken != null) {
+            this.refreshToken = refreshToken;
+        }
     }
 }
