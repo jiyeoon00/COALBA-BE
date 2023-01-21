@@ -1,9 +1,8 @@
 package com.project.coalba.global.utils;
 
-import com.project.coalba.domain.profile.entity.Boss;
-import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.profile.repository.BossProfileRepository;
-import com.project.coalba.domain.profile.repository.StaffProfileRepository;
+import com.project.coalba.domain.profile.entity.*;
+import com.project.coalba.domain.profile.repository.*;
+import com.project.coalba.global.exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,11 +14,11 @@ public class ProfileUtil {
 
     public Staff getCurrentStaff() {
         return staffProfileRepository.findByUserId(SecurityUtil.getCurrentUserId())
-                .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.PROFILE_NOT_FOUND));
     }
 
     public Boss getCurrentBoss() {
         return bossProfileRepository.findByUserId(SecurityUtil.getCurrentUserId())
-                .orElseThrow(() -> new RuntimeException("해당 이용자의 프로필이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.PROFILE_NOT_FOUND));
     }
 }

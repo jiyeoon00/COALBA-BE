@@ -2,13 +2,13 @@ package com.project.coalba.domain.schedule.service;
 
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.service.StaffProfileService;
-import com.project.coalba.domain.schedule.entity.enums.TotalScheduleStatus;
-import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
+import com.project.coalba.domain.schedule.entity.enums.*;
 import com.project.coalba.domain.schedule.service.dto.*;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.repository.ScheduleRepository;
 import com.project.coalba.domain.workspace.entity.Workspace;
 import com.project.coalba.domain.workspace.service.BossWorkspaceService;
+import com.project.coalba.global.exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +25,7 @@ public class BossScheduleService {
     private final BossWorkspaceService bossWorkspaceService;
     private final StaffProfileService staffProfileService;
     private final ScheduleRepository scheduleRepository;
+    private final ScheduleValidator scheduleValidator;
 
     @Transactional(readOnly = true)
     public BossHomePageServiceDto getHomePage() {
@@ -99,6 +100,8 @@ public class BossScheduleService {
 
     @Transactional
     public void save(ScheduleCreateServiceDto serviceDto) {
+        scheduleValidator.validate(serviceDto); //schedule 생성 요청 검증
+
         Workspace workspace = bossWorkspaceService.getWorkspace(serviceDto.getWorkspaceId());
         Staff staff = staffProfileService.getStaff(serviceDto.getStaffId());
         Schedule schedule = serviceDto.toEntity(workspace, staff);
@@ -107,6 +110,9 @@ public class BossScheduleService {
 
     @Transactional
     public void cancel(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.SCHEDULE_NOT_FOUND));
+        if (schedule.getStatus() != ScheduleStatus.BEFORE_WORK) throw new BusinessException(ErrorCode.INVALID_SCHEDULE_CANCEL);
         scheduleRepository.deleteById(scheduleId);
     }
 }

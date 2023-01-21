@@ -25,6 +25,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepositoryCustom {
                                 .where(workspaceMember.staff.id.eq(staffId))
                         )
                 )
+                .orderBy(workspace.name.asc(), workspace.id.asc())
                 .fetch();
     }
 
@@ -33,6 +34,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepositoryCustom {
         return queryFactory
                 .selectFrom(workspace)
                 .where(workspace.boss.id.eq(bossId))
+                .orderBy(workspace.name.asc(), workspace.id.asc())
                 .fetch();
     }
 }

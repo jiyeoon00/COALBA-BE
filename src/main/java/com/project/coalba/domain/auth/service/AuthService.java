@@ -6,6 +6,7 @@ import com.project.coalba.domain.auth.entity.enums.*;
 import com.project.coalba.domain.auth.info.*;
 import com.project.coalba.domain.auth.repository.*;
 import com.project.coalba.domain.auth.token.AuthTokenManager;
+import com.project.coalba.global.exception.*;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,18 +38,18 @@ public class AuthService {
     @Transactional
     public TokenResponse reissue(String accessToken, String refreshToken) {
         Claims claims = tokenManager.getExpiredTokenClaims(accessToken);
-        if (claims == null) throw new RuntimeException("");
+        if (claims == null) throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
         String providerId = claims.getSubject();
         Long userId = claims.get(USER_ID_KEY, Long.class);
 
-        UserRefreshToken userRefreshToken = getUserRefreshToken(userId).orElseThrow(() -> new RuntimeException(""));
+        UserRefreshToken userRefreshToken = getUserRefreshToken(userId).orElseThrow(() -> new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
         if (isValidRefreshToken(refreshToken, userRefreshToken.getToken())) {
             String newAccessToken = tokenManager.createAccessToken(providerId, userId);
             String newRefreshToken = tokenManager.createRefreshToken();
             userRefreshToken.updateToken(newRefreshToken);
             return new TokenResponse(newAccessToken, newRefreshToken);
         }
-        throw new RuntimeException("");
+        throw new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
     }
 
     private User getSocialUser(Provider provider, String token, Role role) {

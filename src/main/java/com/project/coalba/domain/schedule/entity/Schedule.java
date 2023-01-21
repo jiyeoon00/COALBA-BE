@@ -95,6 +95,6 @@ public class Schedule extends BaseTimeEntity {
     private LocalDateTime convertToLogicalDateTime(LocalDateTime physicalDateTime) {
         int physicalMinute = physicalDateTime.getMinute();
         int logicalMinute = physicalMinute - (physicalMinute % 10);
-        return physicalDateTime.withMinute(logicalMinute);
+        return physicalDateTime.toLocalDate().atTime(physicalDateTime.getHour(), logicalMinute);
     }
 }

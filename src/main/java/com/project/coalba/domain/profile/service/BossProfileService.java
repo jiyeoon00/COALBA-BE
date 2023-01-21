@@ -3,10 +3,9 @@ package com.project.coalba.domain.profile.service;
 import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.profile.entity.Boss;
 import com.project.coalba.domain.profile.repository.BossProfileRepository;
-import com.project.coalba.domain.profile.service.dto.ProfileCreateServiceDto;
-import com.project.coalba.domain.profile.service.dto.ProfileUpdateServiceDto;
-import com.project.coalba.global.utils.ProfileUtil;
-import com.project.coalba.global.utils.UserUtil;
+import com.project.coalba.domain.profile.service.dto.*;
+import com.project.coalba.global.exception.*;
+import com.project.coalba.global.utils.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +37,6 @@ public class BossProfileService {
     @Transactional(readOnly = true)
     public Boss getBossWithWorkspace(Long workspaceId) {
         return bossProfileRepository.findByWorkspaceId(workspaceId)
-                .orElseThrow(() -> new RuntimeException("해당 워크스페이스의 사장님이 존재하지 않습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.BOSS_PROFILE_NOT_FOUND_BY_WORKSPACE));
     }
 }

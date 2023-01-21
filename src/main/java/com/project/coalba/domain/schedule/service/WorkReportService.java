@@ -5,6 +5,8 @@ import com.project.coalba.domain.profile.service.StaffProfileService;
 import com.project.coalba.domain.schedule.service.dto.WorkReportServiceDto;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.repository.ScheduleRepository;
+import com.project.coalba.domain.workspace.entity.Workspace;
+import com.project.coalba.domain.workspace.service.BossWorkspaceService;
 import com.project.coalba.global.utils.ProfileUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,21 +22,60 @@ import static org.joda.time.DateTimeConstants.MINUTES_PER_HOUR;
 @RequiredArgsConstructor
 @Service
 public class WorkReportService {
+    private final BossWorkspaceService bossWorkspaceService;
     private final StaffProfileService staffProfileService;
     private final ScheduleRepository scheduleRepository;
     private final ProfileUtil profileUtil;
+
+    @Transactional(readOnly = true)
+    public List<Year> getStaffWorkReportDateList() {
+        Staff staff = profileUtil.getCurrentStaff();
+        Year startYear = Year.from(staff.getCreatedDate()), now = Year.now();
+        List<Year> yearList = new ArrayList<>();
+
+        while (!startYear.isAfter(now)) {
+            yearList.add(startYear);
+            startYear = startYear.plusYears(1);
+        }
+        return yearList;
+    }
 
     @Transactional(readOnly = true)
     public Map<Integer, WorkReportServiceDto> getStaffWorkReportList(int year) {
         Map<Integer, List<Schedule>> monthlyScheduleList = getMyMonthlyScheduleListForYear(year);
         Map<Integer, WorkReportServiceDto> monthlyWorkReport = new HashMap<>();
 
-        for (int month = JANUARY.getValue(); month <= DECEMBER.getValue(); month++) {
+        for (int month = getStartMonth(year); month <= getEndMonth(year); month++) {
             List<Schedule> scheduleList = monthlyScheduleList.get(month);
             WorkReportServiceDto workReportServiceDto = getWorkReportServiceDto(scheduleList);
             monthlyWorkReport.put(month, workReportServiceDto);
         }
         return monthlyWorkReport;
+    }
+
+    private int getStartMonth(int year) {
+        LocalDateTime registrationDate = profileUtil.getCurrentStaff().getCreatedDate();
+        if (registrationDate.getYear() == year) return registrationDate.getMonthValue();
+        return JANUARY.getValue();
+    }
+
+    private int getEndMonth(int year) {
+        YearMonth now = YearMonth.now();
+        if (now.getYear() == year) return now.getMonthValue();
+        return DECEMBER.getValue();
+    }
+
+    @Transactional(readOnly = true)
+    public List<YearMonth> getBossWorkReportDateList(Long workspaceId) {
+        Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
+        YearMonth startYearMonth = YearMonth.from(workspace.getCreatedDate()), now = YearMonth.now();
+        List<YearMonth> yearMonthList = new ArrayList<>();
+
+        while (!startYearMonth.isAfter(now)) {
+            yearMonthList.add(startYearMonth);
+            startYearMonth = startYearMonth.plusMonths(1);
+        }
+        return yearMonthList;
     }
 
     @Transactional(readOnly = true)
@@ -53,19 +94,19 @@ public class WorkReportService {
 
     private Map<Integer, List<Schedule>> getMyMonthlyScheduleListForYear(int year) {
         Long staffId = profileUtil.getCurrentStaff().getId();
-        LocalDateTime yearStart = LocalDate.of(year, JANUARY.getValue(), 1).atTime(LocalTime.MIN);
-        LocalDateTime yearEnd = YearMonth.of(year, DECEMBER.getValue()).atEndOfMonth().atTime(LocalTime.MAX);
+        LocalDate yearStart = LocalDate.of(year, JANUARY.getValue(), 1);
+        LocalDate yearEnd = YearMonth.of(year, DECEMBER.getValue()).atEndOfMonth();
 
-        List<Schedule> MyScheduleList = scheduleRepository.findAllByStaffIdAndDateTimeRangeAndEndStatus(staffId, yearStart, yearEnd);
+        List<Schedule> MyScheduleList = scheduleRepository.findAllByStaffIdAndDateRangeAndEndStatus(staffId, yearStart, yearEnd);
         return MyScheduleList.stream()
                 .collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().getMonthValue()));
     }
 
     private Map<Long, List<Schedule>> getWorkspaceScheduleListByStaffForYearAndMonth(Long workspaceId, int year, int month) {
-        LocalDateTime monthStart = LocalDate.of(year, month, 1).atTime(LocalTime.MIN);
-        LocalDateTime monthEnd = YearMonth.of(year, month).atEndOfMonth().atTime(LocalTime.MAX);
+        LocalDate monthStart = LocalDate.of(year, month, 1);
+        LocalDate monthEnd = YearMonth.of(year, month).atEndOfMonth();
 
-        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateTimeRangeAndEndStatus(workspaceId, monthStart, monthEnd);
+        List<Schedule> workspaceScheduleList = scheduleRepository.findAllByWorkspaceIdAndDateRangeAndEndStatus(workspaceId, monthStart, monthEnd);
         return workspaceScheduleList.stream()
                 .collect(groupingBy(schedule -> schedule.getStaff().getId()));
     }
@@ -98,6 +139,6 @@ public class WorkReportService {
     private Long calculateWorkPay(LocalDateTime startDateTime, LocalDateTime endDateTime, Integer hourlyWage) {
         Long workTimeMin = calculateWorkTimeMin(startDateTime, endDateTime);
         double workTimeHour = (double) workTimeMin / MINUTES_PER_HOUR ;
-        return (long) workTimeHour * hourlyWage;
+        return (long) (workTimeHour * hourlyWage);
     }
 }

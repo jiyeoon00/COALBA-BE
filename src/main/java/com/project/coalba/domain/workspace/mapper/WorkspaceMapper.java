@@ -1,12 +1,9 @@
 package com.project.coalba.domain.workspace.mapper;
 
-import com.project.coalba.domain.workspace.dto.request.WorkspaceCreateRequest;
-import com.project.coalba.domain.workspace.dto.request.WorkspaceUpdateRequest;
+import com.project.coalba.domain.workspace.dto.request.*;
 import com.project.coalba.domain.workspace.dto.response.*;
-import com.project.coalba.domain.workspace.entity.Workspace;
-import com.project.coalba.domain.workspace.entity.WorkspaceMember;
-import com.project.coalba.domain.workspace.service.dto.WorkspaceCreateServiceDto;
-import com.project.coalba.domain.workspace.service.dto.WorkspaceUpdateServiceDto;
+import com.project.coalba.domain.workspace.entity.*;
+import com.project.coalba.domain.workspace.service.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -37,6 +34,16 @@ public interface WorkspaceMapper {
 
     @Mappings(@Mapping(source = "id", target = "workspaceId"))
     WorkspaceListResponse.WorkspaceResponse toSubDto(Workspace workspace);
+
+    default WorkspaceBriefListResponse toBriefDto(WorkspaceListRef ref) {
+        List<WorkspaceBriefListResponse.WorkspaceResponse> workspaceList = ref.get().stream()
+                .map(this::toBriefSubDto)
+                .collect(Collectors.toList());
+        return new WorkspaceBriefListResponse(workspaceList);
+    }
+
+    @Mappings(@Mapping(source = "id", target = "workspaceId"))
+    WorkspaceBriefListResponse.WorkspaceResponse toBriefSubDto(Workspace workspace);
 
     interface WorkspaceMemberListRef extends Supplier<List<WorkspaceMember>> {}
     default WorkspaceMemberInfoListResponse toDto(WorkspaceMemberListRef ref) {

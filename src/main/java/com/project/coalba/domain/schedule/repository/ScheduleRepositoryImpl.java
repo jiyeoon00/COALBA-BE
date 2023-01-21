@@ -15,7 +15,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Schedule> findAllByStaffIdAndDateTimeRangeAndEndStatus(Long staffId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+    public List<Schedule> findAllByStaffIdAndDateRangeAndEndStatus(Long staffId, LocalDate fromDate, LocalDate toDate) {
+        LocalDateTime fromDateTime = getStartTimeOf(fromDate), toDateTime = getEndTimeOf(toDate);
         return queryFactory.selectFrom(schedule)
                 .where(schedule.staff.id.eq(staffId),
                         schedule.scheduleStartDateTime.between(fromDateTime, toDateTime),
@@ -28,7 +29,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     }
 
     @Override
-    public List<Schedule> findAllByWorkspaceIdAndDateTimeRangeAndEndStatus(Long workspaceId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+    public List<Schedule> findAllByWorkspaceIdAndDateRangeAndEndStatus(Long workspaceId, LocalDate fromDate, LocalDate toDate) {
+        LocalDateTime fromDateTime = getStartTimeOf(fromDate), toDateTime = getEndTimeOf(toDate);
         return queryFactory.selectFrom(schedule)
                 .where(schedule.workspace.id.eq(workspaceId),
                         schedule.scheduleStartDateTime.between(fromDateTime, toDateTime),
@@ -58,7 +60,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                 .join(schedule.staff).fetchJoin()
                 .where(schedule.workspace.id.eq(workspaceId),
                         schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
-                .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc())
+                .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc(), schedule.staff.realName.asc(), schedule.staff.id.asc())
                 .fetch();
     }
 
@@ -68,6 +70,21 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
         return queryFactory.selectFrom(schedule)
                 .where(schedule.staff.id.eq(staffId),
                         schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
+                .fetch();
+    }
+
+    @Override
+    public List<Schedule> findAllByStaffIdAndDateTimeRange(Long staffId, LocalDateTime fromDateTime, LocalDateTime toDateTime) {
+        return queryFactory.selectFrom(schedule)
+                .where(schedule.staff.id.eq(staffId),
+                        schedule.scheduleStartDateTime.goe(fromDateTime).and(
+                                schedule.scheduleStartDateTime.lt(toDateTime)
+                        ).or(
+                                schedule.scheduleEndDateTime.gt(fromDateTime).and(
+                                        schedule.scheduleEndDateTime.loe(toDateTime)
+                                )
+                        )
+                )
                 .fetch();
     }
 

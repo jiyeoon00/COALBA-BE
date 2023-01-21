@@ -3,14 +3,13 @@ package com.project.coalba.domain.auth.info.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.coalba.domain.auth.dto.NaverUserInfoDto;
 import com.project.coalba.domain.auth.entity.User;
-import com.project.coalba.domain.auth.entity.enums.Provider;
-import com.project.coalba.domain.auth.entity.enums.Role;
+import com.project.coalba.domain.auth.entity.enums.*;
 import com.project.coalba.domain.auth.info.UserInfo;
+import com.project.coalba.global.exception.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 
 @Slf4j
 public class NaverUserInfo implements UserInfo {
@@ -39,6 +38,6 @@ public class NaverUserInfo implements UserInfo {
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
-        throw new IllegalArgumentException("Invalid Token.");
+        throw new BusinessException(ErrorCode.INVALID_SOCIAL_TOKEN);
     }
 }
