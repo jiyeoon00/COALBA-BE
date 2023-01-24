@@ -1,4 +1,4 @@
-package com.project.coalba.domain.auth.dto;
+package com.project.coalba.domain.auth.info.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

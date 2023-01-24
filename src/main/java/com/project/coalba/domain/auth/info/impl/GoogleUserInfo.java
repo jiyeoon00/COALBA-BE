@@ -1,7 +1,7 @@
 package com.project.coalba.domain.auth.info.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.coalba.domain.auth.dto.GoogleUserInfoDto;
+import com.project.coalba.domain.auth.info.dto.GoogleUserInfoDto;
 import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.auth.entity.enums.*;
 import com.project.coalba.domain.auth.info.UserInfo;
