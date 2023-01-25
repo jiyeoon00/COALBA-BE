@@ -1,5 +1,6 @@
-package com.project.coalba.domain.auth.entity;
+package com.project.coalba.domain.auth.token;
 
+import com.project.coalba.domain.auth.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

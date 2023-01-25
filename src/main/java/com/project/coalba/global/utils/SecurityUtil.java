@@ -1,6 +1,6 @@
 package com.project.coalba.global.utils;
 
-import com.project.coalba.domain.auth.entity.UserPrincipal;
+import com.project.coalba.domain.auth.token.UserPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

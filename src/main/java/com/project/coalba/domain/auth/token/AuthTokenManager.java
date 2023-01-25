@@ -1,7 +1,6 @@
 package com.project.coalba.domain.auth.token;
 
 import com.project.coalba.domain.auth.entity.User;
-import com.project.coalba.domain.auth.entity.UserPrincipal;
 import com.project.coalba.domain.auth.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -15,10 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Component

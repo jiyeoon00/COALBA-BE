@@ -1,7 +1,7 @@
 package com.project.coalba.domain.auth.controller;
 
 import com.project.coalba.domain.auth.entity.User;
-import com.project.coalba.domain.auth.entity.UserPrincipal;
+import com.project.coalba.domain.auth.token.UserPrincipal;
 import com.project.coalba.domain.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
