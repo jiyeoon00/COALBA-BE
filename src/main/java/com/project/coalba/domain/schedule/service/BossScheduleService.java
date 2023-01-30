@@ -1,5 +1,9 @@
 package com.project.coalba.domain.schedule.service;
 
+import com.project.coalba.domain.auth.entity.User;
+import com.project.coalba.domain.externalCalendar.dto.CalendarEventDto;
+import com.project.coalba.domain.externalCalendar.dto.CalendarPersonalDto;
+import com.project.coalba.domain.externalCalendar.service.ExternalCalendarService;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.profile.service.StaffProfileService;
 import com.project.coalba.domain.schedule.entity.enums.*;
@@ -26,6 +30,7 @@ public class BossScheduleService {
     private final StaffProfileService staffProfileService;
     private final ScheduleRepository scheduleRepository;
     private final ScheduleValidator scheduleValidator;
+    private final ExternalCalendarService externalCalendarService;
 
     @Transactional(readOnly = true)
     public BossHomePageServiceDto getHomePage() {
@@ -106,6 +111,8 @@ public class BossScheduleService {
         Staff staff = staffProfileService.getStaff(serviceDto.getStaffId());
         Schedule schedule = serviceDto.toEntity(workspace, staff);
         scheduleRepository.save(schedule);
+
+        addEventToExternalCalendar(schedule);
     }
 
     @Transactional
@@ -114,5 +121,12 @@ public class BossScheduleService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.SCHEDULE_NOT_FOUND));
         if (schedule.getStatus() != ScheduleStatus.BEFORE_WORK) throw new BusinessException(ErrorCode.INVALID_SCHEDULE_CANCEL);
         scheduleRepository.deleteById(scheduleId);
+    }
+
+    private void addEventToExternalCalendar(Schedule schedule) {
+        User user = schedule.getStaff().getUser();
+        CalendarPersonalDto calendarPersonalDto = new CalendarPersonalDto(user);
+        CalendarEventDto calendarEventDto = new CalendarEventDto(schedule);
+        externalCalendarService.addEvent(calendarPersonalDto, calendarEventDto);
     }
 }
