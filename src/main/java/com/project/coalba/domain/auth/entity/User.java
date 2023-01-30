@@ -69,6 +69,10 @@ public class User extends BaseTimeEntity {
         }
     }
 
+    public void updateSocialAccessToken(String accessToken) {
+        this.accessToken = EncryptionUtil.encrypt(accessToken);
+    }
+
     public String getAccessToken() {
         return EncryptionUtil.decrypt(accessToken);
     }

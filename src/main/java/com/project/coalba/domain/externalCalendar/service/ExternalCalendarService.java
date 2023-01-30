@@ -2,6 +2,7 @@ package com.project.coalba.domain.externalCalendar.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.coalba.domain.auth.service.AuthSocialTokenService;
 import com.project.coalba.domain.externalCalendar.dto.CalendarEventDto;
 import com.project.coalba.domain.externalCalendar.dto.EventSearchFilter;
 import com.project.coalba.domain.externalCalendar.dto.request.CalendarEventRequest;
@@ -26,6 +27,8 @@ public class ExternalCalendarService {
     private static final String HTTP_REQUEST_GET = "https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events?timeMax={timeMax}&timeMin={timeMin}&singleEvents={singleEvents}&maxResults={maxResults}&q={q}";
 
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+    private final AuthSocialTokenService authSocialTokenService;
 
     public void addEvent(CalendarPersonalDto calendarPersonalDto, CalendarEventDto calendarEventDto) {
         HttpHeaders headers = makeCalendarRequestHeader(calendarPersonalDto.getAccessToken());
@@ -38,13 +41,20 @@ public class ExternalCalendarService {
         try {
             restTemplate.postForObject(HTTP_REQUEST_CREATE, request, HttpEntity.class, uriVariable);
         } catch (HttpClientErrorException e) {
-                System.out.println("해당 캘린더에 접근할 권한이 없습니다.");
+            if(e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                String accessToken = authSocialTokenService.updateAccessToken(calendarPersonalDto.getUserId());
+                calendarPersonalDto.updateAccessToken(accessToken);
+                addEvent(calendarPersonalDto, calendarEventDto);
+            }
         }
     }
 
     public void deleteEvent(CalendarPersonalDto calendarPersonalDto, CalendarEventDto calendarEventDto) {
-        GoogleCalendarEventsResponse response = getEventByFilter(calendarPersonalDto, calendarEventDto).getBody();
-        response.getItems().stream().forEach(event -> deleteEventByEventId(event.getId(), calendarPersonalDto));
+        ResponseEntity<GoogleCalendarEventsResponse> eventsByFilter = getEventByFilter(calendarPersonalDto, calendarEventDto);
+        if(eventsByFilter != null) {
+            eventsByFilter.getBody().getItems().stream()
+                    .forEach(event -> deleteEventByEventId(event.getId(), calendarPersonalDto));
+        }
     }
 
     private ResponseEntity<GoogleCalendarEventsResponse> getEventByFilter(CalendarPersonalDto calendarPersonalDto, CalendarEventDto calendarEventDto) {
@@ -52,17 +62,18 @@ public class ExternalCalendarService {
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
         EventSearchFilter filter = new EventSearchFilter(calendarPersonalDto, calendarEventDto);
-        ObjectMapper objectMapper = new ObjectMapper();
-        Map<String, Object> uriVariable = objectMapper.convertValue(filter, Map.class);
+        Map uriVariable = objectMapper.convertValue(filter, Map.class);
 
         try {
             return restTemplate.exchange(HTTP_REQUEST_GET, HttpMethod.GET, request, GoogleCalendarEventsResponse.class, uriVariable);
         } catch (HttpClientErrorException e) {
-            /**
-             * 접근 권한 문제일 경우 처리해주기
-             */
-            throw new RuntimeException("외부 캘리더 접근 권한이 없습니다.");
+            if(e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                String accessToken = authSocialTokenService.updateAccessToken(calendarPersonalDto.getUserId());
+                calendarPersonalDto.updateAccessToken(accessToken);
+                getEventByFilter(calendarPersonalDto, calendarEventDto);
+            }
         }
+        return null;
     }
 
     private void deleteEventByEventId(String eventId, CalendarPersonalDto calendarPersonalDto) {
@@ -76,9 +87,11 @@ public class ExternalCalendarService {
         try {
             restTemplate.exchange(HTTP_REQUEST_DELETE, HttpMethod.DELETE, request, String.class, uriVariable);
         } catch (HttpClientErrorException e) {
-            /**
-             * 접근 권한 문제일 경우 처리해주기
-             */
+            if(e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                String accessToken = authSocialTokenService.updateAccessToken(calendarPersonalDto.getUserId());
+                calendarPersonalDto.updateAccessToken(accessToken);
+                deleteEventByEventId(eventId, calendarPersonalDto);
+            }
         }
     }
 
