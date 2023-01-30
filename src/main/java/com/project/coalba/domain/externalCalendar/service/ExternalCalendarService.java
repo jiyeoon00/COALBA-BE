@@ -8,6 +8,7 @@ import com.project.coalba.domain.externalCalendar.dto.CalendarPersonalDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -21,6 +22,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 @RequiredArgsConstructor
 public class ExternalCalendarService {
     private static final String HTTP_REQUEST_CREATE = "https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events";
+    private static final String HTTP_REQUEST_DELETE = "https://www.googleapis.com/calendar/v3/calendars/{calendarId}/events/{eventId}";
 
     private final RestTemplate restTemplate;
 
@@ -36,6 +38,23 @@ public class ExternalCalendarService {
             restTemplate.postForObject(HTTP_REQUEST_CREATE, request, HttpEntity.class, uriVariable);
         } catch (HttpClientErrorException e) {
                 System.out.println("해당 캘린더에 접근할 권한이 없습니다.");
+        }
+    }
+
+    private void deleteEventByEventId(String eventId, CalendarPersonalDto calendarPersonalDto) {
+        HttpHeaders headers = makeCalendarRequestHeader(calendarPersonalDto.getAccessToken());
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        Map uriVariable = Map.of(
+                "calendarId", calendarPersonalDto.getCalendarId(),
+                "eventId", eventId
+        );
+
+        try {
+            restTemplate.exchange(HTTP_REQUEST_DELETE, HttpMethod.DELETE, request, String.class, uriVariable);
+        } catch (HttpClientErrorException e) {
+            /**
+             * 접근 권한 문제일 경우 처리해주기
+             */
         }
     }
 
