@@ -4,10 +4,10 @@
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" /> <!-- CONSOLE appender 사용 -->
 
     <!-- 로그 변수 값 설정 -->
-    <property name="LOG_PATH" value="/home/ec2-user/app/logs" />
-    <property name="LOG_FILENAME" value="logback" />
-    <property name="LOG_MAX_HISTORY" value="30" />
-    <property name="LOG_MAX_FILE_SIZE" value="10MB" />
+    <springProperty name="LOG_PATH" source="log.config.path" />
+    <springProperty name="LOG_FILENAME" source="log.config.filename" />
+    <springProperty name="LOG_MAX_HISTORY" source="log.config.maxHistory" />
+    <springProperty name="LOG_MAX_FILE_SIZE" source="log.config.maxFileSize" />
 
     <!-- profile dev 또는 prod 경우에만, 파일(FILE) 생성 -->
     <springProfile name="dev, prod">
