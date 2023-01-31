@@ -4,7 +4,7 @@
     <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
 
     <!-- log 변수 값 설정 -->
-    <property name="LOG_PATH" value="~/app/logs" />
+    <property name="LOG_PATH" value="/home/ec2-user/app/logs" />
     <property name="LOG_FILENAME" value="logback" />
     <property name="LOG_MAX_HISTORY" value="30" />
     <property name="LOG_TOTAL_SIZE_CAP" value="1GB" />
