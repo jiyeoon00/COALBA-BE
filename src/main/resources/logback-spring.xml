@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-    <include resource="org/springframework/boot/logging/logback/defaults.xml" /> <!-- FILE_LOG_PATTERN 변수 사용 -->
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml" /> <!-- CONSOLE appender 사용 -->
 
-    <!-- 로그 변수 값 설정 -->
+<!-- 60초마다 설정 파일의 변경 확인하여 변경 시 재로딩 -->
+<configuration scan="true" scanPeriod="60 seconds">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" /> <!-- FILE_LOG_PATTERN 변수 사용 위해 -->
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" /> <!-- CONSOLE appender 사용 위해 -->
+
+    <!-- 로그 변수 값 설정 (application-*.properties 파일에서 설정) -->
     <springProperty name="LOG_PATH" source="log.config.path" />
     <springProperty name="LOG_FILENAME" source="log.config.filename" />
     <springProperty name="LOG_ERROR_FILENAME" source="log.config.error.filename" />
@@ -12,20 +14,25 @@
 
     <!-- spring profiles dev 또는 prod 경우에만 파일 생성 -->
     <springProfile name="dev, prod">
+        <!-- 여러 파일을 순회하면서 로그 기록하는 appender -->
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!-- 로그 패턴 설정 -->
             <encoder>
                 <pattern>${FILE_LOG_PATTERN}</pattern>
             </encoder>
+            <!-- 날짜가 바뀌거나 해당 파일 용량이 다 차면 다른 파일에 로그 기록 -->
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                 <fileNamePattern>${LOG_PATH}/${LOG_FILENAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
                 <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                     <maxFileSize>${LOG_MAX_FILE_SIZE}</maxFileSize>
                 </timeBasedFileNamingAndTriggeringPolicy>
+                <!-- 저장된 로그 파일 해당 기간(일 단위) 지나면 삭제 -->
                 <maxHistory>${LOG_MAX_HISTORY}</maxHistory>
             </rollingPolicy>
         </appender>
 
         <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <!-- ERROR 레벨 로그만 필터링 -->
             <filter class="ch.qos.logback.classic.filter.LevelFilter">
                 <level>error</level>
                 <onMatch>ACCEPT</onMatch>
@@ -45,17 +52,21 @@
     </springProfile>
 
     <!-- spring profiles 별 로그 설정 -->
+    <!-- local profiles: INFO 레벨 로그 콘솔에 출력 (기존 스프링 로그 방식과 동일) -->
     <springProfile name="local">
         <root level="info">
             <appender-ref ref="CONSOLE" />
         </root>
     </springProfile>
 
+    <!-- dev, prod profiles: INFO 레벨 로그 콘솔에 출력 + ERROR 레벨 로그 파일에 저장 + spring web 관련 DEBUG 레벨 로그 파일에 저장 -->
     <springProfile name="dev, prod">
+        <!-- root: 로그 레벨 전역 설정, logger: 로그 레벨 지역 설정 -->
         <root level="info">
             <appender-ref ref="CONSOLE" />
             <appender-ref ref="ERROR_FILE" />
         </root>
+        <!-- 기본적으로 로그 레벨 지역 설정이 우선. additivity 값 false 이면 로그 레벨 지역 설정이 전역 설정에 영향X -->
         <logger name="org.springframework.web" level="debug" additivity="false">
             <appender-ref ref="FILE" />
         </logger>
