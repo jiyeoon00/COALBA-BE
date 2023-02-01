@@ -6,10 +6,11 @@
     <!-- 로그 변수 값 설정 -->
     <springProperty name="LOG_PATH" source="log.config.path" />
     <springProperty name="LOG_FILENAME" source="log.config.filename" />
+    <springProperty name="LOG_ERROR_FILENAME" source="log.config.error.filename" />
     <springProperty name="LOG_MAX_HISTORY" source="log.config.maxHistory" />
     <springProperty name="LOG_MAX_FILE_SIZE" source="log.config.maxFileSize" />
 
-    <!-- profile dev 또는 prod 경우에만, 파일(FILE) 생성 -->
+    <!-- spring profiles dev 또는 prod 경우에만 파일 생성 -->
     <springProfile name="dev, prod">
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <encoder>
@@ -23,9 +24,27 @@
                 <maxHistory>${LOG_MAX_HISTORY}</maxHistory>
             </rollingPolicy>
         </appender>
+
+        <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>error</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>DENY</onMismatch>
+            </filter>
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}/${LOG_ERROR_FILENAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>${LOG_MAX_FILE_SIZE}</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <maxHistory>${LOG_MAX_HISTORY}</maxHistory>
+            </rollingPolicy>
+        </appender>
     </springProfile>
 
-    <!-- spring profile 별 로그 설정 -->
+    <!-- spring profiles 별 로그 설정 -->
     <springProfile name="local">
         <root level="info">
             <appender-ref ref="CONSOLE" />
@@ -35,8 +54,9 @@
     <springProfile name="dev, prod">
         <root level="info">
             <appender-ref ref="CONSOLE" />
+            <appender-ref ref="ERROR_FILE" />
         </root>
-        <logger name="org.springframework.web" level="debug">
+        <logger name="org.springframework.web" level="debug" additivity="false">
             <appender-ref ref="FILE" />
         </logger>
     </springProfile>
