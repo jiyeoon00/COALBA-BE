@@ -36,10 +36,9 @@ out/
 ### VS Code ###
 .vscode/
 
+logs/
 *.log
-application-db.properties
-application-auth.properties
-application-aws.properties
+application-*.properties
 
 ### querydsl Q파일 ###
 src/main/generated/
