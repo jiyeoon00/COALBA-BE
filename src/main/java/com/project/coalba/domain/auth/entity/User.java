@@ -59,6 +59,8 @@ public class User extends BaseTimeEntity {
         this.name = user.getName();
         this.imageUrl = user.getImageUrl();
         this.providerId = user.getProviderId();
+        this.accessToken = user.getEncryptedAccessToken();
+        this.refreshToken = user.getEncryptedRefreshToken();
         return this;
     }
 
@@ -75,5 +77,13 @@ public class User extends BaseTimeEntity {
 
     public String getRefreshToken() {
         return EncryptionUtil.decrypt(refreshToken);
+    }
+
+    private String getEncryptedAccessToken() {
+        return accessToken;
+    }
+
+    private String getEncryptedRefreshToken() {
+        return refreshToken;
     }
 }

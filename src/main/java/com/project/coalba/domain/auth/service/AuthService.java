@@ -25,10 +25,10 @@ public class AuthService {
     @Transactional
     public AuthResponse login(Provider provider, String socialAccessToken, String socialRefreshToken, Role role) {
         User socialUser = getSocialUser(provider, socialAccessToken, role), loginUser;
+        socialUser.updateSocialToken(socialAccessToken, socialRefreshToken);
         Optional<User> userOptional = getSubscribedUser(socialUser.getProviderId(), role);
         boolean isNewUser = userOptional.isEmpty();
         loginUser = getLoginUser(userOptional, socialUser);
-        loginUser.updateSocialToken(socialAccessToken, socialRefreshToken);
 
         String accessToken = tokenManager.createAccessToken(loginUser.getProviderId(), loginUser.getId());
         String refreshToken = tokenManager.createRefreshToken();
