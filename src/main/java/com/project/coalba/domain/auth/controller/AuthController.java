@@ -16,7 +16,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponse login(@RequestParam Provider provider, @RequestParam Role role, @Validated @RequestBody AuthRequest authRequest) {
-        return authService.login(provider, authRequest.getAccessToken(), authRequest.getRefreshToken(), role);
+        return authService.login(provider, role, authRequest.getAccessToken(), authRequest.getRefreshToken());
     }
 
     @PostMapping("/refresh")

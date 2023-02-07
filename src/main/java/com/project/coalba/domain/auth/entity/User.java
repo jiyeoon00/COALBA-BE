@@ -49,19 +49,15 @@ public class User extends BaseTimeEntity {
         this.role = role;
         this.provider = provider;
         this.providerId = providerId;
-        if (accessToken != null) {
-            this.updateSocialToken(accessToken, refreshToken);
-        }
+        this.updateSocialToken(accessToken, refreshToken);
     }
 
-    public User updateSocialInfo(User user) {
-        this.email = user.getEmail();
-        this.name = user.getName();
-        this.imageUrl = user.getImageUrl();
-        this.providerId = user.getProviderId();
-        this.accessToken = user.getEncryptedAccessToken();
-        this.refreshToken = user.getEncryptedRefreshToken();
-        return this;
+    public void updateSocialInfo(String email, String name, String imageUrl, String providerId, String accessToken, String refreshToken) {
+        this.email = email;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.providerId = providerId;
+        this.updateSocialToken(accessToken, refreshToken);
     }
 
     public void updateSocialToken(String accessToken, String refreshToken) {
@@ -77,13 +73,5 @@ public class User extends BaseTimeEntity {
 
     public String getRefreshToken() {
         return EncryptionUtil.decrypt(refreshToken);
-    }
-
-    private String getEncryptedAccessToken() {
-        return accessToken;
-    }
-
-    private String getEncryptedRefreshToken() {
-        return refreshToken;
     }
 }

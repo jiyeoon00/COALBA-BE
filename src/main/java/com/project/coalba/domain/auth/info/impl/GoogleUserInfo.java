@@ -2,9 +2,9 @@ package com.project.coalba.domain.auth.info.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.coalba.domain.auth.info.impl.dto.GoogleUserInfoDto;
-import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.auth.entity.enums.*;
 import com.project.coalba.domain.auth.info.UserInfo;
+import com.project.coalba.domain.auth.service.dto.SocialInfo;
 import com.project.coalba.global.exception.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,15 +16,16 @@ public class GoogleUserInfo implements UserInfo {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public User getUser(String token, Role role) {
-        GoogleUserInfoDto googleUserInfoDto = getGoogleUserInfoDto(token);
-        return User.builder()
+    public SocialInfo getSocialInfo(String accessToken, String refreshToken) {
+        GoogleUserInfoDto googleUserInfoDto = getGoogleUserInfoDto(accessToken);
+        return SocialInfo.builder()
                 .email(googleUserInfoDto.getEmail())
                 .name(googleUserInfoDto.getName())
                 .imageUrl(googleUserInfoDto.getPicture())
-                .role(role)
                 .provider(Provider.GOOGLE)
                 .providerId(googleUserInfoDto.getSub())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
