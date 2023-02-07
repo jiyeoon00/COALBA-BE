@@ -1,10 +1,8 @@
 package com.project.coalba.domain.auth.info.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.coalba.domain.auth.info.impl.dto.NaverUserInfoDto;
-import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.auth.entity.enums.*;
-import com.project.coalba.domain.auth.info.UserInfo;
+import com.project.coalba.domain.auth.info.*;
 import com.project.coalba.global.exception.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,29 +10,30 @@ import java.io.IOException;
 import java.net.*;
 
 @Slf4j
-public class NaverUserInfo implements UserInfo {
+public class NaverInfoProvider implements SocialInfoProvider {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public User getUser(String token, Role role) {
-        NaverUserInfoDto naverUserInfoDto = getNaverUserInfoDto(token);
-        return User.builder()
-                .email(naverUserInfoDto.getResponse().getEmail())
-                .name(naverUserInfoDto.getResponse().getName())
-                .imageUrl(naverUserInfoDto.getResponse().getProfileImage())
-                .role(role)
+    public SocialInfo getSocialInfo(String accessToken, String refreshToken) {
+        NaverInfo naverInfo = getNaverInfo(accessToken);
+        return SocialInfo.builder()
+                .email(naverInfo.getResponse().getEmail())
+                .name(naverInfo.getResponse().getName())
+                .imageUrl(naverInfo.getResponse().getProfileImage())
                 .provider(Provider.NAVER)
-                .providerId(naverUserInfoDto.getResponse().getId())
+                .providerId(naverInfo.getResponse().getId())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
-    private NaverUserInfoDto getNaverUserInfoDto(String token) {
+    private NaverInfo getNaverInfo(String token) {
         try {
             String reqURL = "https://openapi.naver.com/v1/nid/me";
             URL url = new URL(reqURL);
             URLConnection urlConnection = url.openConnection();
             urlConnection.setRequestProperty("Authorization", "Bearer " + token);
-            return mapper.readValue(urlConnection.getInputStream(), NaverUserInfoDto.class);
+            return mapper.readValue(urlConnection.getInputStream(), NaverInfo.class);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
