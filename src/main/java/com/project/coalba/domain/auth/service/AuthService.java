@@ -5,7 +5,6 @@ import com.project.coalba.domain.auth.entity.*;
 import com.project.coalba.domain.auth.entity.enums.*;
 import com.project.coalba.domain.auth.info.*;
 import com.project.coalba.domain.auth.repository.*;
-import com.project.coalba.domain.auth.service.dto.SocialInfo;
 import com.project.coalba.domain.auth.token.AuthTokenManager;
 import com.project.coalba.global.exception.*;
 import io.jsonwebtoken.Claims;
@@ -57,8 +56,8 @@ public class AuthService {
     }
 
     private SocialInfo getSocialInfo(Provider provider, String accessToken, String refreshToken) {
-        UserInfo userInfo = UserInfoFactory.getUserInfo(provider);
-        return userInfo.getSocialInfo(accessToken, refreshToken);
+        SocialInfoProvider socialInfoProvider = SocialInfoProviderFactory.getSocialInfoProvider(provider);
+        return socialInfoProvider.getSocialInfo(accessToken, refreshToken);
     }
 
     private Optional<User> getSubscribedUser(String providerId, Role role) {

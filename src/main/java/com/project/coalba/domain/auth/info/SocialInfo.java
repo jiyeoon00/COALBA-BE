@@ -1,8 +1,7 @@
-package com.project.coalba.domain.auth.service.dto;
+package com.project.coalba.domain.auth.info;
 
 import com.project.coalba.domain.auth.entity.User;
-import com.project.coalba.domain.auth.entity.enums.Provider;
-import com.project.coalba.domain.auth.entity.enums.Role;
+import com.project.coalba.domain.auth.entity.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
