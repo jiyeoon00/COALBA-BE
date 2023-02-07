@@ -1,6 +1,11 @@
 package com.project.coalba.domain.substituteReq.service;
 
+import com.project.coalba.domain.auth.entity.User;
+import com.project.coalba.domain.externalCalendar.dto.CalendarEventDto;
+import com.project.coalba.domain.externalCalendar.dto.CalendarPersonalDto;
+import com.project.coalba.domain.externalCalendar.service.ExternalCalendarService;
 import com.project.coalba.domain.notification.FirebaseCloudMessageService;
+import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.dto.response.BothSubstituteReqResponse;
 import com.project.coalba.domain.substituteReq.dto.response.YearMonth;
@@ -24,6 +29,7 @@ public class BossSubstituteReqService {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final SubstituteReqRepository substituteReqRepository;
     private final ProfileUtil profileUtil;
+    private final ExternalCalendarService externalCalendarService;
 
     @Transactional(readOnly = true)
     public BothSubstituteReqDto getDetailSubstituteReq(Long substituteReqId) {
@@ -56,6 +62,26 @@ public class BossSubstituteReqService {
         schedule.changeStaff(substituteReq.getReceiver());
 
         sendApprovalNotice(substituteReq);
+        applyToExternalCalendar(substituteReq.getSender(), schedule);
+    }
+
+    private void applyToExternalCalendar(Staff sender, Schedule schedule) {
+        addEventToExternalCalendar(schedule);
+        deleteEventOnExternalCalendar(sender, schedule);
+    }
+
+    private void addEventToExternalCalendar(Schedule schedule) {
+        User user = schedule.getStaff().getUser();
+        CalendarPersonalDto calendarPersonalDto = new CalendarPersonalDto(user);
+        CalendarEventDto calendarEventDto = new CalendarEventDto(schedule);
+        externalCalendarService.addEvent(calendarPersonalDto, calendarEventDto);
+    }
+
+    private void deleteEventOnExternalCalendar(Staff sender, Schedule schedule) {
+        User user = sender.getUser();
+        CalendarPersonalDto calendarPersonalDto = new CalendarPersonalDto(user);
+        CalendarEventDto calendarEventDto = new CalendarEventDto(schedule);
+        externalCalendarService.deleteEvent(calendarPersonalDto, calendarEventDto);
     }
 
     private void sendApprovalNotice(SubstituteReq substituteReq) {
