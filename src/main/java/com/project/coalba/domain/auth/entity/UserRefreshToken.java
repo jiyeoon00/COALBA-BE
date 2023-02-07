@@ -31,9 +31,7 @@ public class UserRefreshToken extends BaseTimeEntity {
     }
 
     public void updateToken(String token) {
-        if (token != null) {
-            this.token = EncryptionUtil.encrypt(token);
-        }
+        this.token = EncryptionUtil.encrypt(token);
     }
 
     public String getToken() {
