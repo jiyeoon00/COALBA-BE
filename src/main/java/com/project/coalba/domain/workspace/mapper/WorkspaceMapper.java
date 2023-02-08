@@ -23,7 +23,11 @@ public interface WorkspaceMapper {
     })
     WorkspaceCreateServiceDto toServiceDto(WorkspaceCreateRequest workspaceCreateRequest);
 
-    @Mappings({})
+    @Mappings({
+            @Mapping(source = "workspace.name", target = "name"),
+            @Mapping(source = "workspace.phoneNumber", target = "phoneNumber"),
+            @Mapping(source = "workspace.address", target = "address")
+    })
     WorkspaceUpdateServiceDto toServiceDto(WorkspaceUpdateRequest workspaceUpdateRequest);
 
     @Mappings(@Mapping(source = "id", target = "workspaceId"))
