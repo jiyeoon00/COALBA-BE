@@ -4,9 +4,7 @@ import com.project.coalba.domain.workspace.dto.request.*;
 import com.project.coalba.domain.workspace.dto.response.*;
 import com.project.coalba.domain.workspace.entity.*;
 import com.project.coalba.domain.workspace.service.dto.*;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -15,7 +13,14 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface WorkspaceMapper {
 
-    @Mappings({})
+    @Mappings({
+            @Mapping(source = "workspace.name", target = "name"),
+            @Mapping(source = "workspace.phoneNumber", target = "phoneNumber"),
+            @Mapping(source = "workspace.address", target = "address"),
+            @Mapping(source = "workspace.businessNumber", target = "businessNumber"),
+            @Mapping(source = "workspace.workType", target = "workType"),
+            @Mapping(source = "workspace.payType", target = "payType")
+    })
     WorkspaceCreateServiceDto toServiceDto(WorkspaceCreateRequest workspaceCreateRequest);
 
     @Mappings({})

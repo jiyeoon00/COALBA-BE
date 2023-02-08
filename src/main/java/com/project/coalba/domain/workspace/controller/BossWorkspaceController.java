@@ -1,7 +1,6 @@
 package com.project.coalba.domain.workspace.controller;
 
-import com.project.coalba.domain.workspace.dto.request.WorkspaceCreateRequest;
-import com.project.coalba.domain.workspace.dto.request.WorkspaceUpdateRequest;
+import com.project.coalba.domain.workspace.dto.request.*;
 import com.project.coalba.domain.workspace.dto.response.*;
 import com.project.coalba.domain.workspace.entity.WorkspaceMember;
 import com.project.coalba.domain.workspace.mapper.WorkspaceMapper;
