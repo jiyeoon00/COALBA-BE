@@ -16,16 +16,18 @@ public interface ProfileMapper {
     ProfileResponse toDto(Staff staff);
 
     @Mappings({
-            @Mapping(source = "profile.realName", target = "realName"),
-            @Mapping(source = "profile.phoneNumber", target = "phoneNumber"),
-            @Mapping(source = "profile.birthDate", target = "birthDate")
+            @Mapping(source = "profileCreateRequest.realName", target = "realName"),
+            @Mapping(source = "profileCreateRequest.phoneNumber", target = "phoneNumber"),
+            @Mapping(source = "profileCreateRequest.birthDate", target = "birthDate"),
+            @Mapping(source = "imageUrl", target = "imageUrl")
     })
-    ProfileCreateServiceDto toServiceDto(ProfileCreateRequest profileCreateRequest);
+    ProfileCreateServiceDto toServiceDto(ProfileCreateRequest profileCreateRequest, String imageUrl);
 
     @Mappings({
-            @Mapping(source = "profile.realName", target = "realName"),
-            @Mapping(source = "profile.phoneNumber", target = "phoneNumber"),
-            @Mapping(source = "profile.birthDate", target = "birthDate")
+            @Mapping(source = "profileUpdateRequest.realName", target = "realName"),
+            @Mapping(source = "profileUpdateRequest.phoneNumber", target = "phoneNumber"),
+            @Mapping(source = "profileUpdateRequest.birthDate", target = "birthDate"),
+            @Mapping(source = "imageUrl", target = "imageUrl")
     })
-    ProfileUpdateServiceDto toServiceDto(ProfileUpdateRequest profileUpdateRequest);
+    ProfileUpdateServiceDto toServiceDto(ProfileUpdateRequest profileUpdateRequest, String imageUrl);
 }
