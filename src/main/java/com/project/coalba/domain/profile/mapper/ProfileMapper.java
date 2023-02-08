@@ -22,6 +22,10 @@ public interface ProfileMapper {
     })
     ProfileCreateServiceDto toServiceDto(ProfileCreateRequest profileCreateRequest);
 
-    @Mappings({})
+    @Mappings({
+            @Mapping(source = "profile.realName", target = "realName"),
+            @Mapping(source = "profile.phoneNumber", target = "phoneNumber"),
+            @Mapping(source = "profile.birthDate", target = "birthDate")
+    })
     ProfileUpdateServiceDto toServiceDto(ProfileUpdateRequest profileUpdateRequest);
 }
