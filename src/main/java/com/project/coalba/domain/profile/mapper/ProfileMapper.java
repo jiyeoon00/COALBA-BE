@@ -1,14 +1,10 @@
 package com.project.coalba.domain.profile.mapper;
 
-import com.project.coalba.domain.profile.dto.request.ProfileCreateRequest;
-import com.project.coalba.domain.profile.dto.request.ProfileUpdateRequest;
-import com.project.coalba.domain.profile.dto.response.ProfileResponse;
-import com.project.coalba.domain.profile.entity.Boss;
-import com.project.coalba.domain.profile.entity.Staff;
-import com.project.coalba.domain.profile.service.dto.ProfileCreateServiceDto;
-import com.project.coalba.domain.profile.service.dto.ProfileUpdateServiceDto;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mappings;
+import com.project.coalba.domain.profile.dto.request.*;
+import com.project.coalba.domain.profile.dto.response.*;
+import com.project.coalba.domain.profile.entity.*;
+import com.project.coalba.domain.profile.service.dto.*;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface ProfileMapper {
@@ -19,9 +15,17 @@ public interface ProfileMapper {
     @Mappings({})
     ProfileResponse toDto(Staff staff);
 
-    @Mappings({})
+    @Mappings({
+            @Mapping(source = "profile.realName", target = "realName"),
+            @Mapping(source = "profile.phoneNumber", target = "phoneNumber"),
+            @Mapping(source = "profile.birthDate", target = "birthDate")
+    })
     ProfileCreateServiceDto toServiceDto(ProfileCreateRequest profileCreateRequest);
 
-    @Mappings({})
+    @Mappings({
+            @Mapping(source = "profile.realName", target = "realName"),
+            @Mapping(source = "profile.phoneNumber", target = "phoneNumber"),
+            @Mapping(source = "profile.birthDate", target = "birthDate")
+    })
     ProfileUpdateServiceDto toServiceDto(ProfileUpdateRequest profileUpdateRequest);
 }
