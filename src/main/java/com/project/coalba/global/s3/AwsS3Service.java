@@ -2,9 +2,8 @@ package com.project.coalba.global.s3;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
+import com.project.coalba.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -13,9 +12,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.UUID;
+import java.io.*;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -26,16 +24,15 @@ public class AwsS3Service {
     private String bucketName;
 
     public String uploadImage(MultipartFile file) {
-        String fileName = createFileName(file.getOriginalFilename());
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(file.getSize());
-        objectMetadata.setContentType(file.getContentType());
+        if (file == null || file.isEmpty()) return null;
 
-        try (InputStream inputStream = file.getInputStream()){
-            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata)
+        String fileName = createFileName(file.getOriginalFilename());
+        ObjectMetadata fileMetaData = getFileMetaData(file);
+        try (InputStream inputStream = file.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, inputStream, fileMetaData)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다."); //**
         }
 
         return amazonS3.getUrl(bucketName, fileName).toString();
@@ -43,31 +40,42 @@ public class AwsS3Service {
 
     public void deleteImage(String fileUrl) {
         if (!StringUtils.hasText(fileUrl)) return;
-        
+
         try {
-            amazonS3.deleteObject(bucketName, getFileName(fileUrl));
+            amazonS3.deleteObject(bucketName, parseFileName(fileUrl));
         } catch (AmazonServiceException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 삭제에 실패했습니다.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 삭제에 실패했습니다."); //**
         }
     }
 
     private String createFileName(String fileName) {
-        return UUID.randomUUID().toString().concat(getFileExtension(fileName));
+        return UUID.randomUUID().toString().concat(parseExtension(fileName));
     }
 
-    private String getFileExtension(String fileName) {
+    private String parseExtension(String fileName) {
         try {
-            return fileName.substring(fileName.lastIndexOf("."));
+            String extension = fileName.substring(fileName.lastIndexOf("."));
+            if (!List.of(".png", ".jpg", ".jpeg").contains(extension)) {
+                throw new BusinessException(null); //**
+            }
+            return extension;
         } catch (StringIndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다."); //**
         }
     }
 
-    private String getFileName(String fileUrl) {
+    private ObjectMetadata getFileMetaData(MultipartFile file) {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+        return objectMetadata;
+    }
+
+    private String parseFileName(String fileUrl) {
         try {
             return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         } catch (StringIndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 URL(" + fileUrl + ") 입니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 URL(" + fileUrl + ") 입니다."); //**
         }
     }
 }
