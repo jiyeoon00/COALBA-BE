@@ -14,21 +14,23 @@ import java.util.stream.Collectors;
 public interface WorkspaceMapper {
 
     @Mappings({
-            @Mapping(source = "workspace.name", target = "name"),
-            @Mapping(source = "workspace.phoneNumber", target = "phoneNumber"),
-            @Mapping(source = "workspace.address", target = "address"),
-            @Mapping(source = "workspace.businessNumber", target = "businessNumber"),
-            @Mapping(source = "workspace.workType", target = "workType"),
-            @Mapping(source = "workspace.payType", target = "payType")
+            @Mapping(source = "workspaceCreateRequest.name", target = "name"),
+            @Mapping(source = "workspaceCreateRequest.phoneNumber", target = "phoneNumber"),
+            @Mapping(source = "workspaceCreateRequest.address", target = "address"),
+            @Mapping(source = "workspaceCreateRequest.businessNumber", target = "businessNumber"),
+            @Mapping(source = "workspaceCreateRequest.workType", target = "workType"),
+            @Mapping(source = "workspaceCreateRequest.payType", target = "payType"),
+            @Mapping(source = "imageUrl", target = "imageUrl")
     })
-    WorkspaceCreateServiceDto toServiceDto(WorkspaceCreateRequest workspaceCreateRequest);
+    WorkspaceCreateServiceDto toServiceDto(WorkspaceCreateRequest workspaceCreateRequest, String imageUrl);
 
     @Mappings({
-            @Mapping(source = "workspace.name", target = "name"),
-            @Mapping(source = "workspace.phoneNumber", target = "phoneNumber"),
-            @Mapping(source = "workspace.address", target = "address")
+            @Mapping(source = "workspaceUpdateRequest.name", target = "name"),
+            @Mapping(source = "workspaceUpdateRequest.phoneNumber", target = "phoneNumber"),
+            @Mapping(source = "workspaceUpdateRequest.address", target = "address"),
+            @Mapping(source = "imageUrl", target = "imageUrl")
     })
-    WorkspaceUpdateServiceDto toServiceDto(WorkspaceUpdateRequest workspaceUpdateRequest);
+    WorkspaceUpdateServiceDto toServiceDto(WorkspaceUpdateRequest workspaceUpdateRequest, String imageUrl);
 
     @Mappings(@Mapping(source = "id", target = "workspaceId"))
     WorkspaceOneResponse toDto(Workspace workspace);

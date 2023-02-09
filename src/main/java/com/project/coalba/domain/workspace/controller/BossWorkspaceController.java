@@ -5,11 +5,13 @@ import com.project.coalba.domain.workspace.dto.response.*;
 import com.project.coalba.domain.workspace.entity.WorkspaceMember;
 import com.project.coalba.domain.workspace.mapper.WorkspaceMapper;
 import com.project.coalba.domain.workspace.service.BossWorkspaceService;
+import com.project.coalba.global.s3.AwsS3Service;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @RestController
 public class BossWorkspaceController {
     private final BossWorkspaceService bossWorkspaceService;
+    private final AwsS3Service awsS3Service;
     private final WorkspaceMapper mapper;
 
     @GetMapping
@@ -35,16 +38,20 @@ public class BossWorkspaceController {
         return mapper.toDto(bossWorkspaceService.getWorkspace(workspaceId));
     }
 
-    @PostMapping
-    public ResponseEntity<Void> saveWorkspace(@Validated @RequestBody WorkspaceCreateRequest workspaceCreateRequest) {
-        bossWorkspaceService.saveWorkspace(mapper.toServiceDto(workspaceCreateRequest));
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<Void> saveWorkspace(@Validated @RequestPart("workspace") WorkspaceCreateRequest workspaceCreateRequest,
+                                              @RequestPart(required = false) MultipartFile imageFile) {
+        String imageUrl = awsS3Service.uploadImage(imageFile);
+        bossWorkspaceService.saveWorkspace(mapper.toServiceDto(workspaceCreateRequest, imageUrl));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PutMapping("/{workspaceId}")
+    @PutMapping(value = "/{workspaceId}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> updateWorkspace(@PathVariable Long workspaceId,
-                                                @Validated @RequestBody WorkspaceUpdateRequest workspaceUpdateRequest) {
-        bossWorkspaceService.updateWorkspace(workspaceId, mapper.toServiceDto(workspaceUpdateRequest));
+                                                @Validated @RequestPart("workspace") WorkspaceUpdateRequest workspaceUpdateRequest,
+                                                @RequestPart(required = false) MultipartFile imageFile) {
+        String imageUrl = awsS3Service.replaceImage(imageFile, workspaceUpdateRequest.getPrevImageUrl());
+        bossWorkspaceService.updateWorkspace(workspaceId, mapper.toServiceDto(workspaceUpdateRequest, imageUrl));
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
