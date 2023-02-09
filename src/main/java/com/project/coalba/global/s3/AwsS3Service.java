@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.project.coalba.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -67,7 +68,7 @@ public class AwsS3Service {
     private ObjectMetadata getFileMetaData(MultipartFile file) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(file.getSize());
-        objectMetadata.setContentType(file.getContentType());
+        objectMetadata.setContentType(ContentType.IMAGE_PNG.getMimeType()); //항상 image/png 타입
         return objectMetadata;
     }
 
