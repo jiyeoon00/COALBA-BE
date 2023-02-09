@@ -50,10 +50,7 @@ public class BossWorkspaceController {
     public ResponseEntity<Void> updateWorkspace(@PathVariable Long workspaceId,
                                                 @Validated @RequestPart("workspace") WorkspaceUpdateRequest workspaceUpdateRequest,
                                                 @RequestPart(required = false) MultipartFile imageFile) {
-        String imageUrl = awsS3Service.uploadImage(imageFile);
-        if (StringUtils.hasText(imageUrl)) awsS3Service.deleteImage(workspaceUpdateRequest.getPrevImageUrl());
-        else imageUrl = workspaceUpdateRequest.getPrevImageUrl();
-
+        String imageUrl = awsS3Service.replaceImage(imageFile, workspaceUpdateRequest.getPrevImageUrl());
         bossWorkspaceService.updateWorkspace(workspaceId, mapper.toServiceDto(workspaceUpdateRequest, imageUrl));
         return ResponseEntity.status(HttpStatus.OK).build();
     }

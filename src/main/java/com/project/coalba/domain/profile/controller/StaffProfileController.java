@@ -38,10 +38,7 @@ public class StaffProfileController {
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> updateMyProfile(@Validated @RequestPart("profile") ProfileUpdateRequest profileUpdateRequest,
                                                 @RequestPart(required = false) MultipartFile imageFile) {
-        String imageUrl = awsS3Service.uploadImage(imageFile);
-        if (StringUtils.hasText(imageUrl)) awsS3Service.deleteImage(profileUpdateRequest.getPrevImageUrl());
-        else imageUrl = profileUpdateRequest.getPrevImageUrl();
-
+        String imageUrl = awsS3Service.replaceImage(imageFile, profileUpdateRequest.getPrevImageUrl());
         staffProfileService.updateMyProfile(mapper.toServiceDto(profileUpdateRequest, imageUrl));
         return ResponseEntity.status(HttpStatus.OK).build();
     }

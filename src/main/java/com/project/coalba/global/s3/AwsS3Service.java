@@ -1,10 +1,11 @@
 package com.project.coalba.global.s3;
 
-import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.project.coalba.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.*;
 import java.util.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AwsS3Service {
@@ -34,8 +36,10 @@ public class AwsS3Service {
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다."); //**
+        } catch (SdkClientException e) {
+            log.error(e.getMessage(), e);
+            throw new BusinessException(null); //**
         }
-
         return amazonS3.getUrl(bucketName, fileName).toString();
     }
 
@@ -44,9 +48,16 @@ public class AwsS3Service {
 
         try {
             amazonS3.deleteObject(bucketName, parseFileName(fileUrl));
-        } catch (AmazonServiceException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 삭제에 실패했습니다."); //**
+        } catch (SdkClientException e) {
+            log.error(e.getMessage(), e);
         }
+    }
+
+    //업로드 → 삭제
+    public String replaceImage(MultipartFile srcFile, String destFileUrl) {
+        String imageUrl = uploadImage(srcFile);
+        deleteImage(destFileUrl);
+        return imageUrl;
     }
 
     private String createFileName(String fileName) {
