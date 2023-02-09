@@ -3,16 +3,14 @@ package com.project.coalba.global.s3;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
-import com.project.coalba.global.exception.BusinessException;
+import com.project.coalba.global.exception.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
 import java.util.*;
@@ -35,10 +33,10 @@ public class AwsS3Service {
             amazonS3.putObject(new PutObjectRequest(bucketName, fileName, inputStream, fileMetaData)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다."); //**
+            throw new BusinessException(ErrorCode.FILE_UPLOAD_ERROR);
         } catch (SdkClientException e) {
             log.error(e.getMessage(), e);
-            throw new BusinessException(null); //**
+            throw new BusinessException(ErrorCode.FILE_UPLOAD_ERROR);
         }
         return amazonS3.getUrl(bucketName, fileName).toString();
     }
@@ -68,11 +66,11 @@ public class AwsS3Service {
         try {
             String extension = fileName.substring(fileName.lastIndexOf("."));
             if (!List.of(".png", ".jpg", ".jpeg").contains(extension)) {
-                throw new BusinessException(null); //**
+                throw new BusinessException(ErrorCode.INVALID_IMAGE_FILE_EXTENSION);
             }
             return extension;
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다."); //**
+        } catch (IndexOutOfBoundsException e) {
+            throw new BusinessException(ErrorCode.INVALID_FILE_NAME_FORM);
         }
     }
 
@@ -86,8 +84,8 @@ public class AwsS3Service {
     private String parseFileName(String fileUrl) {
         try {
             return fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 URL(" + fileUrl + ") 입니다."); //**
+        } catch (IndexOutOfBoundsException e) {
+            throw new BusinessException(ErrorCode.INVALID_FILE_URL_FORM);
         }
     }
 }

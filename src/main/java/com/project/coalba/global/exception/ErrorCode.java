@@ -40,7 +40,14 @@ public enum ErrorCode {
     // BAD_REQEST : 잘못된 요청
     ALREADY_PROCESSED_REQ(BAD_REQUEST, "이미 수락 혹은 거절된 요청이므로 취소할 수 없습니다."),
 
-    INVALID_REQUEST_FIELD(BAD_REQUEST, "유효하지 않은 요청 필드입니다.");
+    //DTO validation
+    INVALID_REQUEST_FIELD(BAD_REQUEST, "유효하지 않은 요청 필드입니다."),
+
+    //Aws S3
+    FILE_UPLOAD_ERROR(INTERNAL_SERVER_ERROR, "파일 업로드에 실패하였습니다."),
+    INVALID_FILE_NAME_FORM(BAD_REQUEST, "잘못된 형식의 파일 이름입니다. 파일 이름에 확장자가 포함되어야 합니다."),
+    INVALID_FILE_URL_FORM(BAD_REQUEST, "잘못된 형식의 파일 URL입니다. / 문자 이후에 파일 이름이 포함되어야 합니다."),
+    INVALID_IMAGE_FILE_EXTENSION(BAD_REQUEST, "잘못된 이미지 파일 확장자입니다. .png, .jpg, .jpeg 중 하나이어야 합니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
