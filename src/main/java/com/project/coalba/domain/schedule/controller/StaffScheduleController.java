@@ -52,14 +52,14 @@ public class StaffScheduleController {
     }
 
     @PutMapping("/{scheduleId}/start")
-    public ResponseEntity<Void> startSchedule(@PathVariable Long scheduleId) {
-        staffScheduleService.start(scheduleId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ScheduleStartResponse startSchedule(@PathVariable Long scheduleId) {
+        Schedule schedule = staffScheduleService.start(scheduleId);
+        return mapper.toStartDto(schedule);
     }
 
     @PutMapping("/{scheduleId}/end")
-    public ResponseEntity<Void> endSchedule(@PathVariable Long scheduleId) {
-        staffScheduleService.end(scheduleId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ScheduleEndResponse endSchedule(@PathVariable Long scheduleId) {
+        Schedule schedule = staffScheduleService.end(scheduleId);
+        return mapper.toEndDto(schedule);
     }
 }
