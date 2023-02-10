@@ -92,7 +92,7 @@ public class AuthService {
     }
 
     private String issueRefreshToken(String originalRefreshToken) {
-        if (tokenManager.getRemainedValidSeconds(originalRefreshToken) <= REFRESH_TOKEN_CREATE_CRITERIA_SECONDS) {
+        if (tokenManager.getRemainedExpirySeconds(originalRefreshToken) <= REFRESH_TOKEN_CREATE_CRITERIA_SECONDS) {
             return tokenManager.createRefreshToken();
         }
         return originalRefreshToken;
