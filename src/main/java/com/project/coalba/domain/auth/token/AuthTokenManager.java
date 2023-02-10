@@ -5,15 +5,14 @@ import com.project.coalba.domain.auth.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.*;
 import java.util.*;
 
 @Slf4j
@@ -22,11 +21,11 @@ public class AuthTokenManager {
     private final UserRepository userRepository;
     private final Key key;
 
-    @Value("${app.auth.accessTokenExpiry}")
-    private Long accessTokenExpiry;
+    @Value("${app.auth.accessToken.expiryPeriod}")
+    private Long accessTokenExpiryPeriod;
 
-    @Value("${app.auth.refreshTokenExpiry}")
-    private Long refreshTokenExpiry;
+    @Value("${app.auth.refreshToken.expiryPeriod}")
+    private Long refreshTokenExpiryPeriod;
 
     private static final String USER_ID_KEY = "userId";
 
@@ -37,34 +36,34 @@ public class AuthTokenManager {
     }
 
     public String createAccessToken(String providerId, Long userId) {
-        Date expiryDate = getExpiryDate(accessTokenExpiry);
+        Date expiryDate = getExpiryDate(accessTokenExpiryPeriod);
         return createToken(providerId, userId, expiryDate);
     }
 
     public String createRefreshToken() {
-        Date expiryDate = getExpiryDate(refreshTokenExpiry);
+        Date expiryDate = getExpiryDate(refreshTokenExpiryPeriod);
         return createToken(expiryDate);
     }
 
-    private Date getExpiryDate(Long expiry) {
-        return new Date(System.currentTimeMillis() + expiry);
+    private Date getExpiryDate(Long expiryPeriod) {
+        return new Date(System.currentTimeMillis() + expiryPeriod);
     }
 
-    private String createToken(String providerId, Long userId, Date expiry) {
+    private String createToken(String providerId, Long userId, Date expiryDate) {
         return Jwts.builder()
                 .setSubject(providerId)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setIssuedAt(new Date())
-                .setExpiration(expiry)
+                .setExpiration(expiryDate)
                 .claim(USER_ID_KEY, userId)
                 .compact();
     }
 
-    private String createToken(Date expiry) {
+    private String createToken(Date expiryDate) {
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setIssuedAt(new Date())
-                .setExpiration(expiry)
+                .setExpiration(expiryDate)
                 .compact();
     }
 
@@ -133,5 +132,12 @@ public class AuthTokenManager {
             log.error(e.getMessage());
         }
         return null;
+    }
+
+    public long getRemainedExpirySeconds(String token) {
+        LocalDateTime expiryDateTime = getTokenClaims(token).getExpiration()
+                .toInstant().atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        return Duration.between(LocalDateTime.now(), expiryDateTime).getSeconds();
     }
 }

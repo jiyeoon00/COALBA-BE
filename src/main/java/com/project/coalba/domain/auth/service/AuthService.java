@@ -21,6 +21,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final UserRefreshTokenRepository userRefreshTokenRepository;
     private static final String USER_ID_KEY = "userId";
+    private static final long REFRESH_TOKEN_CREATE_CRITERIA_SECONDS = 2 * 24 * 60 * 60;
 
     @Transactional
     public AuthResponse login(Provider provider, Role role, String socialAccessToken, String socialRefreshToken) {
@@ -48,7 +49,7 @@ public class AuthService {
         UserRefreshToken userRefreshToken = getUserRefreshToken(userId).orElseThrow(() -> new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
         if (isValidRefreshToken(refreshToken, userRefreshToken.getToken())) {
             String newAccessToken = tokenManager.createAccessToken(providerId, userId);
-            String newRefreshToken = tokenManager.createRefreshToken();
+            String newRefreshToken = issueRefreshToken(refreshToken);
             userRefreshToken.updateToken(newRefreshToken);
             return new TokenResponse(newAccessToken, newRefreshToken);
         }
@@ -88,5 +89,12 @@ public class AuthService {
 
     private boolean isValidRefreshToken(String refreshToken, String dbRefreshToken) {
         return tokenManager.validate(refreshToken) && refreshToken.equals(dbRefreshToken);
+    }
+
+    private String issueRefreshToken(String originalRefreshToken) {
+        if (tokenManager.getRemainedExpirySeconds(originalRefreshToken) <= REFRESH_TOKEN_CREATE_CRITERIA_SECONDS) {
+            return tokenManager.createRefreshToken();
+        }
+        return originalRefreshToken;
     }
 }
