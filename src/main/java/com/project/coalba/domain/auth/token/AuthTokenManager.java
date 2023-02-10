@@ -5,15 +5,14 @@ import com.project.coalba.domain.auth.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.*;
 import java.util.*;
 
 @Slf4j
@@ -133,5 +132,12 @@ public class AuthTokenManager {
             log.error(e.getMessage());
         }
         return null;
+    }
+
+    public long getRemainedValidSeconds(String token) {
+        LocalDateTime expiration = getTokenClaims(token).getExpiration()
+                .toInstant().atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+        return Duration.between(LocalDateTime.now(), expiration).getSeconds();
     }
 }
