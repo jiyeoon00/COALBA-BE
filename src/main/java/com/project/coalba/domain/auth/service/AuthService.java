@@ -34,7 +34,7 @@ public class AuthService {
         else loginUser = updateUser(userOptional.get(), socialInfo);
 
         String accessToken = tokenManager.createAccessToken(loginUser.getProviderId(), loginUser.getId());
-        String refreshToken = tokenManager.createRefreshToken();
+        String refreshToken = issueRefreshToken(getUserRefreshToken(loginUser.getId()).orElse(null));
         manageRefreshToken(loginUser, refreshToken);
         return new AuthResponse(accessToken, refreshToken, isNewUser);
     }
@@ -49,7 +49,7 @@ public class AuthService {
         UserRefreshToken userRefreshToken = getUserRefreshToken(userId).orElseThrow(() -> new BusinessException(ErrorCode.REFRESH_TOKEN_NOT_FOUND));
         if (isValidRefreshToken(refreshToken, userRefreshToken.getToken())) {
             String newAccessToken = tokenManager.createAccessToken(providerId, userId);
-            String newRefreshToken = issueRefreshToken(refreshToken);
+            String newRefreshToken = issueRefreshToken(userRefreshToken);
             userRefreshToken.updateToken(newRefreshToken);
             return new TokenResponse(newAccessToken, newRefreshToken);
         }
@@ -91,10 +91,11 @@ public class AuthService {
         return tokenManager.validate(refreshToken) && refreshToken.equals(dbRefreshToken);
     }
 
-    private String issueRefreshToken(String originalRefreshToken) {
-        if (tokenManager.getRemainedExpirySeconds(originalRefreshToken) <= REFRESH_TOKEN_CREATE_CRITERIA_SECONDS) {
+    private String issueRefreshToken(UserRefreshToken userRefreshToken) {
+        if (userRefreshToken == null || !tokenManager.validate(userRefreshToken.getToken()) ||
+                tokenManager.getRemainedExpirySeconds(userRefreshToken.getToken()) <= REFRESH_TOKEN_CREATE_CRITERIA_SECONDS) {
             return tokenManager.createRefreshToken();
         }
-        return originalRefreshToken;
+        return userRefreshToken.getToken();
     }
 }
