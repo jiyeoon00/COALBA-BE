@@ -231,6 +231,20 @@ public interface ScheduleMapper {
     })
     StaffWorkReportListResponse.WorkReportResponse toWorkReportDtoOfStaff(int month, WorkReportServiceDto workReport);
 
+    @Mappings({
+            @Mapping(source = "id", target = "scheduleId"),
+            @Mapping(source = "logicalStartDateTime", target = "logicalStartTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "status", target = "status")
+    })
+    ScheduleStartResponse toStartDto(Schedule schedule);
+
+    @Mappings({
+            @Mapping(source = "id", target = "scheduleId"),
+            @Mapping(source = "logicalEndDateTime", target = "logicalEndTime", qualifiedByName = "toLocalTime"),
+            @Mapping(source = "status", target = "status")
+    })
+    ScheduleEndResponse toEndDto(Schedule schedule);
+
     @Named("toLocalDate")
     default LocalDate localDateTimeToLocalDate(LocalDateTime localDateTime) {
         if (localDateTime == null) return null;

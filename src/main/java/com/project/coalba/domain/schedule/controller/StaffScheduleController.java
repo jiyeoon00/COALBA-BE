@@ -6,8 +6,6 @@ import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.mapper.ScheduleMapper;
 import com.project.coalba.domain.schedule.service.StaffScheduleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -32,13 +30,13 @@ public class StaffScheduleController {
         return mapper.toDto(selectedDate, () -> homeScheduleList);
     }
 
-    @GetMapping("/workspaces/{workspaceId}")
-    public StaffWorkspacePageResponse getWorkspacePage(@PathVariable Long workspaceId) {
+    @GetMapping
+    public StaffWorkspacePageResponse getWorkspacePage(@RequestParam Long workspaceId) {
         return mapper.toDto(staffScheduleService.getWorkspacePage(workspaceId));
     }
 
-    @GetMapping("/workspaces/{workspaceId}/selected")
-    public StaffWorkspaceScheduleListResponse getWorkspaceScheduleList(@PathVariable Long workspaceId,
+    @GetMapping("/selected")
+    public StaffWorkspaceScheduleListResponse getWorkspaceScheduleList(@RequestParam Long workspaceId,
                                                                        @RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
         List<ScheduleServiceDto> workspaceScheduleList = staffScheduleService.getWorkspaceScheduleList(workspaceId, selectedDate);
@@ -52,14 +50,14 @@ public class StaffScheduleController {
     }
 
     @PutMapping("/{scheduleId}/start")
-    public ResponseEntity<Void> startSchedule(@PathVariable Long scheduleId) {
-        staffScheduleService.start(scheduleId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ScheduleStartResponse startSchedule(@PathVariable Long scheduleId) {
+        Schedule schedule = staffScheduleService.start(scheduleId);
+        return mapper.toStartDto(schedule);
     }
 
     @PutMapping("/{scheduleId}/end")
-    public ResponseEntity<Void> endSchedule(@PathVariable Long scheduleId) {
-        staffScheduleService.end(scheduleId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ScheduleEndResponse endSchedule(@PathVariable Long scheduleId) {
+        Schedule schedule = staffScheduleService.end(scheduleId);
+        return mapper.toEndDto(schedule);
     }
 }

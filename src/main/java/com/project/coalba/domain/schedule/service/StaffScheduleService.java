@@ -113,19 +113,21 @@ public class StaffScheduleService {
     }
 
     @Transactional
-    public void start(Long scheduleId) {
+    public Schedule start(Long scheduleId) {
         Schedule schedule = getSchedule(scheduleId);
         LocalDateTime currentDateTime = LocalDateTime.now();
         validateCurrentDateTime(currentDateTime, schedule.getScheduleStartDateTime().minusMinutes(10), schedule.getScheduleEndDateTime());
         start(currentDateTime, schedule);
+        return schedule;
     }
 
     @Transactional
-    public void end(Long scheduleId) {
+    public Schedule end(Long scheduleId) {
         Schedule schedule = getSchedule(scheduleId);
         LocalDateTime currentDateTime = LocalDateTime.now();
         validateScheduleStatus(schedule.getStatus());
         end(currentDateTime, schedule);
+        return schedule;
     }
 
     private Schedule getSchedule(Long scheduleId) {
