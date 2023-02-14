@@ -29,7 +29,6 @@ public class BossScheduleService {
     private final BossWorkspaceService bossWorkspaceService;
     private final StaffProfileService staffProfileService;
     private final ScheduleRepository scheduleRepository;
-    private final ScheduleValidator scheduleValidator;
     private final ExternalCalendarService externalCalendarService;
 
     @Transactional(readOnly = true)
@@ -105,14 +104,12 @@ public class BossScheduleService {
 
     @Transactional
     public void save(ScheduleCreateServiceDto serviceDto) {
-        scheduleValidator.validate(serviceDto); //schedule 생성 요청 검증
-
         Workspace workspace = bossWorkspaceService.getWorkspace(serviceDto.getWorkspaceId());
         Staff staff = staffProfileService.getStaff(serviceDto.getStaffId());
         Schedule schedule = serviceDto.toEntity(workspace, staff);
         scheduleRepository.save(schedule);
 
-        addEventToExternalCalendar(schedule);
+        addEventToExternalCalendar(schedule); //외부 api
     }
 
     @Transactional

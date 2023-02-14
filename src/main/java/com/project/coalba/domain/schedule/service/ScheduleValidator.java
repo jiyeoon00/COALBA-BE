@@ -7,6 +7,7 @@ import com.project.coalba.domain.workspace.repository.WorkspaceMemberRepository;
 import com.project.coalba.global.exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class ScheduleValidator {
     private final WorkspaceMemberRepository workspaceMemberRepository;
     private final ScheduleRepository scheduleRepository;
 
+    @Transactional(readOnly = true)
     public void validate(ScheduleCreateServiceDto serviceDto) {
         //해당 staff 해당 workspaceMember 인지 검증
         workspaceMemberRepository.findByWorkspaceIdAndStaffId(serviceDto.getWorkspaceId(), serviceDto.getStaffId())
