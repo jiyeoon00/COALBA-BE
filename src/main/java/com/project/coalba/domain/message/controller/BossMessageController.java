@@ -20,19 +20,21 @@ public class BossMessageController {
     private final BossMessageService bossMessageService;
     private final MessageMapper mapper;
 
-    @GetMapping("/workspaces/{workspaceId}/boxes")
-    public MessageBoxListResponse getMessageBoxList(@PathVariable Long workspaceId) {
+    @GetMapping("/boxes")
+    public MessageBoxListResponse getMessageBoxList(@RequestParam("workspaceId") Long workspaceId) {
         List<MessageBoxServiceDto> messageBoxList = bossMessageService.getMessageBoxList(workspaceId);
         return mapper.toDto(() -> messageBoxList);
     }
 
-    @GetMapping("/workspaces/{workspaceId}/staffs/{staffId}")
-    public MessageResponse.BossMessageResponse getDetailMessages(@PathVariable Long workspaceId, @PathVariable Long staffId) {
+    @GetMapping
+    public MessageResponse.BossMessageResponse getDetailMessages(@RequestParam("workspaceId") Long workspaceId,
+                                                                 @RequestParam("staffId") Long staffId) {
         return bossMessageService.getDetailMessages(workspaceId, staffId);
     }
 
-    @PostMapping("/workspaces/{workspaceId}/staffs/{staffId}")
-    public ResponseEntity<Void> sendMessageToStaff(@PathVariable Long workspaceId, @PathVariable Long staffId,
+    @PostMapping
+    public ResponseEntity<Void> sendMessageToStaff(@RequestParam("workspaceId") Long workspaceId,
+                                                   @RequestParam("staffId") Long staffId,
                                                    @RequestBody MessageCreateRequest request) {
         bossMessageService.sendMessageToStaff(workspaceId, staffId, request.getContent());
         return ResponseEntity.status(HttpStatus.CREATED).build();

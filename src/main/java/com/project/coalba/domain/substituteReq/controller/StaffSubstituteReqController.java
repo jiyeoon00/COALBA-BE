@@ -20,8 +20,8 @@ public class StaffSubstituteReqController {
     private final StaffSubstituteReqService staffSubstituteReqService;
     private final SubstituteReqMapper mapper;
 
-    @GetMapping("/schedules/{scheduleId}/possible/staffs")
-    public PossibleStaffListResponse getStaffListPossibleForSubstituteReq(@PathVariable Long scheduleId) {
+    @GetMapping("/possible/staffs")
+    public PossibleStaffListResponse getStaffListPossibleForSubstituteReq(@RequestParam("scheduleId") Long scheduleId) {
         List<Staff> staffList = staffSubstituteReqService.getStaffListPossibleForSubstituteReq(scheduleId);
         return mapper.toDto(() -> staffList);
     }
@@ -44,13 +44,13 @@ public class StaffSubstituteReqController {
         return new BothDetailSubstituteReqResponse(detailSubstituteReqDto);
     }
 
-    @PostMapping("/{scheduleId}/from")
-    public void createSubstituteReq(@PathVariable Long scheduleId,
+    @PostMapping
+    public void createSubstituteReq(@RequestParam("scheduleId") Long scheduleId,
                                     @Validated @RequestBody SubstituteReqCreateRequest request) {
         staffSubstituteReqService.createSubstituteReq(scheduleId, request.getReceiverId(), request.getReqMessage());
     }
 
-    @PutMapping("/{substituteReqId}/from")
+    @PutMapping("/{substituteReqId}/cancel")
     public ResponseEntity cancelSubstituteReq(@PathVariable Long substituteReqId) {
         staffSubstituteReqService.cancelSubstituteReq(substituteReqId);
         return ResponseEntity.ok("취소되었습니다.");

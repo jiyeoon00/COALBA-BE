@@ -14,14 +14,15 @@ import org.springframework.web.bind.annotation.*;
 public class StaffMessageController {
     private final StaffMessageService staffMessageService;
 
-    @PostMapping("/workspaces/{workspaceId}")
-    public ResponseEntity<Void> sendMessageToBoss(@PathVariable Long workspaceId, @RequestBody MessageCreateRequest request) {
+    @PostMapping
+    public ResponseEntity<Void> sendMessageToBoss(@RequestParam("workspaceId") Long workspaceId,
+                                                  @RequestBody MessageCreateRequest request) {
         staffMessageService.sendMessageToBoss(workspaceId, request.getContent());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/workspaces/{workspaceId}")
-    public MessageResponse.StaffMessageResponse getDetailMessages(@PathVariable Long workspaceId) {
+    @GetMapping
+    public MessageResponse.StaffMessageResponse getDetailMessages(@RequestParam("workspaceId") Long workspaceId) {
         return staffMessageService.getDetailMessages(workspaceId);
     }
 }
