@@ -21,12 +21,12 @@ public class MessageResponse {
         private String workspaceName;
         private List<DetailMessageResponse> messageList = new ArrayList<>();
 
-        public StaffMessageResponse(Workspace workspace, List<Message> messages){
+        public StaffMessageResponse(Workspace workspace, List<Message> messages) {
             this.workspaceId = workspace.getId();
             this.workspaceImageUrl = workspace.getImageUrl();
             this.workspaceName = workspace.getName();
             this.messageList.addAll(messages.stream()
-                    .map(DetailMessageResponse::new).collect(Collectors.toList()));
+                    .map(DetailMessageForStaff::new).collect(Collectors.toList()));
         }
     }
 
@@ -38,30 +38,64 @@ public class MessageResponse {
         private String staffName;
         private List<DetailMessageResponse> messageList = new ArrayList<>();
 
-        public BossMessageResponse(Workspace workspace, Staff staff, List<Message> messages){
+        public BossMessageResponse(Workspace workspace, Staff staff, List<Message> messages) {
             this.workspaceId = workspace.getId();
             this.staffId = staff.getId();
             this.staffImageUrl = staff.getImageUrl();
             this.staffName = staff.getRealName();
             this.messageList.addAll(messages.stream()
-                    .map(DetailMessageResponse::new).collect(Collectors.toList()));
+                    .map(DetailMessageForBoss::new).collect(Collectors.toList()));
         }
     }
 
     @Getter
-    public static class DetailMessageResponse {
+    public static abstract class DetailMessageResponse {
         private Long messageId;
-        private Criteria criteria;
+        private String sendingOrReceiving;
         private String content;
 
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MM/dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime createDate;
 
-        public DetailMessageResponse(Message message){
+        public DetailMessageResponse(Message message) {
             this.messageId = message.getId();
-            this.criteria =  message.getCriteria();
+            this.sendingOrReceiving =  getSendingAndReceiving(message.getCriteria());
             this.content = message.getContent();
             this.createDate = message.getCreatedDate();
+        }
+
+        public abstract String getSendingAndReceiving(Criteria criteria);
+    }
+
+    public static class DetailMessageForBoss extends DetailMessageResponse {
+
+        public DetailMessageForBoss(Message message) {
+            super(message);
+        }
+
+        @Override
+        public String getSendingAndReceiving(Criteria criteria) {
+            if(criteria.equals(Criteria.STAFF_TO_WORKSPACE)) {
+                return "받은쪽지";
+            } else {
+                return "보낸쪽지";
+            }
+        }
+    }
+
+    public static class DetailMessageForStaff extends DetailMessageResponse {
+
+        public DetailMessageForStaff(Message message) {
+            super(message);
+        }
+
+        @Override
+        public String getSendingAndReceiving(Criteria criteria) {
+            if(criteria.equals(Criteria.STAFF_TO_WORKSPACE)) {
+                return "보낸쪽지";
+            } else {
+                return "받은쪽지";
+            }
         }
     }
 }
