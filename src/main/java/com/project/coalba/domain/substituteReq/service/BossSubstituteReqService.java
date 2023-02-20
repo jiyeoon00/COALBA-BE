@@ -29,7 +29,6 @@ public class BossSubstituteReqService {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final SubstituteReqRepository substituteReqRepository;
     private final ProfileUtil profileUtil;
-    private final ExternalCalendarService externalCalendarService;
 
     @Transactional(readOnly = true)
     public BothSubstituteReqDto getDetailSubstituteReq(Long substituteReqId) {
@@ -54,7 +53,7 @@ public class BossSubstituteReqService {
     }
 
     @Transactional
-    public void approveSubstituteReq(Long substituteReqId) {
+    public SubstituteReq approveSubstituteReq(Long substituteReqId) {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         substituteReq.approve();
 
@@ -62,27 +61,9 @@ public class BossSubstituteReqService {
         schedule.changeStaff(substituteReq.getReceiver());
 
         sendApprovalNotice(substituteReq);
-        applyToExternalCalendar(substituteReq.getSender(), schedule);
+        return substituteReq;
     }
 
-    private void applyToExternalCalendar(Staff sender, Schedule schedule) {
-        addEventToExternalCalendar(schedule);
-        deleteEventOnExternalCalendar(sender, schedule);
-    }
-
-    private void addEventToExternalCalendar(Schedule schedule) {
-        User user = schedule.getStaff().getUser();
-        CalendarPersonalDto calendarPersonalDto = new CalendarPersonalDto(user);
-        CalendarEventDto calendarEventDto = new CalendarEventDto(schedule);
-        externalCalendarService.addEvent(calendarPersonalDto, calendarEventDto);
-    }
-
-    private void deleteEventOnExternalCalendar(Staff sender, Schedule schedule) {
-        User user = sender.getUser();
-        CalendarPersonalDto calendarPersonalDto = new CalendarPersonalDto(user);
-        CalendarEventDto calendarEventDto = new CalendarEventDto(schedule);
-        externalCalendarService.deleteEvent(calendarPersonalDto, calendarEventDto);
-    }
 
     private void sendApprovalNotice(SubstituteReq substituteReq) {
         String senderTargetToken = substituteReq.getSender().getDeviceToken();
