@@ -8,11 +8,12 @@ import com.project.coalba.domain.externalCalendar.dto.EventSearchFilter;
 import com.project.coalba.domain.externalCalendar.dto.request.CalendarEventRequest;
 import com.project.coalba.domain.externalCalendar.dto.CalendarPersonalDto;
 import com.project.coalba.domain.externalCalendar.dto.response.GoogleCalendarEventsResponse;
+import com.project.coalba.global.exception.BusinessException;
+import com.project.coalba.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -31,7 +32,8 @@ public class ExternalCalendarService {
     private final AuthSocialTokenService authSocialTokenService;
 
     public void addEvent(CalendarPersonalDto calendarPersonalDto, CalendarEventDto calendarEventDto) {
-        HttpHeaders headers = makeCalendarRequestHeader(calendarPersonalDto.getAccessToken());
+        String accessToken = authSocialTokenService.updateAccessToken(calendarPersonalDto.getUserId());
+        HttpHeaders headers = makeCalendarRequestHeader(accessToken);
         CalendarEventRequest event = new CalendarEventRequest(calendarEventDto);
         HttpEntity<String> request = new HttpEntity<String>(eventToJson(event), headers);
         Map uriVariable = Map.of(
@@ -41,39 +43,32 @@ public class ExternalCalendarService {
         try {
             restTemplate.postForObject(HTTP_REQUEST_CREATE, request, HttpEntity.class, uriVariable);
         } catch (HttpClientErrorException e) {
-            if(e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                String accessToken = authSocialTokenService.updateAccessToken(calendarPersonalDto.getUserId());
-                calendarPersonalDto.updateAccessToken(accessToken);
-                addEvent(calendarPersonalDto, calendarEventDto);
-            }
+            throw new BusinessException(ErrorCode.NOPERMISSION_TO_CALENDAR);
         }
     }
 
     public void deleteEvent(CalendarPersonalDto calendarPersonalDto, CalendarEventDto calendarEventDto) {
-        ResponseEntity<GoogleCalendarEventsResponse> eventsByFilter = getEventByFilter(calendarPersonalDto, calendarEventDto);
+        GoogleCalendarEventsResponse eventsByFilter = getEventByFilter(calendarPersonalDto, calendarEventDto);
         if(eventsByFilter != null) {
-            eventsByFilter.getBody().getItems().stream()
+            eventsByFilter.getItems().stream()
                     .forEach(event -> deleteEventByEventId(event.getId(), calendarPersonalDto));
         }
     }
 
-    private ResponseEntity<GoogleCalendarEventsResponse> getEventByFilter(CalendarPersonalDto calendarPersonalDto, CalendarEventDto calendarEventDto) {
-        HttpHeaders headers = makeCalendarRequestHeader(calendarPersonalDto.getAccessToken());
+    private GoogleCalendarEventsResponse getEventByFilter(CalendarPersonalDto calendarPersonalDto, CalendarEventDto calendarEventDto) {
+        String accessToken = authSocialTokenService.updateAccessToken(calendarPersonalDto.getUserId());
+        calendarPersonalDto.updateAccessToken(accessToken);
+        HttpHeaders headers = makeCalendarRequestHeader(accessToken);
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
         EventSearchFilter filter = new EventSearchFilter(calendarPersonalDto, calendarEventDto);
         Map uriVariable = objectMapper.convertValue(filter, Map.class);
 
         try {
-            return restTemplate.exchange(HTTP_REQUEST_GET, HttpMethod.GET, request, GoogleCalendarEventsResponse.class, uriVariable);
+            return (GoogleCalendarEventsResponse) restTemplate.exchange(HTTP_REQUEST_GET, HttpMethod.GET, request, GoogleCalendarEventsResponse.class, uriVariable).getBody();
         } catch (HttpClientErrorException e) {
-            if(e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                String accessToken = authSocialTokenService.updateAccessToken(calendarPersonalDto.getUserId());
-                calendarPersonalDto.updateAccessToken(accessToken);
-                getEventByFilter(calendarPersonalDto, calendarEventDto);
-            }
+            throw new BusinessException(ErrorCode.NOPERMISSION_TO_CALENDAR);
         }
-        return null;
     }
 
     private void deleteEventByEventId(String eventId, CalendarPersonalDto calendarPersonalDto) {
@@ -87,11 +82,7 @@ public class ExternalCalendarService {
         try {
             restTemplate.exchange(HTTP_REQUEST_DELETE, HttpMethod.DELETE, request, String.class, uriVariable);
         } catch (HttpClientErrorException e) {
-            if(e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-                String accessToken = authSocialTokenService.updateAccessToken(calendarPersonalDto.getUserId());
-                calendarPersonalDto.updateAccessToken(accessToken);
-                deleteEventByEventId(eventId, calendarPersonalDto);
-            }
+            throw new BusinessException(ErrorCode.NOPERMISSION_TO_CALENDAR);
         }
     }
 
