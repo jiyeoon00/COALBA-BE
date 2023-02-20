@@ -4,6 +4,7 @@ import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.externalCalendar.dto.CalendarEventDto;
 import com.project.coalba.domain.externalCalendar.dto.CalendarPersonalDto;
 import com.project.coalba.domain.externalCalendar.service.ExternalCalendarService;
+import com.project.coalba.domain.notification.FirebaseCloudMessageService;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.dto.response.BothDetailSubstituteReqResponse;
@@ -24,6 +25,7 @@ import java.util.List;
 public class BossSubstituteReqController {
     private final BossSubstituteReqService bossSubstituteReqService;
     private final ExternalCalendarService externalCalendarService;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @GetMapping("/{substituteReqId}")
     public BothDetailSubstituteReqResponse getDetailSubstituteReqs(@PathVariable Long substituteReqId){
@@ -40,6 +42,8 @@ public class BossSubstituteReqController {
     @PutMapping("/{substituteReqId}/accept")
     public ResponseEntity approveSubstituteReq(@PathVariable Long substituteReqId) {
         SubstituteReq substituteReq = bossSubstituteReqService.approveSubstituteReq(substituteReqId);
+
+        sendApprovalNotice(substituteReq);
         applyToExternalCalendar(substituteReq.getSender(), substituteReq.getSchedule());
         return ResponseEntity.ok("대타근무 요청을 최종승인하였습니다. 스케줄이 교체 됩니다.");
     }
@@ -48,6 +52,14 @@ public class BossSubstituteReqController {
     public ResponseEntity disapproveSubstituteReq(@PathVariable Long substituteReqId) {
         bossSubstituteReqService.disapproveSubstituteReq(substituteReqId);
         return ResponseEntity.ok("대타근무 요청을 최종거절하였습니다.");
+    }
+
+    private void sendApprovalNotice(SubstituteReq substituteReq) {
+        String senderTargetToken = substituteReq.getSender().getDeviceToken();
+        String receiverTargetToken = substituteReq.getReceiver().getDeviceToken();
+
+        firebaseCloudMessageService.sendMessageTo(senderTargetToken, "대타 승인", "스케줄에 해당 근무가 삭제되었습니다.");
+        firebaseCloudMessageService.sendMessageTo(receiverTargetToken, "대타 승인", "스케줄에 해당 근무가 추가되었습니다.");
     }
 
     private void applyToExternalCalendar(Staff sender, Schedule schedule) {

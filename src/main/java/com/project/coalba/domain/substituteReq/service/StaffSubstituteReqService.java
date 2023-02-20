@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.groupingBy;
 @RequiredArgsConstructor
 @Service
 public class StaffSubstituteReqService {
-    private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final BossProfileService bossProfileService;
     private final StaffProfileService staffProfileService;
     private final ScheduleService scheduleService;
@@ -39,7 +38,7 @@ public class StaffSubstituteReqService {
     }
 
     @Transactional
-    public void createSubstituteReq(Long scheduleId, Long receiverId, String reqMessage) {
+    public SubstituteReq createSubstituteReq(Long scheduleId, Long receiverId, String reqMessage) {
         Schedule schedule = scheduleService.getSchedule(scheduleId);
         Staff receiver = staffProfileService.getStaff(receiverId);
         Staff sender = profileUtil.getCurrentStaff();
@@ -54,14 +53,7 @@ public class StaffSubstituteReqService {
                 .build();
 
         substituteReqRepository.save(substituteReq);
-        sendSubstituteRequestNotice(substituteReq);
-    }
-
-    private void sendSubstituteRequestNotice(SubstituteReq substituteReq) {
-        String senderName = substituteReq.getSender().getRealName();
-        String deviceToken = substituteReq.getReceiver().getDeviceToken();
-        
-        firebaseCloudMessageService.sendMessageTo(deviceToken, "대타근무 요청", senderName + "님이 대타를 요청하였습니다.");
+        return substituteReq;
     }
 
     @Transactional
@@ -124,7 +116,7 @@ public class StaffSubstituteReqService {
     }
 
     @Transactional
-    public void acceptSubstituteReq(Long substituteReqId) {
+    public SubstituteReq acceptSubstituteReq(Long substituteReqId) {
         /**
          * 추후 기능 보완
          * 요청 성사시 다른 사람한테 보낸 요청 다 취소(?)
@@ -132,16 +124,7 @@ public class StaffSubstituteReqService {
         SubstituteReq substituteReq = this.getSubstituteReqById(substituteReqId);
         substituteReq.accept();
 
-        sendAcceptanceNotice(substituteReq);
-    }
-
-    private void sendAcceptanceNotice(SubstituteReq substituteReq) {
-        String bossDeviceToken = substituteReq.getBoss().getDeviceToken();
-        String senderDeviceToken = substituteReq.getSender().getDeviceToken();
-        String senderName = substituteReq.getSender().getRealName();
-
-        firebaseCloudMessageService.sendMessageTo(bossDeviceToken, "대타 승인 요청", "대타 승인 요청이 도착하였습니다.");
-        firebaseCloudMessageService.sendMessageTo(senderDeviceToken, "대타 요청 수락", senderName + "님이 대타요청을 수락하였습니다. 사장님에게 승인요청이 갑니다.");
+        return substituteReq;
     }
 
     @Transactional

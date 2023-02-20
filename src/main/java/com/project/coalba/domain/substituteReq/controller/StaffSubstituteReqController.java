@@ -1,8 +1,10 @@
 package com.project.coalba.domain.substituteReq.controller;
 
+import com.project.coalba.domain.notification.FirebaseCloudMessageService;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.substituteReq.dto.request.SubstituteReqCreateRequest;
 import com.project.coalba.domain.substituteReq.dto.response.*;
+import com.project.coalba.domain.substituteReq.entity.SubstituteReq;
 import com.project.coalba.domain.substituteReq.mapper.SubstituteReqMapper;
 import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.project.coalba.domain.substituteReq.service.StaffSubstituteReqService;
@@ -19,6 +21,7 @@ import java.util.List;
 public class StaffSubstituteReqController {
     private final StaffSubstituteReqService staffSubstituteReqService;
     private final SubstituteReqMapper mapper;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @GetMapping("/possible/staffs")
     public PossibleStaffListResponse getStaffListPossibleForSubstituteReq(@RequestParam("scheduleId") Long scheduleId) {
@@ -47,7 +50,16 @@ public class StaffSubstituteReqController {
     @PostMapping
     public void createSubstituteReq(@RequestParam("scheduleId") Long scheduleId,
                                     @Validated @RequestBody SubstituteReqCreateRequest request) {
-        staffSubstituteReqService.createSubstituteReq(scheduleId, request.getReceiverId(), request.getReqMessage());
+        SubstituteReq substituteReq = staffSubstituteReqService.createSubstituteReq(scheduleId, request.getReceiverId(), request.getReqMessage());
+
+        sendSubstituteRequestNotice(substituteReq);
+    }
+
+    private void sendSubstituteRequestNotice(SubstituteReq substituteReq) {
+        String senderName = substituteReq.getSender().getRealName();
+        String deviceToken = substituteReq.getReceiver().getDeviceToken();
+
+        firebaseCloudMessageService.sendMessageTo(deviceToken, "대타근무 요청", senderName + "님이 대타를 요청하였습니다.");
     }
 
     @PutMapping("/{substituteReqId}/cancel")
@@ -58,8 +70,19 @@ public class StaffSubstituteReqController {
 
     @PutMapping("/{substituteReqId}/accept")
     public ResponseEntity acceptSubstituteReq(@PathVariable Long substituteReqId) {
-        staffSubstituteReqService.acceptSubstituteReq(substituteReqId);
+        SubstituteReq substituteReq = staffSubstituteReqService.acceptSubstituteReq(substituteReqId);
+
+        sendAcceptanceNotice(substituteReq);
         return ResponseEntity.ok("대타근무 요청이 수락되었습니다. 사장님께 최종승인 요청이 갑니다.");
+    }
+
+    private void sendAcceptanceNotice(SubstituteReq substituteReq) {
+        String bossDeviceToken = substituteReq.getBoss().getDeviceToken();
+        String senderDeviceToken = substituteReq.getSender().getDeviceToken();
+        String senderName = substituteReq.getSender().getRealName();
+
+        firebaseCloudMessageService.sendMessageTo(bossDeviceToken, "대타 승인 요청", "대타 승인 요청이 도착하였습니다.");
+        firebaseCloudMessageService.sendMessageTo(senderDeviceToken, "대타 요청 수락", senderName + "님이 대타요청을 수락하였습니다. 사장님에게 승인요청이 갑니다.");
     }
 
     @PutMapping("/{substituteReqId}/reject")
