@@ -72,7 +72,7 @@ public class BossScheduleController {
     @DeleteMapping("{scheduleId}")
     public ResponseEntity<Void> cancelSchedule(@PathVariable Long scheduleId) {
         Schedule schedule = bossScheduleService.cancel(scheduleId);
-        externalCalendarService.deleteEvent(new CalendarDto(schedule.getStaff(), schedule)); //외부 api
+        externalCalendarService.deleteEvent(new CalendarDto(schedule)); //외부 api
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
