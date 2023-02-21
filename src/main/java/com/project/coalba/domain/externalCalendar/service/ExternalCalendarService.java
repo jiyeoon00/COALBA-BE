@@ -3,10 +3,9 @@ package com.project.coalba.domain.externalCalendar.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.coalba.domain.auth.service.AuthSocialTokenService;
-import com.project.coalba.domain.externalCalendar.dto.CalendarEventDto;
+import com.project.coalba.domain.externalCalendar.dto.CalendarDto;
 import com.project.coalba.domain.externalCalendar.dto.EventSearchFilter;
 import com.project.coalba.domain.externalCalendar.dto.request.CalendarEventRequest;
-import com.project.coalba.domain.externalCalendar.dto.CalendarPersonalDto;
 import com.project.coalba.domain.externalCalendar.dto.response.GoogleCalendarEventsResponse;
 import com.project.coalba.global.exception.BusinessException;
 import com.project.coalba.global.exception.ErrorCode;
@@ -31,13 +30,13 @@ public class ExternalCalendarService {
     private final ObjectMapper objectMapper;
     private final AuthSocialTokenService authSocialTokenService;
 
-    public void addEvent(CalendarPersonalDto calendarPersonalDto, CalendarEventDto calendarEventDto) {
-        String accessToken = authSocialTokenService.updateAccessToken(calendarPersonalDto.getUserId());
+    public void addEvent(CalendarDto calendarDto) {
+        String accessToken = authSocialTokenService.updateAccessToken(calendarDto.getUserId());
         HttpHeaders headers = makeCalendarRequestHeader(accessToken);
-        CalendarEventRequest event = new CalendarEventRequest(calendarEventDto);
+        CalendarEventRequest event = calendarDto.toCalendarEventRequest();
         HttpEntity<String> request = new HttpEntity<String>(eventToJson(event), headers);
         Map uriVariable = Map.of(
-                "calendarId", calendarPersonalDto.getCalendarId()
+                "calendarId", calendarDto.getCalendarId()
         );
 
         try {
@@ -47,21 +46,21 @@ public class ExternalCalendarService {
         }
     }
 
-    public void deleteEvent(CalendarPersonalDto calendarPersonalDto, CalendarEventDto calendarEventDto) {
-        GoogleCalendarEventsResponse eventsByFilter = getEventByFilter(calendarPersonalDto, calendarEventDto);
+    public void deleteEvent(CalendarDto calendarDto) {
+        GoogleCalendarEventsResponse eventsByFilter = getEventByFilter(calendarDto);
         if(eventsByFilter != null) {
             eventsByFilter.getItems().stream()
-                    .forEach(event -> deleteEventByEventId(event.getId(), calendarPersonalDto));
+                    .forEach(event -> deleteEventByEventId(event.getId(), calendarDto));
         }
     }
 
-    private GoogleCalendarEventsResponse getEventByFilter(CalendarPersonalDto calendarPersonalDto, CalendarEventDto calendarEventDto) {
-        String accessToken = authSocialTokenService.updateAccessToken(calendarPersonalDto.getUserId());
-        calendarPersonalDto.updateAccessToken(accessToken);
+    private GoogleCalendarEventsResponse getEventByFilter(CalendarDto calendarDto) {
+        String accessToken = authSocialTokenService.updateAccessToken(calendarDto.getUserId());
+        calendarDto.updateAccessToken(accessToken);
         HttpHeaders headers = makeCalendarRequestHeader(accessToken);
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
-        EventSearchFilter filter = new EventSearchFilter(calendarPersonalDto, calendarEventDto);
+        EventSearchFilter filter = new EventSearchFilter(calendarDto);
         Map uriVariable = objectMapper.convertValue(filter, Map.class);
 
         try {
@@ -71,11 +70,11 @@ public class ExternalCalendarService {
         }
     }
 
-    private void deleteEventByEventId(String eventId, CalendarPersonalDto calendarPersonalDto) {
-        HttpHeaders headers = makeCalendarRequestHeader(calendarPersonalDto.getAccessToken());
+    private void deleteEventByEventId(String eventId, CalendarDto calendarDto) {
+        HttpHeaders headers = makeCalendarRequestHeader(calendarDto.getAccessToken());
         HttpEntity<Void> request = new HttpEntity<>(headers);
         Map uriVariable = Map.of(
-                "calendarId", calendarPersonalDto.getCalendarId(),
+                "calendarId", calendarDto.getCalendarId(),
                 "eventId", eventId
         );
 

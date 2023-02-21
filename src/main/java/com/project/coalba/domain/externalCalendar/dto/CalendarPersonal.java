@@ -4,12 +4,12 @@ import com.project.coalba.domain.auth.entity.User;
 import lombok.Getter;
 
 @Getter
-public class CalendarPersonalDto {
+public class CalendarPersonal {
     private Long userId;
     private String accessToken;
     private String calendarId;
 
-    public CalendarPersonalDto(User user) {
+    public CalendarPersonal(User user) {
         this.userId = user.getId();
         this.accessToken = user.getAccessToken();
         this.calendarId = user.getEmail();

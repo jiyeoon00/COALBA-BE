@@ -1,8 +1,6 @@
 package com.project.coalba.domain.substituteReq.controller;
 
-import com.project.coalba.domain.auth.entity.User;
-import com.project.coalba.domain.externalCalendar.dto.CalendarEventDto;
-import com.project.coalba.domain.externalCalendar.dto.CalendarPersonalDto;
+import com.project.coalba.domain.externalCalendar.dto.CalendarDto;
 import com.project.coalba.domain.externalCalendar.service.ExternalCalendarService;
 import com.project.coalba.domain.notification.FirebaseCloudMessageService;
 import com.project.coalba.domain.profile.entity.Staff;
@@ -63,21 +61,7 @@ public class BossSubstituteReqController {
     }
 
     private void applyToExternalCalendar(Staff sender, Schedule schedule) {
-        addEventToExternalCalendar(schedule);
-        deleteEventOnExternalCalendar(sender, schedule);
-    }
-
-    private void addEventToExternalCalendar(Schedule schedule) {
-        User user = schedule.getStaff().getUser();
-        CalendarPersonalDto calendarPersonalDto = new CalendarPersonalDto(user);
-        CalendarEventDto calendarEventDto = new CalendarEventDto(schedule);
-        externalCalendarService.addEvent(calendarPersonalDto, calendarEventDto);
-    }
-
-    private void deleteEventOnExternalCalendar(Staff sender, Schedule schedule) {
-        User user = sender.getUser();
-        CalendarPersonalDto calendarPersonalDto = new CalendarPersonalDto(user);
-        CalendarEventDto calendarEventDto = new CalendarEventDto(schedule);
-        externalCalendarService.deleteEvent(calendarPersonalDto, calendarEventDto);
+        externalCalendarService.addEvent(new CalendarDto(schedule));
+        externalCalendarService.deleteEvent(new CalendarDto(sender, schedule));
     }
 }

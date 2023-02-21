@@ -1,8 +1,6 @@
 package com.project.coalba.domain.schedule.controller;
 
-import com.project.coalba.domain.auth.entity.User;
-import com.project.coalba.domain.externalCalendar.dto.CalendarEventDto;
-import com.project.coalba.domain.externalCalendar.dto.CalendarPersonalDto;
+import com.project.coalba.domain.externalCalendar.dto.CalendarDto;
 import com.project.coalba.domain.externalCalendar.service.ExternalCalendarService;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.dto.request.*;
@@ -67,28 +65,14 @@ public class BossScheduleController {
         ScheduleCreateServiceDto serviceDto = mapper.toServiceDto(scheduleCreateRequest);
         scheduleValidator.validate(serviceDto); //schedule 생성 요청 검증
         Schedule schedule = bossScheduleService.save(serviceDto);
-        addEventToExternalCalendar(schedule); //외부 api
+        externalCalendarService.addEvent(new CalendarDto(schedule)); //외부 api
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("{scheduleId}")
     public ResponseEntity<Void> cancelSchedule(@PathVariable Long scheduleId) {
         Schedule schedule = bossScheduleService.cancel(scheduleId);
-        deleteEventOnExternalCalendar(schedule.getStaff(), schedule);
+        externalCalendarService.deleteEvent(new CalendarDto(schedule.getStaff(), schedule)); //외부 api
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    private void addEventToExternalCalendar(Schedule schedule) {
-        User user = schedule.getStaff().getUser();
-        CalendarPersonalDto calendarPersonalDto = new CalendarPersonalDto(user);
-        CalendarEventDto calendarEventDto = new CalendarEventDto(schedule);
-        externalCalendarService.addEvent(calendarPersonalDto, calendarEventDto);
-    }
-
-    private void deleteEventOnExternalCalendar(Staff sender, Schedule schedule) {
-        User user = sender.getUser();
-        CalendarPersonalDto calendarPersonalDto = new CalendarPersonalDto(user);
-        CalendarEventDto calendarEventDto = new CalendarEventDto(schedule);
-        externalCalendarService.deleteEvent(calendarPersonalDto, calendarEventDto);
     }
 }
