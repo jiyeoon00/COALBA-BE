@@ -35,11 +35,12 @@ public enum ErrorCode {
     LATE_SCHEDULE_START(BAD_REQUEST, "해당 스케줄이 종료되어 출근 불가합니다."),
     INVALID_SCHEDULE_END(BAD_REQUEST, "출근 상태일 때에만 퇴근 가능합니다."),
 
-    // NOT_FOUND : Resource를 찾을 수 없음
+    //substituteReq : Resource를 찾을 수 없음
     SUBSTITUTEREQ_NOT_FOUND(NOT_FOUND, "해당 대타근무 요청건을 찾을 수 없습니다."),
-
-    // BAD_REQEST : 잘못된 요청
     ALREADY_PROCESSED_REQ(BAD_REQUEST, "이미 수락 혹은 거절된 요청이므로 취소할 수 없습니다."),
+
+    //googleCalendar Oauth
+    NOPERMISSION_TO_CALENDAR(UNAUTHORIZED, "해당 캘린더에 접근할 수 없습니다."),
 
     //DTO validation
     INVALID_REQUEST_FIELD(BAD_REQUEST, "유효하지 않은 요청 필드입니다."),

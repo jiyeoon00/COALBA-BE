@@ -14,13 +14,15 @@ public class EventSearchFilter {
     private int maxResults;
     private String q;
 
-    public EventSearchFilter(CalendarPersonalDto calendarPersonalDto, CalendarEventDto calendarEventDto) {
-        this.calendarId = calendarPersonalDto.getCalendarId();
-        this.timeMin = formatToGmt(calendarEventDto.getStartDateTime());
-        this.timeMax = formatToGmt(calendarEventDto.getStartDateTime().withSecond(1));
+    public EventSearchFilter(CalendarDto calendarDto) {
+        CalendarEvent calendarEvent = calendarDto.getCalendarEventDto();
+
+        this.calendarId = calendarDto.getCalendarId();
+        this.timeMin = formatToGmt(calendarEvent.getStartDateTime());
+        this.timeMax = formatToGmt(calendarEvent.getStartDateTime().withSecond(1));
         this.singleEvents = Boolean.TRUE;
         this.maxResults = 1;
-        this.q = calendarEventDto.getEventName();
+        this.q = calendarEvent.getEventName();
     }
 
     private String formatToGmt(LocalDateTime localDateTime) {
