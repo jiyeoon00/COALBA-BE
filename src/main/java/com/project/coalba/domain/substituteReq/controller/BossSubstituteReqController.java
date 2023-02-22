@@ -2,7 +2,7 @@ package com.project.coalba.domain.substituteReq.controller;
 
 import com.project.coalba.domain.externalCalendar.dto.CalendarDto;
 import com.project.coalba.domain.externalCalendar.service.ExternalCalendarService;
-import com.project.coalba.domain.notification.FirebaseCloudMessageService;
+import com.project.coalba.domain.notification.Service.FirebaseCloudMessageService;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.dto.response.BothDetailSubstituteReqResponse;
