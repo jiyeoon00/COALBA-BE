@@ -22,7 +22,7 @@ public class StaffMessageService {
     private final ProfileUtil profileUtil;
 
     @Transactional
-    public void sendMessageToBoss(Long workspaceId, String content) {
+    public Long sendMessageToBoss(Long workspaceId, String content) {
         Staff staff = profileUtil.getCurrentStaff();
         Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
         Message message = Message.builder()
@@ -33,6 +33,7 @@ public class StaffMessageService {
                 .build();
 
         messageRepository.save(message);
+        return workspace.getBoss().getId();
     }
 
     @Transactional(readOnly = true)
