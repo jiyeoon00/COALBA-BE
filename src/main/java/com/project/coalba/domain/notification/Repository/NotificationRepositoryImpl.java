@@ -1,29 +1,27 @@
 package com.project.coalba.domain.notification.Repository;
 
 import com.project.coalba.domain.notification.entity.Notification;
-import com.project.coalba.domain.profile.entity.Boss;
-import com.project.coalba.domain.profile.entity.QBoss;
-import com.project.coalba.domain.profile.entity.QStaff;
-import com.project.coalba.domain.profile.entity.Staff;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import static com.project.coalba.domain.notification.entity.QNotification.*;
 import static com.project.coalba.domain.auth.entity.QUser.*;
+import static com.project.coalba.domain.profile.entity.QBoss.boss;
+import static com.project.coalba.domain.profile.entity.QStaff.staff;
 
 @RequiredArgsConstructor
 public class NotificationRepositoryImpl implements NotificationRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Notification getNotificationByStaff(Staff staff) {
+    public Notification getNotificationByStaff(Long staffId) {
         Notification noti = queryFactory.selectFrom(notification)
                 .where(user.eq(
                         JPAExpressions.select(user)
-                                .from(QStaff.staff)
-                                .where(QStaff.staff.eq(staff))
-                                .join(QStaff.staff.user, user)
+                                .from(staff)
+                                .where(staff.id.eq(staffId))
+                                .join(staff.user, user)
 
                 ))
                 .join(notification.user, user).fetchOne();
@@ -32,13 +30,13 @@ public class NotificationRepositoryImpl implements NotificationRepositoryCustom 
     }
 
     @Override
-    public Notification getNotificationByBoss(Boss boss) {
+    public Notification getNotificationByBoss(Long bossId) {
         Notification noti = queryFactory.selectFrom(notification)
                 .where(user.eq(
                         JPAExpressions.select(user)
-                                .from(QBoss.boss)
-                                .where(QBoss.boss.eq(boss))
-                                .join(QBoss.boss.user, user)
+                                .from(boss)
+                                .where(boss.id.eq(bossId))
+                                .join(boss.user, user)
 
                 ))
                 .join(notification.user, user).fetchOne();

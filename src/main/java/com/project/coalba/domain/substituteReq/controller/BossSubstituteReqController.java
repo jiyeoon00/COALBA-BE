@@ -55,8 +55,8 @@ public class BossSubstituteReqController {
     }
 
     private void sendApprovalNotice(SubstituteReq substituteReq) {
-        String senderTargetToken = notificationService.getDeviceTokenByStaff(substituteReq.getSender());
-        String receiverTargetToken = notificationService.getDeviceTokenByStaff(substituteReq.getReceiver());
+        String senderTargetToken = notificationService.getDeviceTokenByStaff(substituteReq.getSender().getId());
+        String receiverTargetToken = notificationService.getDeviceTokenByStaff(substituteReq.getReceiver().getId());
 
         firebaseCloudMessageService.sendMessageTo(senderTargetToken, "대타 승인", "스케줄에 해당 근무가 삭제되었습니다.");
         firebaseCloudMessageService.sendMessageTo(receiverTargetToken, "대타 승인", "스케줄에 해당 근무가 추가되었습니다.");

@@ -59,7 +59,7 @@ public class StaffSubstituteReqController {
 
     private void sendSubstituteRequestNotice(SubstituteReq substituteReq) {
         String senderName = substituteReq.getSender().getRealName();
-        String deviceToken = notificationService.getDeviceTokenByStaff(substituteReq.getReceiver());
+        String deviceToken = notificationService.getDeviceTokenByStaff(substituteReq.getReceiver().getId());
 
         firebaseCloudMessageService.sendMessageTo(deviceToken, "대타근무 요청", senderName + "님이 대타를 요청하였습니다.");
     }
@@ -79,8 +79,8 @@ public class StaffSubstituteReqController {
     }
 
     private void sendAcceptanceNotice(SubstituteReq substituteReq) {
-        String bossDeviceToken = notificationService.getDeviceTokenByBoss(substituteReq.getBoss());
-        String senderDeviceToken = notificationService.getDeviceTokenByStaff(substituteReq.getSender());
+        String bossDeviceToken = notificationService.getDeviceTokenByBoss(substituteReq.getBoss().getId());
+        String senderDeviceToken = notificationService.getDeviceTokenByStaff(substituteReq.getSender().getId());
         String senderName = substituteReq.getSender().getRealName();
 
         firebaseCloudMessageService.sendMessageTo(bossDeviceToken, "대타 승인 요청", "대타 승인 요청이 도착하였습니다.");

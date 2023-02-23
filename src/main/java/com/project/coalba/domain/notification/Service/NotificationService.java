@@ -3,8 +3,6 @@ package com.project.coalba.domain.notification.Service;
 import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.notification.Repository.NotificationRepository;
 import com.project.coalba.domain.notification.entity.Notification;
-import com.project.coalba.domain.profile.entity.Boss;
-import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.global.exception.BusinessException;
 import com.project.coalba.global.utils.UserUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +29,8 @@ public class NotificationService {
     }
 
     @Transactional
-    public String getDeviceTokenByStaff(Staff staff) {
-        Notification notification = notificationRepository.getNotificationByStaff(staff);
+    public String getDeviceTokenByStaff(Long staffId) {
+        Notification notification = notificationRepository.getNotificationByStaff(staffId);
         try {
             return notification.getDeviceToken();
         } catch (Exception e) {
@@ -41,8 +39,8 @@ public class NotificationService {
     }
 
     @Transactional
-    public String getDeviceTokenByBoss(Boss boss) {
-        Notification notification = notificationRepository.getNotificationByBoss(boss);
+    public String getDeviceTokenByBoss(Long bossId) {
+        Notification notification = notificationRepository.getNotificationByBoss(bossId);
         try {
             return notification.getDeviceToken();
         } catch (Exception e) {
