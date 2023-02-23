@@ -1,6 +1,7 @@
 package com.project.coalba.domain.substituteReq.controller;
 
 import com.project.coalba.domain.notification.Service.FirebaseCloudMessageService;
+import com.project.coalba.domain.notification.Service.NotificationService;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.substituteReq.dto.request.SubstituteReqCreateRequest;
 import com.project.coalba.domain.substituteReq.dto.response.*;
@@ -22,6 +23,7 @@ public class StaffSubstituteReqController {
     private final StaffSubstituteReqService staffSubstituteReqService;
     private final SubstituteReqMapper mapper;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final NotificationService notificationService;
 
     @GetMapping("/possible/staffs")
     public PossibleStaffListResponse getStaffListPossibleForSubstituteReq(@RequestParam("scheduleId") Long scheduleId) {
@@ -57,7 +59,7 @@ public class StaffSubstituteReqController {
 
     private void sendSubstituteRequestNotice(SubstituteReq substituteReq) {
         String senderName = substituteReq.getSender().getRealName();
-        String deviceToken = substituteReq.getReceiver().getDeviceToken();
+        String deviceToken = notificationService.getDeviceTokenByStaff(substituteReq.getReceiver());
 
         firebaseCloudMessageService.sendMessageTo(deviceToken, "대타근무 요청", senderName + "님이 대타를 요청하였습니다.");
     }
@@ -77,8 +79,8 @@ public class StaffSubstituteReqController {
     }
 
     private void sendAcceptanceNotice(SubstituteReq substituteReq) {
-        String bossDeviceToken = substituteReq.getBoss().getDeviceToken();
-        String senderDeviceToken = substituteReq.getSender().getDeviceToken();
+        String bossDeviceToken = notificationService.getDeviceTokenByBoss(substituteReq.getBoss());
+        String senderDeviceToken = notificationService.getDeviceTokenByStaff(substituteReq.getSender());
         String senderName = substituteReq.getSender().getRealName();
 
         firebaseCloudMessageService.sendMessageTo(bossDeviceToken, "대타 승인 요청", "대타 승인 요청이 도착하였습니다.");

@@ -3,6 +3,7 @@ package com.project.coalba.domain.substituteReq.controller;
 import com.project.coalba.domain.externalCalendar.dto.CalendarDto;
 import com.project.coalba.domain.externalCalendar.service.ExternalCalendarService;
 import com.project.coalba.domain.notification.Service.FirebaseCloudMessageService;
+import com.project.coalba.domain.notification.Service.NotificationService;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.substituteReq.dto.response.BothDetailSubstituteReqResponse;
@@ -24,6 +25,7 @@ public class BossSubstituteReqController {
     private final BossSubstituteReqService bossSubstituteReqService;
     private final ExternalCalendarService externalCalendarService;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final NotificationService notificationService;
 
     @GetMapping("/{substituteReqId}")
     public BothDetailSubstituteReqResponse getDetailSubstituteReqs(@PathVariable Long substituteReqId){
@@ -53,8 +55,8 @@ public class BossSubstituteReqController {
     }
 
     private void sendApprovalNotice(SubstituteReq substituteReq) {
-        String senderTargetToken = substituteReq.getSender().getDeviceToken();
-        String receiverTargetToken = substituteReq.getReceiver().getDeviceToken();
+        String senderTargetToken = notificationService.getDeviceTokenByStaff(substituteReq.getSender());
+        String receiverTargetToken = notificationService.getDeviceTokenByStaff(substituteReq.getReceiver());
 
         firebaseCloudMessageService.sendMessageTo(senderTargetToken, "대타 승인", "스케줄에 해당 근무가 삭제되었습니다.");
         firebaseCloudMessageService.sendMessageTo(receiverTargetToken, "대타 승인", "스케줄에 해당 근무가 추가되었습니다.");
