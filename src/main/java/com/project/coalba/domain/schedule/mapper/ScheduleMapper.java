@@ -49,12 +49,16 @@ public interface ScheduleMapper {
     })
     BossHomePageResponse.WorkspaceResponse toWorkspaceDtoOfBossHome(Workspace workspace);
 
-    interface BossHomeScheduleListRef extends Supplier<List<Schedule>> {}
-    default BossHomeScheduleListResponse toDto(LocalDate selectedDate, Long selectedWorkspaceId, BossHomeScheduleListRef ref) {
-        List<BossHomeScheduleListResponse.ScheduleResponse> selectedScheduleList = ref.get().stream()
-                .map(this::toScheduleDtoOfBossHome)
-                .collect(Collectors.toList());
-        return new BossHomeScheduleListResponse(selectedDate, selectedWorkspaceId, selectedScheduleList);
+    default BossHomeScheduleListResponse toDto(LocalDate selectedDate, Map<Workspace, List<Schedule>> scheduleListOfWorkspaces) {
+        List<BossHomeScheduleListResponse.WorkspaceResponse> workspaceList = new ArrayList<>();
+        for (Workspace workspace : scheduleListOfWorkspaces.keySet()) {
+            workspaceList.add(new BossHomeScheduleListResponse.WorkspaceResponse(
+                    workspace.getId(), workspace.getName(), workspace.getImageUrl(),
+                    scheduleListOfWorkspaces.get(workspace)
+                            .stream().map(this::toScheduleDtoOfBossHome).collect(Collectors.toList())
+            ));
+        }
+        return new BossHomeScheduleListResponse(selectedDate, workspaceList);
     }
 
     @Mappings({

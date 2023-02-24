@@ -61,8 +61,13 @@ public class BossScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<Schedule> getHomeScheduleList(Long workspaceId, LocalDate selectedDate) {
-        return scheduleRepository.findAllByWorkspaceIdAndDateFetch(workspaceId, selectedDate);
+    public Map<Workspace, List<Schedule>> getHomeScheduleList(LocalDate selectedDate) {
+        List<Workspace> workspaceList = bossWorkspaceService.getMyWorkspaceList();
+        List<Long> workspaceIds = workspaceList.stream().map(Workspace::getId).collect(toList());
+        List<Schedule> scheduleList = scheduleRepository.findAllByWorkspaceIdsAndDateFetch(workspaceIds, selectedDate);
+        Map<Workspace, List<Schedule>> scheduleListOfWorkspaces = scheduleList.stream().collect(groupingBy(Schedule::getWorkspace));
+        return workspaceList.stream()
+                .collect(LinkedHashMap::new, (m, v) -> m.put(v, scheduleListOfWorkspaces.getOrDefault(v, new ArrayList<>())), LinkedHashMap::putAll);
     }
 
     @Transactional(readOnly = true)
