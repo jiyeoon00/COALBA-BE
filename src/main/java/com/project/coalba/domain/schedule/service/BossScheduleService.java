@@ -30,14 +30,14 @@ public class BossScheduleService {
     public BossHomePageServiceDto getHomePage() {
         final int offset = 3;
         LocalDate now = LocalDate.now(), fromDate = now.minusDays(offset), toDate = now.plusDays(offset);
-        List<Workspace> workspaceList = bossWorkspaceService.getMyWorkspaceList();
-        List<Long> workspaceIds = workspaceList.stream().map(Workspace::getId).collect(toList());
+        List<Long> workspaceIds = bossWorkspaceService.getMyWorkspaceList().stream().map(Workspace::getId).collect(toList());
 
         List<Schedule> homeScheduleList = scheduleRepository.findAllByWorkspaceIdsAndDateRange(workspaceIds, fromDate, toDate);
         Map<LocalDate, List<Schedule>> homeScheduleMap = homeScheduleList.stream().collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
 
         List<HomeDateServiceDto> dateList = getHomeDateList(fromDate, toDate, homeScheduleMap);
-        return new BossHomePageServiceDto(dateList, now, workspaceList);
+        Map<Workspace, List<Schedule>> scheduleListOfWorkspace = getHomeScheduleList(now);
+        return new BossHomePageServiceDto(dateList, now, scheduleListOfWorkspace);
     }
 
     private List<HomeDateServiceDto> getHomeDateList(LocalDate fromDate, LocalDate toDate, Map<LocalDate, List<Schedule>> homeScheduleMap) {
@@ -61,8 +61,13 @@ public class BossScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<Schedule> getHomeScheduleList(Long workspaceId, LocalDate selectedDate) {
-        return scheduleRepository.findAllByWorkspaceIdAndDateFetch(workspaceId, selectedDate);
+    public Map<Workspace, List<Schedule>> getHomeScheduleList(LocalDate selectedDate) {
+        List<Workspace> workspaceList = bossWorkspaceService.getMyWorkspaceList();
+        List<Long> workspaceIds = workspaceList.stream().map(Workspace::getId).collect(toList());
+        List<Schedule> scheduleList = scheduleRepository.findAllByWorkspaceIdsAndDateFetch(workspaceIds, selectedDate);
+        Map<Workspace, List<Schedule>> scheduleListOfWorkspaces = scheduleList.stream().collect(groupingBy(Schedule::getWorkspace));
+        return workspaceList.stream()
+                .collect(LinkedHashMap::new, (m, v) -> m.put(v, scheduleListOfWorkspaces.getOrDefault(v, new ArrayList<>())), LinkedHashMap::putAll);
     }
 
     @Transactional(readOnly = true)

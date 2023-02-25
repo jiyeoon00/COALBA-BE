@@ -9,13 +9,14 @@ import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.mapper.ScheduleMapper;
 import com.project.coalba.domain.schedule.service.*;
 import com.project.coalba.domain.schedule.service.dto.ScheduleCreateServiceDto;
+import com.project.coalba.domain.workspace.entity.Workspace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/boss/schedules")
@@ -32,11 +33,10 @@ public class BossScheduleController {
     }
 
     @GetMapping("/home/selected")
-    public BossHomeScheduleListResponse getHomeScheduleList(@RequestParam Long workspaceId,
-                                                            @RequestParam int year, @RequestParam int month, @RequestParam int day) {
+    public BossHomeScheduleListResponse getHomeScheduleList(@RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
-        List<Schedule> homeScheduleList = bossScheduleService.getHomeScheduleList(workspaceId, selectedDate);
-        return mapper.toDto(selectedDate, workspaceId, () -> homeScheduleList);
+        Map<Workspace, List<Schedule>> scheduleListOfWorkspaces = bossScheduleService.getHomeScheduleList(selectedDate);
+        return mapper.toDto(selectedDate, scheduleListOfWorkspaces);
     }
 
     @GetMapping

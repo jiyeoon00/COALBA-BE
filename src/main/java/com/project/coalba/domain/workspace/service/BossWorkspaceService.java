@@ -35,12 +35,13 @@ public class BossWorkspaceService {
     }
 
     @Transactional
-    public void saveWorkspace(WorkspaceCreateServiceDto serviceDto) {
+    public List<Workspace> saveWorkspace(WorkspaceCreateServiceDto serviceDto) {
         Optional<Workspace> workspaceOptional = workspaceRepository.findByBusinessNumber(serviceDto.getBusinessNumber());
         if (workspaceOptional.isPresent()) throw new BusinessException(ErrorCode.ALREADY_EXIST_WORKSPACE);
 
         Boss boss = profileUtil.getCurrentBoss();
         workspaceRepository.save(serviceDto.toEntity(boss));
+        return workspaceRepository.findAllByBossId(boss.getId());
     }
 
     @Transactional

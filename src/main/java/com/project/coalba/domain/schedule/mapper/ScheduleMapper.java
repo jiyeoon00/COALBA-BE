@@ -37,24 +37,20 @@ public interface ScheduleMapper {
 
     default BossHomePageResponse toDto(BossHomePageServiceDto serviceDto) {
         List<HomeDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
-        LocalDate selectedDate = serviceDto.getSelectedDate();
-        List<BossHomePageResponse.WorkspaceResponse> workspaceList = serviceDto.getWorkspaceList().stream().map(this::toWorkspaceDtoOfBossHome).collect(Collectors.toList());
-        return new BossHomePageResponse(dateList, selectedDate, workspaceList);
+        BossHomeScheduleListResponse workspaceListOfDate = toDto(serviceDto.getSelectedDate(), serviceDto.getScheduleListOfWorkspace());
+        return new BossHomePageResponse(dateList, workspaceListOfDate);
     }
 
-    @Mappings({
-            @Mapping(source = "id", target = "workspaceId"),
-            @Mapping(source = "name", target = "name"),
-            @Mapping(source = "imageUrl", target = "imageUrl"),
-    })
-    BossHomePageResponse.WorkspaceResponse toWorkspaceDtoOfBossHome(Workspace workspace);
-
-    interface BossHomeScheduleListRef extends Supplier<List<Schedule>> {}
-    default BossHomeScheduleListResponse toDto(LocalDate selectedDate, Long selectedWorkspaceId, BossHomeScheduleListRef ref) {
-        List<BossHomeScheduleListResponse.ScheduleResponse> selectedScheduleList = ref.get().stream()
-                .map(this::toScheduleDtoOfBossHome)
-                .collect(Collectors.toList());
-        return new BossHomeScheduleListResponse(selectedDate, selectedWorkspaceId, selectedScheduleList);
+    default BossHomeScheduleListResponse toDto(LocalDate selectedDate, Map<Workspace, List<Schedule>> scheduleListOfWorkspaces) {
+        List<BossHomeScheduleListResponse.WorkspaceResponse> workspaceList = new ArrayList<>();
+        for (Workspace workspace : scheduleListOfWorkspaces.keySet()) {
+            workspaceList.add(new BossHomeScheduleListResponse.WorkspaceResponse(
+                    workspace.getId(), workspace.getName(), workspace.getImageUrl(),
+                    scheduleListOfWorkspaces.get(workspace)
+                            .stream().map(this::toScheduleDtoOfBossHome).collect(Collectors.toList())
+            ));
+        }
+        return new BossHomeScheduleListResponse(selectedDate, workspaceList);
     }
 
     @Mappings({

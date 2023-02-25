@@ -24,7 +24,7 @@ public class StaffSubstituteReqController {
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @GetMapping("/possible/staffs")
-    public PossibleStaffListResponse getStaffListPossibleForSubstituteReq(@RequestParam("scheduleId") Long scheduleId) {
+    public PossibleStaffListResponse getStaffListPossibleForSubstituteReq(@RequestParam Long scheduleId) {
         List<Staff> staffList = staffSubstituteReqService.getStaffListPossibleForSubstituteReq(scheduleId);
         return mapper.toDto(() -> staffList);
     }
@@ -48,9 +48,10 @@ public class StaffSubstituteReqController {
     }
 
     @PostMapping
-    public void createSubstituteReq(@RequestParam("scheduleId") Long scheduleId,
+    public void createSubstituteReq(@RequestParam Long scheduleId,
+                                    @RequestParam Long receiverId,
                                     @Validated @RequestBody SubstituteReqCreateRequest request) {
-        SubstituteReq substituteReq = staffSubstituteReqService.createSubstituteReq(scheduleId, request.getReceiverId(), request.getReqMessage());
+        SubstituteReq substituteReq = staffSubstituteReqService.createSubstituteReq(scheduleId, receiverId, request.getReqMessage());
 
         sendSubstituteRequestNotice(substituteReq);
     }

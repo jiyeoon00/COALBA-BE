@@ -65,6 +65,17 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     }
 
     @Override
+    public List<Schedule> findAllByWorkspaceIdsAndDateFetch(List<Long> workspaceIds, LocalDate date) {
+        LocalDateTime fromDateTime = getStartTimeOf(date), toDateTime = getEndTimeOf(date);
+        return queryFactory.selectFrom(schedule)
+                .join(schedule.staff).fetchJoin()
+                .where(schedule.workspace.id.in(workspaceIds),
+                        schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
+                .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc(), schedule.staff.realName.asc(), schedule.staff.id.asc())
+                .fetch();
+    }
+
+    @Override
     public List<Schedule> findAllByStaffIdAndDateRange(Long staffId, LocalDate fromDate, LocalDate toDate) {
         LocalDateTime fromDateTime = getStartTimeOf(fromDate), toDateTime = getEndTimeOf(toDate);
         return queryFactory.selectFrom(schedule)
