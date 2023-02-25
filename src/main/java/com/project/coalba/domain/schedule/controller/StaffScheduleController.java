@@ -24,7 +24,7 @@ public class StaffScheduleController {
     }
 
     @GetMapping("/home/selected")
-    public StaffHomeScheduleListResponse getHomeScheduleList(@RequestParam int year, @RequestParam int month, @RequestParam int day) {
+    public StaffHomeSelectedSubPageResponse getHomeSelectedSubPage(@RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
         List<Schedule> homeScheduleList = staffScheduleService.getHomeScheduleList(selectedDate);
         return mapper.toDto(selectedDate, () -> homeScheduleList);
@@ -36,8 +36,8 @@ public class StaffScheduleController {
     }
 
     @GetMapping("/selected")
-    public StaffWorkspaceScheduleListResponse getWorkspaceScheduleList(@RequestParam Long workspaceId,
-                                                                       @RequestParam int year, @RequestParam int month, @RequestParam int day) {
+    public StaffWorkspaceSelectedSubPageResponse getWorkspaceSelectedSubPage(@RequestParam Long workspaceId,
+                                                                             @RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
         List<ScheduleServiceDto> workspaceScheduleList = staffScheduleService.getWorkspaceScheduleList(workspaceId, selectedDate);
         return mapper.toDto(day, () -> workspaceScheduleList);

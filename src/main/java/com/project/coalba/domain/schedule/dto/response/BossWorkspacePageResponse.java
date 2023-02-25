@@ -13,7 +13,7 @@ public class BossWorkspacePageResponse {
     private int year;
     private int month;
     private List<BossWorkspaceDateResponse> dateList;
-    private BossWorkspaceScheduleListResponse selectedScheduleListOfDay;
+    private BossWorkspaceSelectedSubPageResponse selectedScheduleListOfDay;
 
     @Getter
     @AllArgsConstructor

@@ -2,21 +2,28 @@ package com.project.coalba.domain.schedule.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.List;
 
 @Getter
-public class StaffHomeScheduleListResponse {
+public class BossHomeSelectedSubPageResponse {
     private DateResponse selectedDate;
-    private List<ScheduleResponse> selectedScheduleList;
+    private List<WorkspaceResponse> workspaceList;
 
-    public StaffHomeScheduleListResponse(LocalDate date, List<ScheduleResponse> selectedScheduleList) {
+    public BossHomeSelectedSubPageResponse(LocalDate date, List<WorkspaceResponse> workspaceList) {
         this.selectedDate = new DateResponse(date);
-        this.selectedScheduleList = selectedScheduleList;
+        this.workspaceList = workspaceList;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public static class WorkspaceResponse {
+        private Long workspaceId;
+        private String name;
+        private String imageUrl;
+        private List<ScheduleResponse> scheduleListOfWorkspace;
     }
 
     @Getter
@@ -37,13 +44,14 @@ public class StaffHomeScheduleListResponse {
         private LocalTime logicalEndTime;
 
         private ScheduleStatus status;
-        private WorkspaceResponse workspace;
+        private WorkerResponse worker;
 
         @Getter
         @AllArgsConstructor
-        public static class WorkspaceResponse {
-            private Long workspaceId;
+        public static class WorkerResponse {
+            private Long workerId;
             private String name;
+            private String imageUrl;
         }
     }
 }
