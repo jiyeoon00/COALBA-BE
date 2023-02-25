@@ -13,7 +13,7 @@ public class StaffWorkspacePageResponse {
     private Integer year;
     private Integer month;
     private List<StaffWorkspaceDateResponse> dateList;
-    private StaffWorkspaceSelectedSubPageResponse selectedScheduleListOfDay;
+    private StaffWorkspaceSelectedSubPageResponse selectedSubPage;
 
     @Getter
     @AllArgsConstructor

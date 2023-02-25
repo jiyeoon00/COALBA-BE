@@ -37,8 +37,8 @@ public interface ScheduleMapper {
 
     default BossHomePageResponse toDto(BossHomePageServiceDto serviceDto) {
         List<HomeDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
-        BossHomeSelectedSubPageResponse workspaceListOfDate = toDto(serviceDto.getSelectedDate(), serviceDto.getScheduleListOfWorkspace());
-        return new BossHomePageResponse(dateList, workspaceListOfDate);
+        BossHomeSelectedSubPageResponse selectedSubPage = toDto(serviceDto.getSelectedDate(), serviceDto.getScheduleListOfWorkspace());
+        return new BossHomePageResponse(dateList, selectedSubPage);
     }
 
     default BossHomeSelectedSubPageResponse toDto(LocalDate selectedDate, Map<Workspace, List<Schedule>> scheduleListOfWorkspaces) {
@@ -70,13 +70,13 @@ public interface ScheduleMapper {
         BossWorkspacePageResponse.WorkspaceResponse selectedWorkspace = toWorkspaceDtoOfBossWorkspace(serviceDto.getWorkspace());
         LocalDate selectedDate = serviceDto.getSelectedDate();
         List<BossWorkspaceDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
-        BossWorkspaceSelectedSubPageResponse selectedScheduleListOfDay = toDto(selectedDate.getDayOfMonth(), serviceDto::getSelectedScheduleList);
+        BossWorkspaceSelectedSubPageResponse selectedSubPage = toDto(selectedDate.getDayOfMonth(), serviceDto::getSelectedScheduleList);
         return BossWorkspacePageResponse.builder()
                 .selectedWorkspace(selectedWorkspace)
                 .year(selectedDate.getYear())
                 .month(selectedDate.getMonthValue())
                 .dateList(dateList)
-                .selectedScheduleListOfDay(selectedScheduleListOfDay)
+                .selectedSubPage(selectedSubPage)
                 .build();
     }
 
@@ -143,8 +143,8 @@ public interface ScheduleMapper {
 
     default StaffHomePageResponse toDto(StaffHomePageServiceDto serviceDto) {
         List<HomeDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
-        StaffHomeSelectedSubPageResponse selectedScheduleListOfDate = toDto(serviceDto.getSelectedDate(), serviceDto::getSelectedScheduleList);
-        return new StaffHomePageResponse(dateList, selectedScheduleListOfDate);
+        StaffHomeSelectedSubPageResponse selectedSubPage = toDto(serviceDto.getSelectedDate(), serviceDto::getSelectedScheduleList);
+        return new StaffHomePageResponse(dateList, selectedSubPage);
     }
 
     interface StaffHomeScheduleListRef extends Supplier<List<Schedule>> {}
@@ -171,13 +171,13 @@ public interface ScheduleMapper {
         StaffWorkspacePageResponse.WorkspaceResponse selectedWorkspace = toWorkspaceDtoOfStaffWorkspace(serviceDto.getWorkspace());
         LocalDate selectedDate = serviceDto.getSelectedDate();
         List<StaffWorkspaceDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
-        StaffWorkspaceSelectedSubPageResponse selectedScheduleListOfDay = toDto(selectedDate.getDayOfMonth(), serviceDto::getSelectedScheduleList);
+        StaffWorkspaceSelectedSubPageResponse selectedSubPage = toDto(selectedDate.getDayOfMonth(), serviceDto::getSelectedScheduleList);
         return StaffWorkspacePageResponse.builder()
                 .selectedWorkspace(selectedWorkspace)
                 .year(selectedDate.getYear())
                 .month(selectedDate.getMonthValue())
                 .dateList(dateList)
-                .selectedScheduleListOfDay(selectedScheduleListOfDay)
+                .selectedSubPage(selectedSubPage)
                 .build();
     }
 

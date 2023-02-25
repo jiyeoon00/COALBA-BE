@@ -23,7 +23,7 @@ public class BossHomeSelectedSubPageResponse {
         private Long workspaceId;
         private String name;
         private String imageUrl;
-        private List<ScheduleResponse> scheduleListOfWorkspace;
+        private List<ScheduleResponse> selectedScheduleList;
     }
 
     @Getter

@@ -9,5 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 public class StaffHomePageResponse {
     private List<HomeDateResponse> dateList;
-    private StaffHomeSelectedSubPageResponse selectedScheduleListOfDate;
+    private StaffHomeSelectedSubPageResponse selectedSubPage;
 }
