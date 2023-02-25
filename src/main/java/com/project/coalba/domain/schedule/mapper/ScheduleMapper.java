@@ -37,17 +37,9 @@ public interface ScheduleMapper {
 
     default BossHomePageResponse toDto(BossHomePageServiceDto serviceDto) {
         List<HomeDateResponse> dateList = serviceDto.getDateList().stream().map(this::toDto).collect(Collectors.toList());
-        LocalDate selectedDate = serviceDto.getSelectedDate();
-        List<BossHomePageResponse.WorkspaceResponse> workspaceList = serviceDto.getWorkspaceList().stream().map(this::toWorkspaceDtoOfBossHome).collect(Collectors.toList());
-        return new BossHomePageResponse(dateList, selectedDate, workspaceList);
+        BossHomeScheduleListResponse workspaceListOfDate = toDto(serviceDto.getSelectedDate(), serviceDto.getScheduleListOfWorkspace());
+        return new BossHomePageResponse(dateList, workspaceListOfDate);
     }
-
-    @Mappings({
-            @Mapping(source = "id", target = "workspaceId"),
-            @Mapping(source = "name", target = "name"),
-            @Mapping(source = "imageUrl", target = "imageUrl"),
-    })
-    BossHomePageResponse.WorkspaceResponse toWorkspaceDtoOfBossHome(Workspace workspace);
 
     default BossHomeScheduleListResponse toDto(LocalDate selectedDate, Map<Workspace, List<Schedule>> scheduleListOfWorkspaces) {
         List<BossHomeScheduleListResponse.WorkspaceResponse> workspaceList = new ArrayList<>();
