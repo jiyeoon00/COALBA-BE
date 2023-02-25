@@ -9,5 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 public class BossHomePageResponse {
     private List<HomeDateResponse> dateList;
-    private BossHomeScheduleListResponse workspaceListOfDate;
+    private BossHomeSelectedSubPageResponse selectedSubPage;
 }

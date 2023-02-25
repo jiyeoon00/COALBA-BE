@@ -33,9 +33,9 @@ public class BossScheduleController {
     }
 
     @GetMapping("/home/selected")
-    public BossHomeScheduleListResponse getHomeScheduleList(@RequestParam int year, @RequestParam int month, @RequestParam int day) {
+    public BossHomeSelectedSubPageResponse getHomeSelectedSubPage(@RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
-        Map<Workspace, List<Schedule>> scheduleListOfWorkspaces = bossScheduleService.getHomeScheduleList(selectedDate);
+        Map<Workspace, List<Schedule>> scheduleListOfWorkspaces = bossScheduleService.getScheduleListOfWorkspaces(selectedDate);
         return mapper.toDto(selectedDate, scheduleListOfWorkspaces);
     }
 
@@ -45,8 +45,8 @@ public class BossScheduleController {
     }
 
     @GetMapping("/selected")
-    public BossWorkspaceScheduleListResponse getWorkspaceScheduleList(@RequestParam Long workspaceId,
-                                                                      @RequestParam int year, @RequestParam int month, @RequestParam int day) {
+    public BossWorkspaceSelectedSubPageResponse getWorkspaceSelectedSubPage(@RequestParam Long workspaceId,
+                                                                            @RequestParam int year, @RequestParam int month, @RequestParam int day) {
         LocalDate selectedDate = LocalDate.of(year, month, day);
         List<Schedule> workspaceScheduleList = bossScheduleService.getWorkspaceScheduleList(workspaceId, selectedDate);
         return mapper.toDto(day, () -> workspaceScheduleList);

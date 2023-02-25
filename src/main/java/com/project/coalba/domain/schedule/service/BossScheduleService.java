@@ -36,8 +36,8 @@ public class BossScheduleService {
         Map<LocalDate, List<Schedule>> homeScheduleMap = homeScheduleList.stream().collect(groupingBy(schedule -> schedule.getScheduleStartDateTime().toLocalDate()));
 
         List<HomeDateServiceDto> dateList = getHomeDateList(fromDate, toDate, homeScheduleMap);
-        Map<Workspace, List<Schedule>> scheduleListOfWorkspace = getHomeScheduleList(now);
-        return new BossHomePageServiceDto(dateList, now, scheduleListOfWorkspace);
+        Map<Workspace, List<Schedule>> scheduleListOfWorkspaces = getScheduleListOfWorkspaces(now);
+        return new BossHomePageServiceDto(dateList, now, scheduleListOfWorkspaces);
     }
 
     private List<HomeDateServiceDto> getHomeDateList(LocalDate fromDate, LocalDate toDate, Map<LocalDate, List<Schedule>> homeScheduleMap) {
@@ -61,7 +61,7 @@ public class BossScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public Map<Workspace, List<Schedule>> getHomeScheduleList(LocalDate selectedDate) {
+    public Map<Workspace, List<Schedule>> getScheduleListOfWorkspaces(LocalDate selectedDate) {
         List<Workspace> workspaceList = bossWorkspaceService.getMyWorkspaceList();
         List<Long> workspaceIds = workspaceList.stream().map(Workspace::getId).collect(toList());
         List<Schedule> scheduleList = scheduleRepository.findAllByWorkspaceIdsAndDateFetch(workspaceIds, selectedDate);

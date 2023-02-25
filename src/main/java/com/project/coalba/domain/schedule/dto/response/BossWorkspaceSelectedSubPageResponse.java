@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class BossWorkspaceScheduleListResponse {
+public class BossWorkspaceSelectedSubPageResponse {
     private int selectedDay;
     private List<ScheduleResponse> selectedScheduleList;
 

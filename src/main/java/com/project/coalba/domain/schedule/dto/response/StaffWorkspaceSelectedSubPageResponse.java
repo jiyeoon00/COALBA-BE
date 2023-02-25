@@ -5,19 +5,14 @@ import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
 @Getter
-public class StaffHomeScheduleListResponse {
-    private DateResponse selectedDate;
+@AllArgsConstructor
+public class StaffWorkspaceSelectedSubPageResponse {
+    private int selectedDay;
     private List<ScheduleResponse> selectedScheduleList;
-
-    public StaffHomeScheduleListResponse(LocalDate date, List<ScheduleResponse> selectedScheduleList) {
-        this.selectedDate = new DateResponse(date);
-        this.selectedScheduleList = selectedScheduleList;
-    }
 
     @Getter
     @AllArgsConstructor
@@ -30,19 +25,14 @@ public class StaffHomeScheduleListResponse {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
         private LocalTime scheduleEndTime;
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-        private LocalTime logicalStartTime;
-
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm", timezone = "Asia/Seoul")
-        private LocalTime logicalEndTime;
-
         private ScheduleStatus status;
-        private WorkspaceResponse workspace;
+        private WorkerResponse worker;
+        private Boolean isMySchedule;
 
         @Getter
         @AllArgsConstructor
-        public static class WorkspaceResponse {
-            private Long workspaceId;
+        public static class WorkerResponse {
+            private Long workerId;
             private String name;
         }
     }

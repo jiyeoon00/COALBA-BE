@@ -8,11 +8,11 @@ import java.time.*;
 import java.util.List;
 
 @Getter
-public class BossHomeScheduleListResponse {
+public class BossHomeSelectedSubPageResponse {
     private DateResponse selectedDate;
     private List<WorkspaceResponse> workspaceList;
 
-    public BossHomeScheduleListResponse(LocalDate date, List<WorkspaceResponse> workspaceList) {
+    public BossHomeSelectedSubPageResponse(LocalDate date, List<WorkspaceResponse> workspaceList) {
         this.selectedDate = new DateResponse(date);
         this.workspaceList = workspaceList;
     }
@@ -23,7 +23,7 @@ public class BossHomeScheduleListResponse {
         private Long workspaceId;
         private String name;
         private String imageUrl;
-        private List<ScheduleResponse> scheduleListOfWorkspace;
+        private List<ScheduleResponse> selectedScheduleList;
     }
 
     @Getter
