@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.*;
 import java.util.List;
 
+import static com.project.coalba.domain.profile.entity.QStaff.staff;
 import static com.project.coalba.domain.schedule.entity.QSchedule.*;
 
 @RequiredArgsConstructor
@@ -57,10 +58,10 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     public List<Schedule> findAllByWorkspaceIdAndDateFetch(Long workspaceId, LocalDate date) {
         LocalDateTime fromDateTime = getStartTimeOf(date), toDateTime = getEndTimeOf(date);
         return queryFactory.selectFrom(schedule)
-                .join(schedule.staff).fetchJoin()
+                .join(schedule.staff, staff).fetchJoin()
                 .where(schedule.workspace.id.eq(workspaceId),
                         schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
-                .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc(), schedule.staff.realName.asc(), schedule.staff.id.asc())
+                .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc(), staff.realName.asc(), staff.id.asc())
                 .fetch();
     }
 
@@ -68,10 +69,10 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
     public List<Schedule> findAllByWorkspaceIdsAndDateFetch(List<Long> workspaceIds, LocalDate date) {
         LocalDateTime fromDateTime = getStartTimeOf(date), toDateTime = getEndTimeOf(date);
         return queryFactory.selectFrom(schedule)
-                .join(schedule.staff).fetchJoin()
+                .join(schedule.staff, staff).fetchJoin()
                 .where(schedule.workspace.id.in(workspaceIds),
                         schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
-                .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc(), schedule.staff.realName.asc(), schedule.staff.id.asc())
+                .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc(), staff.realName.asc(), staff.id.asc())
                 .fetch();
     }
 
