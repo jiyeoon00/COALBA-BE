@@ -30,21 +30,15 @@ public class NotificationService {
 
     @Transactional
     public String getDeviceTokenByStaff(Long staffId) {
-        Notification notification = notificationRepository.getNotificationByStaff(staffId);
-        try {
-            return notification.getDeviceToken();
-        } catch (Exception e) {
-            throw new BusinessException(NOTIFICATION_NOT_FOUNE);
-        }
+        Optional<Notification> notificationByStaff = notificationRepository.getNotificationByStaff(staffId);
+        notificationByStaff.orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUNE));
+        return notificationByStaff.get().getDeviceToken();
     }
 
     @Transactional
     public String getDeviceTokenByBoss(Long bossId) {
-        Notification notification = notificationRepository.getNotificationByBoss(bossId);
-        try {
-            return notification.getDeviceToken();
-        } catch (Exception e) {
-            throw new BusinessException(NOTIFICATION_NOT_FOUNE);
-        }
+        Optional<Notification> notificationByBoss = notificationRepository.getNotificationByBoss(bossId);
+        notificationByBoss.orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUNE));
+        return notificationByBoss.get().getDeviceToken();
     }
 }
