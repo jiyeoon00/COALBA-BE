@@ -2,6 +2,7 @@ package com.project.coalba.domain.schedule.repository;
 
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -17,71 +18,57 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
     @Override
     public List<Schedule> findAllByStaffIdAndDateRangeAndEndStatus(Long staffId, LocalDate fromDate, LocalDate toDate) {
-        LocalDateTime fromDateTime = getStartTimeOf(fromDate), toDateTime = getEndTimeOf(toDate);
         return queryFactory.selectFrom(schedule)
                 .where(schedule.staff.id.eq(staffId),
-                        schedule.scheduleStartDateTime.between(fromDateTime, toDateTime),
-                        schedule.logicalStartDateTime.isNotNull(),
-                        schedule.logicalEndDateTime.isNotNull(),
-                        schedule.status.eq(ScheduleStatus.SUCCESS).or(
-                                schedule.status.eq(ScheduleStatus.FAIL))
-                )
+                        isExistingBetween(fromDate, toDate),
+                        isEndStatus())
                 .fetch();
     }
 
     @Override
     public List<Schedule> findAllByWorkspaceIdAndDateRangeAndEndStatus(Long workspaceId, LocalDate fromDate, LocalDate toDate) {
-        LocalDateTime fromDateTime = getStartTimeOf(fromDate), toDateTime = getEndTimeOf(toDate);
         return queryFactory.selectFrom(schedule)
                 .where(schedule.workspace.id.eq(workspaceId),
-                        schedule.scheduleStartDateTime.between(fromDateTime, toDateTime),
-                        schedule.logicalStartDateTime.isNotNull(),
-                        schedule.logicalEndDateTime.isNotNull(),
-                        schedule.status.eq(ScheduleStatus.SUCCESS).or(
-                                schedule.status.eq(ScheduleStatus.FAIL))
-                )
+                        isExistingBetween(fromDate, toDate),
+                        isEndStatus())
                 .fetch();
     }
 
     @Override
     public List<Schedule> findAllByStaffIdAndDateFetch(Long staffId, LocalDate date) {
-        LocalDateTime fromDateTime = getStartTimeOf(date), toDateTime = getEndTimeOf(date);
         return queryFactory.selectFrom(schedule)
                 .join(schedule.workspace).fetchJoin()
                 .where(schedule.staff.id.eq(staffId),
-                        schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
+                        isExistingOn(date))
                 .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc())
                 .fetch();
     }
 
     @Override
     public List<Schedule> findAllByWorkspaceIdAndDateFetch(Long workspaceId, LocalDate date) {
-        LocalDateTime fromDateTime = getStartTimeOf(date), toDateTime = getEndTimeOf(date);
         return queryFactory.selectFrom(schedule)
                 .join(schedule.staff, staff).fetchJoin()
                 .where(schedule.workspace.id.eq(workspaceId),
-                        schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
+                        isExistingOn(date))
                 .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc(), staff.realName.asc(), staff.id.asc())
                 .fetch();
     }
 
     @Override
     public List<Schedule> findAllByWorkspaceIdsAndDateFetch(List<Long> workspaceIds, LocalDate date) {
-        LocalDateTime fromDateTime = getStartTimeOf(date), toDateTime = getEndTimeOf(date);
         return queryFactory.selectFrom(schedule)
                 .join(schedule.staff, staff).fetchJoin()
                 .where(schedule.workspace.id.in(workspaceIds),
-                        schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
+                        isExistingOn(date))
                 .orderBy(schedule.scheduleStartDateTime.asc(), schedule.scheduleEndDateTime.asc(), staff.realName.asc(), staff.id.asc())
                 .fetch();
     }
 
     @Override
     public List<Schedule> findAllByStaffIdAndDateRange(Long staffId, LocalDate fromDate, LocalDate toDate) {
-        LocalDateTime fromDateTime = getStartTimeOf(fromDate), toDateTime = getEndTimeOf(toDate);
         return queryFactory.selectFrom(schedule)
                 .where(schedule.staff.id.eq(staffId),
-                        schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
+                        isExistingBetween(fromDate, toDate))
                 .fetch();
     }
 
@@ -102,20 +89,39 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
     @Override
     public List<Schedule> findAllByWorkspaceIdAndDateRange(Long workspaceId, LocalDate fromDate, LocalDate toDate) {
-        LocalDateTime fromDateTime = getStartTimeOf(fromDate), toDateTime = getEndTimeOf(toDate);
         return queryFactory.selectFrom(schedule)
                 .where(schedule.workspace.id.eq(workspaceId),
-                        schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
+                        isExistingBetween(fromDate, toDate))
                 .fetch();
     }
 
     @Override
     public List<Schedule> findAllByWorkspaceIdsAndDateRange(List<Long> workspaceIds, LocalDate fromDate, LocalDate toDate) {
-        LocalDateTime fromDateTime = getStartTimeOf(fromDate), toDateTime = getEndTimeOf(toDate);
         return queryFactory.selectFrom(schedule)
                 .where(schedule.workspace.id.in(workspaceIds),
-                        schedule.scheduleStartDateTime.between(fromDateTime, toDateTime))
+                        isExistingBetween(fromDate, toDate))
                 .fetch();
+    }
+
+    private BooleanBuilder isExistingBetween(LocalDate fromDate, LocalDate toDate) {
+        LocalDateTime fromDateTime = getStartTimeOf(fromDate), toDateTime = getEndTimeOf(toDate);
+        BooleanBuilder builder = new BooleanBuilder();
+        return builder.and(schedule.scheduleStartDateTime.between(fromDateTime, toDateTime));
+    }
+
+    private BooleanBuilder isExistingOn(LocalDate date) {
+        LocalDateTime fromDateTime = getStartTimeOf(date), toDateTime = getEndTimeOf(date);
+        BooleanBuilder builder = new BooleanBuilder();
+        return builder.and(schedule.scheduleStartDateTime.between(fromDateTime, toDateTime));
+    }
+
+    private BooleanBuilder isEndStatus() {
+        BooleanBuilder builder = new BooleanBuilder();
+        return builder.and(
+                schedule.logicalStartDateTime.isNotNull().and(
+                        schedule.logicalEndDateTime.isNotNull()).and(
+                                schedule.status.eq(ScheduleStatus.SUCCESS).or(
+                                        schedule.status.eq(ScheduleStatus.FAIL))));
     }
 
     private LocalDateTime getStartTimeOf(LocalDate date) {
