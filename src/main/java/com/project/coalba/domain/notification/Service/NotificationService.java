@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.project.coalba.global.exception.ErrorCode.NOTIFICATION_NOT_FOUNE;
+import static com.project.coalba.global.exception.ErrorCode.NOTIFICATION_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -28,17 +28,17 @@ public class NotificationService {
                 () -> notificationRepository.save(Notification.builder().user(currentUser).deviceToken(deviceToken).build()));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public String getDeviceTokenByStaff(Long staffId) {
         Optional<Notification> notificationByStaff = notificationRepository.getNotificationByStaff(staffId);
-        notificationByStaff.orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUNE));
+        notificationByStaff.orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUND));
         return notificationByStaff.get().getDeviceToken();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public String getDeviceTokenByBoss(Long bossId) {
         Optional<Notification> notificationByBoss = notificationRepository.getNotificationByBoss(bossId);
-        notificationByBoss.orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUNE));
+        notificationByBoss.orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUND));
         return notificationByBoss.get().getDeviceToken();
     }
 }
