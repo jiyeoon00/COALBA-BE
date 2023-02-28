@@ -17,14 +17,10 @@ public class NotificationRepositoryImpl implements NotificationRepositoryCustom 
     @Override
     public Notification getNotificationByStaff(Long staffId) {
         Notification noti = queryFactory.selectFrom(notification)
-                .where(user.eq(
-                        JPAExpressions.select(user)
-                                .from(staff)
-                                .where(staff.id.eq(staffId))
-                                .join(staff.user, user)
-
-                ))
-                .join(notification.user, user).fetchOne();
+                .join(staff)
+                .on(staff.user.id.eq(notification.user.id))
+                .where(staff.id.eq(staffId))
+                .fetchOne();
 
         return noti;
     }
@@ -32,14 +28,10 @@ public class NotificationRepositoryImpl implements NotificationRepositoryCustom 
     @Override
     public Notification getNotificationByBoss(Long bossId) {
         Notification noti = queryFactory.selectFrom(notification)
-                .where(user.eq(
-                        JPAExpressions.select(user)
-                                .from(boss)
-                                .where(boss.id.eq(bossId))
-                                .join(boss.user, user)
-
-                ))
-                .join(notification.user, user).fetchOne();
+                .join(boss)
+                .on(boss.user.id.eq(notification.user.id))
+                .where(boss.id.eq(bossId))
+                .fetchOne();
 
         return noti;
     }
