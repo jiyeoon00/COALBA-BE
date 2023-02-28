@@ -23,7 +23,6 @@ import java.util.*;
 @RestController
 public class BossScheduleController {
     private final BossScheduleService bossScheduleService;
-    private final ScheduleValidator scheduleValidator;
     private final ScheduleMapper mapper;
     private final ExternalCalendarService externalCalendarService;
 
@@ -63,7 +62,6 @@ public class BossScheduleController {
     @PostMapping
     public ResponseEntity<Void> saveSchedule(@Validated @RequestBody ScheduleCreateRequest scheduleCreateRequest) {
         ScheduleCreateServiceDto serviceDto = mapper.toServiceDto(scheduleCreateRequest);
-        scheduleValidator.validate(serviceDto); //schedule 생성 요청 검증
         Schedule schedule = bossScheduleService.save(serviceDto);
         externalCalendarService.addEvent(new CalendarDto(schedule)); //외부 api
         return ResponseEntity.status(HttpStatus.CREATED).build();

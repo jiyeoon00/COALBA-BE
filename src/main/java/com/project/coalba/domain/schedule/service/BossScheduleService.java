@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.*;
 @RequiredArgsConstructor
 @Service
 public class BossScheduleService {
+    private final ScheduleValidator scheduleValidator;
     private final BossWorkspaceService bossWorkspaceService;
     private final StaffProfileService staffProfileService;
     private final ScheduleRepository scheduleRepository;
@@ -104,12 +105,12 @@ public class BossScheduleService {
 
     @Transactional
     public Schedule save(ScheduleCreateServiceDto serviceDto) {
+        scheduleValidator.validate(serviceDto); //schedule 생성 요청 검증
+
         Workspace workspace = bossWorkspaceService.getWorkspace(serviceDto.getWorkspaceId());
         Staff staff = staffProfileService.getStaff(serviceDto.getStaffId());
         Schedule schedule = serviceDto.toEntity(workspace, staff);
-        scheduleRepository.save(schedule);
-
-        return schedule;
+        return scheduleRepository.save(schedule);
     }
 
     @Transactional
