@@ -16,6 +16,6 @@ public interface StaffProfileRepository extends JpaRepository<Staff, Long>, Staf
     @Query("select s from Staff s join s.user u on u.email = :email")
     Optional<Staff> findByUserEmail(@Param("email") String email);
 
-    @Query("select s from Staff s inner join WorkspaceMember wm on s.id = wm.staff.id where wm.workspace.id = :workspaceId")
+    @Query("select s from Staff s inner join WorkspaceMember wm on s.id = wm.staff.id where wm.workspace.id = :workspaceId order by s.realName asc, s.id asc")
     List<Staff> findAllByWorkspaceId(@Param("workspaceId") Long workspaceId);
 }

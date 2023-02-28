@@ -43,7 +43,7 @@ public class WorkReportService {
     @Transactional(readOnly = true)
     public Map<Integer, WorkReportServiceDto> getStaffWorkReportList(int year) {
         Map<Integer, List<Schedule>> monthlyScheduleList = getMyMonthlyScheduleListForYear(year);
-        Map<Integer, WorkReportServiceDto> monthlyWorkReport = new HashMap<>();
+        Map<Integer, WorkReportServiceDto> monthlyWorkReport = new LinkedHashMap<>();
 
         for (int month = getStartMonth(year); month <= getEndMonth(year); month++) {
             List<Schedule> scheduleList = monthlyScheduleList.get(month);
@@ -82,7 +82,7 @@ public class WorkReportService {
     public Map<Staff, WorkReportServiceDto> getBossWorkReportList(Long workspaceId, int year, int month) {
         Map<Long, List<Schedule>> scheduleListByStaff = getWorkspaceScheduleListByStaffForYearAndMonth(workspaceId, year, month);
         List<Staff> staffList = staffProfileService.getStaffListInWorkspace(workspaceId);
-        Map<Staff, WorkReportServiceDto> workReportByStaff = new HashMap<>();
+        Map<Staff, WorkReportServiceDto> workReportByStaff = new LinkedHashMap<>();
 
         for (Staff staff : staffList) {
             List<Schedule> scheduleList = scheduleListByStaff.get(staff.getId());
