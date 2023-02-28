@@ -9,7 +9,6 @@ import com.project.coalba.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -29,7 +28,7 @@ public class AuthSocialTokenService {
     public String updateAccessToken(Long userId) {
         Optional<User> findUser = userRepository.findById(userId);
         if(findUser.isPresent()) {
-            String updatedAccessToken = getUpdatedAccessToken(findUser.get().getRefreshToken());
+            String updatedAccessToken = getUpdatedAccessToken(findUser.get().getSocialRefreshToken());
             findUser.get().updateSocialAccessToken(updatedAccessToken);
             return updatedAccessToken;
         } else {

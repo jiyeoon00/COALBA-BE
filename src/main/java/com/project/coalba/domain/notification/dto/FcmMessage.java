@@ -1,4 +1,4 @@
-package com.project.coalba.domain.notification;
+package com.project.coalba.domain.notification.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

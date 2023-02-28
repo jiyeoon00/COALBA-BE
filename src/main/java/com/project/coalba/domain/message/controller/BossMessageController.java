@@ -6,6 +6,8 @@ import com.project.coalba.domain.message.dto.response.MessageResponse;
 import com.project.coalba.domain.message.mapper.MessageMapper;
 import com.project.coalba.domain.message.service.BossMessageService;
 import com.project.coalba.domain.message.service.dto.MessageBoxServiceDto;
+import com.project.coalba.domain.notification.Service.FirebaseCloudMessageService;
+import com.project.coalba.domain.notification.Service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ import java.util.List;
 public class BossMessageController {
     private final BossMessageService bossMessageService;
     private final MessageMapper mapper;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final NotificationService notificationService;
 
     @GetMapping("/boxes")
     public MessageBoxListResponse getMessageBoxList(@RequestParam("workspaceId") Long workspaceId) {
@@ -37,6 +41,10 @@ public class BossMessageController {
                                                    @RequestParam("staffId") Long staffId,
                                                    @RequestBody MessageCreateRequest request) {
         bossMessageService.sendMessageToStaff(workspaceId, staffId, request.getContent());
+
+        String deviceTokenByStaff = notificationService.getDeviceTokenByStaff(staffId);
+        firebaseCloudMessageService.sendMessageTo(deviceTokenByStaff, "COALBA", "메세지가 도착했습니다");
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

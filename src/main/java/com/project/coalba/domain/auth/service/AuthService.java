@@ -72,7 +72,7 @@ public class AuthService {
 
     private User updateUser(User user, SocialInfo socialInfo) {
         user.updateSocialInfo(socialInfo.getEmail(), socialInfo.getName(), socialInfo.getImageUrl(), socialInfo.getProviderId(),
-                socialInfo.getAccessToken(), socialInfo.getRefreshToken());
+                socialInfo.getSocialAccessToken(), socialInfo.getSocialRefreshToken());
         return user;
     }
 

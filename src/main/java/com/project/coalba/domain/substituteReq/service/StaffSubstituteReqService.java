@@ -1,6 +1,5 @@
 package com.project.coalba.domain.substituteReq.service;
 
-import com.project.coalba.domain.notification.FirebaseCloudMessageService;
 import com.project.coalba.domain.profile.entity.*;
 import com.project.coalba.domain.profile.service.*;
 import com.project.coalba.domain.schedule.entity.Schedule;

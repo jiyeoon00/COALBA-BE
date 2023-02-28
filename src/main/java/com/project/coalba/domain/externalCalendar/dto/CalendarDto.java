@@ -17,7 +17,7 @@ public class CalendarDto {
     public CalendarDto(Schedule schedule) {
         User user = schedule.getStaff().getUser();
         this.userId = user.getId();
-        this.accessToken = user.getAccessToken();
+        this.accessToken = user.getSocialAccessToken();
         this.calendarId = user.getEmail();
         this.calendarEventDto = new CalendarEvent(schedule);
     }
@@ -25,7 +25,7 @@ public class CalendarDto {
     public CalendarDto(Staff staff, Schedule schedule) {
         User user = staff.getUser();
         this.userId = user.getId();
-        this.accessToken = user.getAccessToken();
+        this.accessToken = user.getSocialAccessToken();
         this.calendarId = user.getEmail();
         this.calendarEventDto = new CalendarEvent(schedule);
     }
