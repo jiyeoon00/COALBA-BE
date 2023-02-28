@@ -14,16 +14,16 @@ public class GoogleInfoProvider implements SocialInfoProvider {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public SocialInfo getSocialInfo(String accessToken, String refreshToken) {
-        GoogleInfo googleInfo = getGoogleInfo(accessToken);
+    public SocialInfo getSocialInfo(String socialAccessToken, String socialRefreshToken) {
+        GoogleInfo googleInfo = getGoogleInfo(socialAccessToken);
         return SocialInfo.builder()
                 .email(googleInfo.getEmail())
                 .name(googleInfo.getName())
                 .imageUrl(googleInfo.getPicture())
                 .provider(Provider.GOOGLE)
                 .providerId(googleInfo.getSub())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .socialAccessToken(socialAccessToken)
+                .socialRefreshToken(socialRefreshToken)
                 .build();
     }
 

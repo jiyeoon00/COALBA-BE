@@ -14,8 +14,8 @@ public class SocialInfo {
     private String imageUrl;
     private Provider provider;
     private String providerId;
-    private String accessToken;
-    private String refreshToken;
+    private String socialAccessToken;
+    private String socialRefreshToken;
 
     public User toEntity(Role role) {
         return User.builder()
@@ -25,8 +25,8 @@ public class SocialInfo {
                 .role(role)
                 .provider(provider)
                 .providerId(providerId)
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .socialAccessToken(socialAccessToken)
+                .socialRefreshToken(socialRefreshToken)
                 .build();
     }
 }

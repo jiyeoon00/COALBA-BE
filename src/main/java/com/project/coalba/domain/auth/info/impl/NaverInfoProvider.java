@@ -14,16 +14,16 @@ public class NaverInfoProvider implements SocialInfoProvider {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public SocialInfo getSocialInfo(String accessToken, String refreshToken) {
-        NaverInfo naverInfo = getNaverInfo(accessToken);
+    public SocialInfo getSocialInfo(String socialAccessToken, String socialRefreshToken) {
+        NaverInfo naverInfo = getNaverInfo(socialAccessToken);
         return SocialInfo.builder()
                 .email(naverInfo.getResponse().getEmail())
                 .name(naverInfo.getResponse().getName())
                 .imageUrl(naverInfo.getResponse().getProfileImage())
                 .provider(Provider.NAVER)
                 .providerId(naverInfo.getResponse().getId())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .socialAccessToken(socialAccessToken)
+                .socialRefreshToken(socialRefreshToken)
                 .build();
     }
 
