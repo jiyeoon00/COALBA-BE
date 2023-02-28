@@ -40,7 +40,7 @@ public enum ErrorCode {
     ALREADY_PROCESSED_REQ(BAD_REQUEST, "이미 수락 혹은 거절된 요청이므로 취소할 수 없습니다."),
 
     //Notification
-    NOTIFICATION_NOT_FOUNE(NOT_FOUND, "해당 유저의 알림정보를 찾을 수 없습니다. 디바이스 토큰정보를 등록해주세요"),
+    NOTIFICATION_NOT_FOUND(NOT_FOUND, "해당 유저의 알림정보를 찾을 수 없습니다. 디바이스 토큰정보를 등록해주세요"),
 
     //googleCalendar Oauth
     NOPERMISSION_TO_CALENDAR(UNAUTHORIZED, "해당 캘린더에 접근할 수 없습니다."),
