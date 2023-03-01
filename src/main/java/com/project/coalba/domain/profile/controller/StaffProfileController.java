@@ -8,7 +8,6 @@ import com.project.coalba.domain.profile.service.StaffProfileService;
 import com.project.coalba.global.s3.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

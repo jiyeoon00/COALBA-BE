@@ -2,7 +2,9 @@ package com.project.coalba.domain.profile.entity;
 
 import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.global.audit.BaseTimeEntity;
+import com.project.coalba.global.utils.DefaultImageUtil;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -31,6 +33,11 @@ public class Staff extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", unique = true, nullable = false)
     private User user;
+
+    public String getImageUrl() {
+        if (!StringUtils.hasText(imageUrl)) return DefaultImageUtil.getProfileImageUrl();
+        return imageUrl;
+    }
 
     public void update(String realName, String phoneNumber, LocalDate birthDate, String imageUrl) {
         this.realName = realName;
