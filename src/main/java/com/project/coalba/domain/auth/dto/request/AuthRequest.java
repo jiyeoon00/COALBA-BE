@@ -8,6 +8,6 @@ import javax.validation.constraints.NotBlank;
 public class AuthRequest {
 
     @NotBlank
-    private String accessToken;
-    private String refreshToken;
+    private String socialAccessToken;
+    private String socialRefreshToken;
 }

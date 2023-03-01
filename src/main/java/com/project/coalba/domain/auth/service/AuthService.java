@@ -24,8 +24,7 @@ public class AuthService {
     private static final long REFRESH_TOKEN_CREATE_CRITERIA_SECONDS = 2 * 24 * 60 * 60;
 
     @Transactional
-    public AuthResponse login(Provider provider, Role role, String socialAccessToken, String socialRefreshToken) {
-        SocialInfo socialInfo = getSocialInfo(provider, socialAccessToken, socialRefreshToken);
+    public AuthResponse login(SocialInfo socialInfo, Role role) {
         Optional<User> userOptional = getSubscribedUser(socialInfo.getProviderId(), role);
         boolean isNewUser = userOptional.isEmpty();
 
@@ -54,11 +53,6 @@ public class AuthService {
             return new TokenResponse(newAccessToken, newRefreshToken);
         }
         throw new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
-    }
-
-    private SocialInfo getSocialInfo(Provider provider, String accessToken, String refreshToken) {
-        SocialInfoProvider socialInfoProvider = SocialInfoProviderFactory.getSocialInfoProvider(provider);
-        return socialInfoProvider.getSocialInfo(accessToken, refreshToken);
     }
 
     private Optional<User> getSubscribedUser(String providerId, Role role) {
