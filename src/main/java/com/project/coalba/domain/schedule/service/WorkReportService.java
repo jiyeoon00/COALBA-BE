@@ -81,7 +81,8 @@ public class WorkReportService {
     @Transactional(readOnly = true)
     public Map<Staff, WorkReportServiceDto> getBossWorkReportList(Long workspaceId, int year, int month) {
         Map<Long, List<Schedule>> scheduleListByStaff = getWorkspaceScheduleListByStaffForYearAndMonth(workspaceId, year, month);
-        List<Staff> staffList = staffProfileService.getStaffListInWorkspace(workspaceId);
+        LocalDate criteriaDate = LocalDate.of(year, month, 1).plusMonths(1);
+        List<Staff> staffList = staffProfileService.getStaffListAddedInWorkspaceBeforeDate(workspaceId, criteriaDate);
         Map<Staff, WorkReportServiceDto> workReportByStaff = new LinkedHashMap<>();
 
         for (Staff staff : staffList) {

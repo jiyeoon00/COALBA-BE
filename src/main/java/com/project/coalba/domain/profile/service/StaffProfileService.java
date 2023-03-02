@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -52,6 +52,11 @@ public class StaffProfileService {
     @Transactional(readOnly = true)
     public List<Staff> getStaffListInWorkspace(Long workspaceId) {
         return staffProfileRepository.findAllByWorkspaceId(workspaceId);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Staff> getStaffListAddedInWorkspaceBeforeDate(Long workspaceId, LocalDate date) {
+        return staffProfileRepository.findAllByWorkspaceIdAndBeforeDateTime(workspaceId, date.atStartOfDay());
     }
 
     @Transactional(readOnly = true)
