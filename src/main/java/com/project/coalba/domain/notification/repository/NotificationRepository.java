@@ -1,4 +1,4 @@
-package com.project.coalba.domain.notification.Repository;
+package com.project.coalba.domain.notification.repository;
 
 import com.project.coalba.domain.auth.entity.User;
 import com.project.coalba.domain.notification.entity.Notification;

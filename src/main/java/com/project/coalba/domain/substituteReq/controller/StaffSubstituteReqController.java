@@ -1,7 +1,7 @@
 package com.project.coalba.domain.substituteReq.controller;
 
-import com.project.coalba.domain.notification.Service.FirebaseCloudMessageService;
-import com.project.coalba.domain.notification.Service.NotificationService;
+import com.project.coalba.global.fcm.service.FirebaseCloudMessageService;
+import com.project.coalba.domain.notification.service.NotificationService;
 import com.project.coalba.domain.profile.entity.Staff;
 import com.project.coalba.domain.substituteReq.dto.request.SubstituteReqCreateRequest;
 import com.project.coalba.domain.substituteReq.dto.response.*;

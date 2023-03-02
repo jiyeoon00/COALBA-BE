@@ -1,7 +1,7 @@
-package com.project.coalba.domain.notification.Service;
+package com.project.coalba.domain.notification.service;
 
 import com.project.coalba.domain.auth.entity.User;
-import com.project.coalba.domain.notification.Repository.NotificationRepository;
+import com.project.coalba.domain.notification.repository.NotificationRepository;
 import com.project.coalba.domain.notification.entity.Notification;
 import com.project.coalba.global.exception.BusinessException;
 import com.project.coalba.global.utils.UserUtil;
