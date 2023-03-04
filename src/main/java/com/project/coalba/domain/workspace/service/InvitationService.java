@@ -2,7 +2,7 @@ package com.project.coalba.domain.workspace.service;
 
 import com.project.coalba.domain.workspace.entity.*;
 import com.project.coalba.domain.workspace.repository.InvitationRepository;
-import com.project.coalba.global.exception.*;
+import com.project.coalba.global.exception.InvitationFailException;
 import com.project.coalba.global.mail.dto.EmailMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+
+import static com.project.coalba.global.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -38,11 +40,11 @@ public class InvitationService {
     @Transactional
     public void acceptInvitation(String invitationId) {
         Invitation invitation = invitationRepository.findById(invitationId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.INVITATION_NOT_FOUND));
-        if (invitation.getExpired()) throw new BusinessException(ErrorCode.EXPIRED_INVITATION_LINK);
+                .orElseThrow(() -> new InvitationFailException(INVITATION_NOT_FOUND.getMessage()));
+        if (invitation.getExpired()) throw new InvitationFailException(EXPIRED_INVITATION_LINK.getMessage());
 
         invitation.expired();
-        if (LocalDateTime.now().isAfter(invitation.getExpirationDate())) throw new BusinessException(ErrorCode.EXPIRED_INVITATION_LINK);
+        if (LocalDateTime.now().isAfter(invitation.getExpirationDate())) throw new InvitationFailException(EXPIRED_INVITATION_LINK.getMessage());
 
         bossWorkspaceService.saveWorkspaceMemberForStaff(invitation.getWorkspace().getId(), invitation.getReceiverEmail());
     }

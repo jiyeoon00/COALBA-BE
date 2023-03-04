@@ -13,6 +13,6 @@ public class EmailConfirmationController {
     @GetMapping("/confirm-email")
     public String confirmEmail(@RequestParam String token) {
         invitationService.acceptInvitation(token);
-        return "redirect:/test";
+        return "invitation-success.html";
     }
 }
