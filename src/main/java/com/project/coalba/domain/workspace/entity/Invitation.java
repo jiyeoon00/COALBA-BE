@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class Invitation extends BaseTimeEntity {
     private static final long VALID_PERIOD_MINUTES = 15L; //초대 유효 기간 (분)
 
-    @Column(name = "invitation_id", length = 32)
+    @Column(name = "invitation_id", length = 36)
     @Id @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private String id;
