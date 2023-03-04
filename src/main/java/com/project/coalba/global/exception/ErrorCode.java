@@ -46,6 +46,9 @@ public enum ErrorCode {
     INVITATION_NOT_FOUND(NOT_FOUND, "해당 초대장을 찾을 수 없습니다."),
     EXPIRED_INVITATION_LINK(BAD_REQUEST, "만료된 초대 링크입니다."),
 
+    //mail
+    EMAIL_SEND_ERROR(INTERNAL_SERVER_ERROR, "이메일 발송에 실패하였습니다."),
+
     //googleCalendar Oauth
     NOPERMISSION_TO_CALENDAR(UNAUTHORIZED, "해당 캘린더에 접근할 수 없습니다."),
 

@@ -28,8 +28,9 @@ public class InvitationService {
         invitationRepository.save(invitation);
         return EmailMessage.builder()
                 .to(receiverEmail)
-                .subject(workspace.getName() + " 워크스페이스 초대")
-                .invitationLink(baseUrl + "/confirm-email?token=" + invitation.getId())
+                .subject("[COALBA] " + workspace.getName() + " 워크스페이스에 초대되었어요.")
+                .content(workspace.getName() + " 워크스페이스에 초대되었어요.")
+                .link(baseUrl + "/confirm-email?token=" + invitation.getId())
                 .build();
     }
 
