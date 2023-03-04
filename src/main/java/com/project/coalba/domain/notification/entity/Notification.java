@@ -1,16 +1,16 @@
 package com.project.coalba.domain.notification.entity;
 
 import com.project.coalba.domain.auth.entity.User;
+import com.project.coalba.global.audit.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
 
-@Getter
-@Builder
+@Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Notification {
+public class Notification extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

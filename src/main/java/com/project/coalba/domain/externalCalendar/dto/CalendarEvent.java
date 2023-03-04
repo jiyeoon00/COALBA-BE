@@ -12,7 +12,7 @@ public class CalendarEvent {
     private LocalDateTime endDateTime;
 
     public CalendarEvent(Schedule schedule) {
-        this.eventName = schedule.getWorkspace().getName() + "알바";
+        this.eventName = schedule.getWorkspace().getName() + " 알바";
         this.startDateTime = schedule.getScheduleStartDateTime();
         this.endDateTime = schedule.getScheduleEndDateTime();
     }
