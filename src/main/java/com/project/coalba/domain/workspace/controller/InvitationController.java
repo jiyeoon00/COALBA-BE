@@ -17,7 +17,7 @@ public class InvitationController {
     @PostMapping("/{workspaceId}/invite")
     public ResponseEntity<Void> sendInvitation(@PathVariable Long workspaceId, @RequestParam String receiverEmail){
         EmailMessage emailMessage = invitationService.issueInvitation(workspaceId, receiverEmail);
-        emailSenderService.sendEmail(emailMessage); //비동기 작업
+        emailSenderService.send(emailMessage); //비동기 작업
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
