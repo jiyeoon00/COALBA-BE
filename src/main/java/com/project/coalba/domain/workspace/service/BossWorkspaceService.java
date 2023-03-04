@@ -63,4 +63,15 @@ public class BossWorkspaceService {
         if (workspaceMemberOptional.isPresent()) throw new BusinessException(ErrorCode.ALREADY_EXIST_STAFF_IN_WORKSPACE);
         return workspace;
     }
+
+    @Transactional
+    public void saveWorkspaceMemberForStaff(Long workspaceId, String email) {
+        Workspace workspace = getWorkspace(workspaceId);
+        Staff staff = staffProfileService.getStaffWithEmail(email);
+        WorkspaceMember workspaceMember = WorkspaceMember.builder()
+                .workspace(workspace)
+                .staff(staff)
+                .build();
+        workspaceMemberRepository.save(workspaceMember);
+    }
 }
