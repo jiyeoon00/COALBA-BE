@@ -55,17 +55,12 @@ public class BossWorkspaceService {
         return workspaceMemberRepository.findAllByWorkspaceIdFetch(workspaceId);
     }
 
-    @Transactional
-    public void inviteStaff(Long workSpaceId, String email) {
-        Workspace workspace = getWorkspace(workSpaceId);
-        Staff staff = staffProfileService.getStaffWithEmail(email);
-        Optional<WorkspaceMember> workspaceMemberOptional = workspaceMemberRepository.findByWorkspaceIdAndStaffId(workSpaceId, staff.getId());
+    @Transactional(readOnly = true)
+    public Workspace validateInvitation(Long workspaceId, String receiverEmail) {
+        Workspace workspace = getWorkspace(workspaceId);
+        Long staffId = staffProfileService.getStaffWithEmail(receiverEmail).getId();
+        Optional<WorkspaceMember> workspaceMemberOptional = workspaceMemberRepository.findByWorkspaceIdAndStaffId(workspaceId, staffId);
         if (workspaceMemberOptional.isPresent()) throw new BusinessException(ErrorCode.ALREADY_EXIST_STAFF_IN_WORKSPACE);
-
-        WorkspaceMember workspaceMember = WorkspaceMember.builder()
-                .workspace(workspace)
-                .staff(staff)
-                .build();
-        workspaceMemberRepository.save(workspaceMember);
+        return workspace;
     }
 }
