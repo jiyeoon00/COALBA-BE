@@ -43,6 +43,7 @@ public enum ErrorCode {
     NOTIFICATION_NOT_FOUND(NOT_FOUND, "해당 유저의 알림정보를 찾을 수 없습니다. 디바이스 토큰을 등록합니다."),
 
     //invitation
+    ALREADY_EXIST_VALID_INVITATION(BAD_REQUEST, "유효한 초대장이 이미 존재합니다."),
     INVITATION_NOT_FOUND(NOT_FOUND, "해당 초대장을 찾을 수 없습니다."),
     EXPIRED_INVITATION_LINK(BAD_REQUEST, "만료된 초대 링크입니다."),
 

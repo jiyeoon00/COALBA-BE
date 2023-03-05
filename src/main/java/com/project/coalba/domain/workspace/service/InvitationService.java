@@ -2,7 +2,7 @@ package com.project.coalba.domain.workspace.service;
 
 import com.project.coalba.domain.workspace.entity.*;
 import com.project.coalba.domain.workspace.repository.InvitationRepository;
-import com.project.coalba.global.exception.InvitationFailException;
+import com.project.coalba.global.exception.*;
 import com.project.coalba.global.mail.dto.EmailMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.project.coalba.global.exception.ErrorCode.*;
 
@@ -26,6 +27,9 @@ public class InvitationService {
     @Transactional
     public EmailMessage issueInvitation(Long workspaceId, String receiverEmail) {
         Workspace workspace = bossWorkspaceService.validateInvitation(workspaceId, receiverEmail);
+        List<Invitation> validInvitationList = invitationRepository.findValidAllByWorkspaceIdAndReceiverEmail(workspaceId, receiverEmail, LocalDateTime.now());
+        if (validInvitationList.size() > 0) throw new BusinessException(ALREADY_EXIST_VALID_INVITATION);
+
         Invitation invitation = Invitation.invite(receiverEmail, workspace);
         invitationRepository.save(invitation);
         return EmailMessage.builder()
