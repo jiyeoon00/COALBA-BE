@@ -1,6 +1,5 @@
 package com.project.coalba.domain.message.service;
 
-import com.project.coalba.domain.message.dto.response.MessageResponse;
 import com.project.coalba.domain.message.entity.Message;
 import com.project.coalba.domain.message.entity.enums.Criteria;
 import com.project.coalba.domain.message.repository.MessageRepository;
@@ -16,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static com.project.coalba.domain.message.dto.response.MessageResponse.*;
 
 @RequiredArgsConstructor
 @Service
@@ -45,15 +46,15 @@ public class BossMessageService {
     }
 
     @Transactional(readOnly = true)
-    public MessageResponse.BossMessageResponse getDetailMessages(Long workspaceId, Long staffId){
+    public BossMessageResponse getDetailMessages(Long workspaceId, Long staffId){
         Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
         Staff staff = staffProfileService.getStaff(staffId);
         List<Message> messages = messageRepository.getMessages(workspaceId, staffId);
-        return new MessageResponse.BossMessageResponse(workspace, staff, messages);
+        return new BossMessageResponse(workspace, staff, messages);
     }
 
     @Transactional
-    public void sendMessageToStaff(Long workspaceId, Long staffId, String content) {
+    public DetailMessageForBoss sendMessageToStaff(Long workspaceId, Long staffId, String content) {
         Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
         Staff staff = staffProfileService.getStaff(staffId);
         Message message = Message.builder()
@@ -63,6 +64,7 @@ public class BossMessageService {
                 .staff(staff)
                 .build();
 
-        messageRepository.save(message);
+        Message savedMessage = messageRepository.save(message);
+        return new DetailMessageForBoss(savedMessage);
     }
 }
