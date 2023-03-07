@@ -60,10 +60,4 @@ public class BossWorkspaceController {
         List<WorkspaceMember> workspaceMemberList = bossWorkspaceService.getWorkspaceMemberInfoList(workspaceId);
         return mapper.toDto(() -> workspaceMemberList);
     }
-
-    @PostMapping("/{workspaceId}/staffs")
-    public ResponseEntity<Void> inviteStaff(@PathVariable Long workspaceId, @RequestParam String email){
-        bossWorkspaceService.inviteStaff(workspaceId, email);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
 }
