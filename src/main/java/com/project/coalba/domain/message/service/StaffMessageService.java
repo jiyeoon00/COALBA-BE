@@ -34,8 +34,9 @@ public class StaffMessageService {
                 .workspace(workspace)
                 .build();
 
-        Message savedMessage = messageRepository.save(message);
-        return new MessageToBossServiceDto(workspace.getBoss().getId(), savedMessage);
+        messageRepository.save(message);
+        StaffMessageResponse detailMessages = getDetailMessages(workspaceId);
+        return new MessageToBossServiceDto(workspace.getBoss().getId(), detailMessages);
     }
 
     @Transactional(readOnly = true)

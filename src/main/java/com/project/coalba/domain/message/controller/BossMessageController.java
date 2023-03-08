@@ -38,14 +38,14 @@ public class BossMessageController {
     }
 
     @PostMapping
-    public ResponseEntity<DetailMessageForBoss> sendMessageToStaff(@RequestParam("workspaceId") Long workspaceId,
+    public ResponseEntity<BossMessageResponse> sendMessageToStaff(@RequestParam("workspaceId") Long workspaceId,
                                                                    @RequestParam("staffId") Long staffId,
                                                                    @RequestBody MessageCreateRequest request) {
-        DetailMessageForBoss detailMessageForBoss = bossMessageService.sendMessageToStaff(workspaceId, staffId, request.getContent());
+        BossMessageResponse bossMessageResponse = bossMessageService.sendMessageToStaff(workspaceId, staffId, request.getContent());
 
         String deviceTokenByStaff = notificationService.getDeviceTokenByStaff(staffId);
         firebaseCloudMessageService.sendMessageTo(deviceTokenByStaff, "COALBA", "메세지가 도착했습니다");
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(detailMessageForBoss);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bossMessageResponse);
     }
 }

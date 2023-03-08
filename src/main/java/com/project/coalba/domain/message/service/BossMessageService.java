@@ -54,7 +54,7 @@ public class BossMessageService {
     }
 
     @Transactional
-    public DetailMessageForBoss sendMessageToStaff(Long workspaceId, Long staffId, String content) {
+    public BossMessageResponse sendMessageToStaff(Long workspaceId, Long staffId, String content) {
         Workspace workspace = bossWorkspaceService.getWorkspace(workspaceId);
         Staff staff = staffProfileService.getStaff(staffId);
         Message message = Message.builder()
@@ -64,7 +64,7 @@ public class BossMessageService {
                 .staff(staff)
                 .build();
 
-        Message savedMessage = messageRepository.save(message);
-        return new DetailMessageForBoss(savedMessage);
+        messageRepository.save(message);
+        return getDetailMessages(workspaceId, staffId);
     }
 }
