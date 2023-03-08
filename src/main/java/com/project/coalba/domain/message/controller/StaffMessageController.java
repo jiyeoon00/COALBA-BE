@@ -20,7 +20,7 @@ public class StaffMessageController {
 
     @PostMapping
     public DetailMessageResponse sendMessageToBoss(@RequestParam("workspaceId") Long workspaceId,
-                                                                  @RequestBody MessageCreateRequest request) {
+                                                   @RequestBody MessageCreateRequest request) {
         MessageToBossServiceDto messageToBossServiceDto = staffMessageService.sendMessageToBoss(workspaceId, request.getContent());
 
         String deviceTokenByBoss = notificationService.getDeviceTokenByBoss(messageToBossServiceDto.getBossId());

@@ -31,14 +31,14 @@ public class BossMessageController {
 
     @GetMapping
     public BossMessageResponse getDetailMessages(@RequestParam("workspaceId") Long workspaceId,
-                                                                 @RequestParam("staffId") Long staffId) {
+                                                 @RequestParam("staffId") Long staffId) {
         return bossMessageService.getDetailMessages(workspaceId, staffId);
     }
 
     @PostMapping
     public DetailMessageForBoss sendMessageToStaff(@RequestParam("workspaceId") Long workspaceId,
-                                                                   @RequestParam("staffId") Long staffId,
-                                                                   @RequestBody MessageCreateRequest request) {
+                                                   @RequestParam("staffId") Long staffId,
+                                                   @RequestBody MessageCreateRequest request) {
         DetailMessageForBoss detailMessageForBoss = bossMessageService.sendMessageToStaff(workspaceId, staffId, request.getContent());
 
         String deviceTokenByStaff = notificationService.getDeviceTokenByStaff(staffId);
