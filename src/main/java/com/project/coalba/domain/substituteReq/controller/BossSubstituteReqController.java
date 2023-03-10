@@ -45,13 +45,13 @@ public class BossSubstituteReqController {
 
         sendApprovalNotice(substituteReq);
         applyToExternalCalendar(substituteReq.getSender(), substituteReq.getSchedule());
-        return ResponseEntity.ok("대타근무 요청을 최종승인하였습니다. 스케줄이 교체 됩니다.");
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{substituteReqId}/reject")
     public ResponseEntity disapproveSubstituteReq(@PathVariable Long substituteReqId) {
         bossSubstituteReqService.disapproveSubstituteReq(substituteReqId);
-        return ResponseEntity.ok("대타근무 요청을 최종거절하였습니다.");
+        return ResponseEntity.ok().build();
     }
 
     private void sendApprovalNotice(SubstituteReq substituteReq) {
