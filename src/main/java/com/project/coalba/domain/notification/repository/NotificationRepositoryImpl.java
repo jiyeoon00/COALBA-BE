@@ -16,23 +16,19 @@ public class NotificationRepositoryImpl implements NotificationRepositoryCustom 
 
     @Override
     public Optional<Notification> getNotificationByStaff(Long staffId) {
-        Notification noti = queryFactory.selectFrom(notification)
+        return Optional.ofNullable(queryFactory.selectFrom(notification)
                 .join(staff)
                 .on(staff.user.id.eq(notification.user.id))
                 .where(staff.id.eq(staffId))
-                .fetchOne();
-
-        return Optional.ofNullable(noti);
+                .fetchOne());
     }
 
     @Override
     public Optional<Notification> getNotificationByBoss(Long bossId) {
-        Notification noti = queryFactory.selectFrom(notification)
+        return Optional.ofNullable(queryFactory.selectFrom(notification)
                 .join(boss)
                 .on(boss.user.id.eq(notification.user.id))
                 .where(boss.id.eq(bossId))
-                .fetchOne();
-
-        return Optional.ofNullable(noti);
+                .fetchOne());
     }
 }

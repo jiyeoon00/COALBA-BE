@@ -22,23 +22,29 @@ public class NotificationService {
     @Transactional
     public void save(String deviceToken) {
         User currentUser = userUtil.getCurrentUser();
-        Optional<Notification> notification = notificationRepository.findByUser(currentUser);
-        notification.ifPresentOrElse(
+        Optional<Notification> notificationOptional = notificationRepository.findByUser(currentUser);
+        notificationOptional.ifPresentOrElse(
                 noti -> noti.updateDeviceToken(deviceToken),
-                () -> notificationRepository.save(Notification.builder().user(currentUser).deviceToken(deviceToken).build()));
+                () -> notificationRepository.save(
+                        Notification.builder()
+                                .user(currentUser)
+                                .deviceToken(deviceToken)
+                                .build()
+                )
+        );
     }
 
     @Transactional(readOnly = true)
     public String getDeviceTokenByStaff(Long staffId) {
-        Optional<Notification> notificationByStaff = notificationRepository.getNotificationByStaff(staffId);
-        notificationByStaff.orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUND));
-        return notificationByStaff.get().getDeviceToken();
+        Notification notificationByStaff = notificationRepository.getNotificationByStaff(staffId)
+                .orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUND));
+        return notificationByStaff.getDeviceToken();
     }
 
     @Transactional(readOnly = true)
     public String getDeviceTokenByBoss(Long bossId) {
-        Optional<Notification> notificationByBoss = notificationRepository.getNotificationByBoss(bossId);
-        notificationByBoss.orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUND));
-        return notificationByBoss.get().getDeviceToken();
+        Notification notificationByBoss = notificationRepository.getNotificationByBoss(bossId)
+                .orElseThrow(() -> new BusinessException(NOTIFICATION_NOT_FOUND));
+        return notificationByBoss.getDeviceToken();
     }
 }
