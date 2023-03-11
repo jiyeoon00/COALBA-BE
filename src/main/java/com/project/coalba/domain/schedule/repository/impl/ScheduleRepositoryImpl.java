@@ -1,7 +1,8 @@
-package com.project.coalba.domain.schedule.repository;
+package com.project.coalba.domain.schedule.repository.impl;
 
 import com.project.coalba.domain.schedule.entity.Schedule;
 import com.project.coalba.domain.schedule.entity.enums.ScheduleStatus;
+import com.project.coalba.domain.schedule.repository.ScheduleRepositoryCustom;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

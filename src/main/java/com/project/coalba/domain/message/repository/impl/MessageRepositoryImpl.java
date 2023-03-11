@@ -1,7 +1,8 @@
-package com.project.coalba.domain.message.repository;
+package com.project.coalba.domain.message.repository.impl;
 
 import com.project.coalba.domain.message.entity.Message;
 import com.project.coalba.domain.message.entity.QMessage;
+import com.project.coalba.domain.message.repository.MessageRepositoryCustom;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
