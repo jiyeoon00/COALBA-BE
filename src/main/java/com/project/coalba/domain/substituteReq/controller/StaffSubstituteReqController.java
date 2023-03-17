@@ -68,7 +68,7 @@ public class StaffSubstituteReqController {
     @PutMapping("/{substituteReqId}/cancel")
     public ResponseEntity cancelSubstituteReq(@PathVariable Long substituteReqId) {
         staffSubstituteReqService.cancelSubstituteReq(substituteReqId);
-        return ResponseEntity.ok("취소되었습니다.");
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{substituteReqId}/accept")
@@ -76,7 +76,7 @@ public class StaffSubstituteReqController {
         SubstituteReq substituteReq = staffSubstituteReqService.acceptSubstituteReq(substituteReqId);
 
         sendAcceptanceNotice(substituteReq);
-        return ResponseEntity.ok("대타근무 요청이 수락되었습니다. 사장님께 최종승인 요청이 갑니다.");
+        return ResponseEntity.ok().build();
     }
 
     private void sendAcceptanceNotice(SubstituteReq substituteReq) {
@@ -91,6 +91,6 @@ public class StaffSubstituteReqController {
     @PutMapping("/{substituteReqId}/reject")
     public ResponseEntity rejectSubstituteReq(@PathVariable Long substituteReqId) {
         staffSubstituteReqService.rejectSubstituteReq(substituteReqId);
-        return ResponseEntity.ok("대타근무 요청이 거절되었습니다.");
+        return ResponseEntity.ok().build();
     }
 }
