@@ -68,7 +68,7 @@ public class AuthService {
     }
 
     private Boolean isNewUser(Long userId) {
-        return userRepository.existsByProfile(userId);
+        return !userRepository.existsByProfile(userId);
     }
 
     private void manageRefreshToken(User loginUser, String refreshToken) {
