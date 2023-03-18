@@ -1,6 +1,7 @@
-package com.project.coalba.domain.profile.repository;
+package com.project.coalba.domain.profile.repository.impl;
 
 import com.project.coalba.domain.profile.entity.Staff;
+import com.project.coalba.domain.profile.repository.StaffProfileRepositoryCustom;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

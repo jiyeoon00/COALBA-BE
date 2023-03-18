@@ -1,7 +1,8 @@
-package com.project.coalba.domain.substituteReq.repository;
+package com.project.coalba.domain.substituteReq.repository.impl;
 
 import com.project.coalba.domain.profile.entity.QStaff;
 import com.project.coalba.domain.substituteReq.entity.enums.SubstituteReqStatus;
+import com.project.coalba.domain.substituteReq.repository.SubstituteReqRepositoryCustom;
 import com.project.coalba.domain.substituteReq.repository.dto.SubstituteReqDto;
 import com.project.coalba.domain.substituteReq.repository.dto.BothSubstituteReqDto;
 import com.querydsl.core.BooleanBuilder;

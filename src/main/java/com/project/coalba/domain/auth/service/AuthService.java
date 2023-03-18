@@ -26,16 +26,13 @@ public class AuthService {
     @Transactional
     public AuthResponse login(SocialInfo socialInfo, Role role) {
         Optional<User> userOptional = getSubscribedUser(socialInfo.getProviderId(), role);
-        boolean isNewUser = userOptional.isEmpty();
-
-        User loginUser;
-        if (isNewUser) loginUser = joinUser(socialInfo, role);
-        else loginUser = updateUser(userOptional.get(), socialInfo);
+        User loginUser = userOptional.map(user -> updateUser(user, socialInfo))
+                .orElseGet(() -> joinUser(socialInfo, role));
 
         String accessToken = tokenManager.createAccessToken(loginUser.getProviderId(), loginUser.getId());
         String refreshToken = issueRefreshToken(getUserRefreshToken(loginUser.getId()).orElse(null));
         manageRefreshToken(loginUser, refreshToken);
-        return new AuthResponse(accessToken, refreshToken, isNewUser);
+        return new AuthResponse(accessToken, refreshToken, isNewUser(loginUser.getId()));
     }
 
     @Transactional
@@ -68,6 +65,10 @@ public class AuthService {
         user.updateSocialInfo(socialInfo.getEmail(), socialInfo.getName(), socialInfo.getImageUrl(), socialInfo.getProviderId(),
                 socialInfo.getSocialAccessToken(), socialInfo.getSocialRefreshToken());
         return user;
+    }
+
+    private Boolean isNewUser(Long userId) {
+        return !userRepository.existsByProfile(userId);
     }
 
     private void manageRefreshToken(User loginUser, String refreshToken) {

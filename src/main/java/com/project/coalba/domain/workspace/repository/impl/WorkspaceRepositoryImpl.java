@@ -1,6 +1,7 @@
-package com.project.coalba.domain.workspace.repository;
+package com.project.coalba.domain.workspace.repository.impl;
 
 import com.project.coalba.domain.workspace.entity.Workspace;
+import com.project.coalba.domain.workspace.repository.WorkspaceRepositoryCustom;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
