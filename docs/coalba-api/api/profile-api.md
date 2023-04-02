@@ -31,7 +31,7 @@ description: 프로필 관련 API
 {
     "realName": "김다은",
     "phoneNumber": "01012345678",
-    "birthDate": "1999-12-25",
+    "birthDate": "1999-12-24",
     "imageUrl": "http://"
 }
 ```
